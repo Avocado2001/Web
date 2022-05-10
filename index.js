@@ -9,7 +9,7 @@ const app = express();
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-
+app.use(express.static('public'));
 app.get('/', (req, res) => {
     res.json({
         code: 0,
@@ -19,6 +19,7 @@ app.get('/', (req, res) => {
 app.use('/account', AccountRouter);
 
 app.use(express.static(__dirname + '/public'));
+
 
 //connect moongose and server
 const port = process.env.PORT || 8080;
