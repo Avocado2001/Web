@@ -18,6 +18,8 @@ app.get('/', (req, res) => {
 });
 app.use('/account', AccountRouter);
 
+app.use(express.static('public'));
+
 //connect moongose and server
 const port = process.env.PORT || 8080;
 mongoose.connect('mongodb://localhost/vidientu', {
