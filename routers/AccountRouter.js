@@ -11,14 +11,11 @@ Router.get('/', (req, res) => {
     })
 });
 Router.get('/login', loginValidator, (req, res) => {
-    res.set('Content-Type', 'text/html');
+
     res.render('login');
 });
-Router.post('/register', registerValidator, (req, res) => {
-    res.json({
-        code: 0,
-        message: 'register'
-    })
+Router.get('/register', registerValidator, (req, res) => {
+    res.render('register');
 });
 Router.get('/login', (req, res) => {});
 Router.post('/register', (req, res) => {});
