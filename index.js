@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
 });
 app.use('/account', AccountRouter);
 
-app.use(express.static('public'));
+app.use(express.static(__dirname + '/public'));
 
 //connect moongose and server
 const port = process.env.PORT || 8080;
