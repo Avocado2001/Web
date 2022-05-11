@@ -5,56 +5,52 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
-    <!-- MDB -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.0.0/mdb.min.css" rel="stylesheet" />
-    <!-- MDB -->
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.0.0/mdb.min.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
 
     <link rel="stylesheet" type="text/css" href="/style.css" />
     <title>Register</title>
 </head>
 
-<body>
-    <section class="vh-100 gradient-custom">
-        <div class="container py-5 h-100">
-            <div class="row d-flex justify-content-center align-items-center h-100">
-                <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-                    <div class="card bg-dark text-white" style="border-radius: 1rem;">
-                        <div class="card-body p-5 text-center">
-                            <form class="mb-md-5 mt-md-4 pb-5" action="login">
-                                <h2 class="fw-bold mb-2 text-uppercase">Đăng ký tài khoản</h2>
-                                <p class="text-white-50 mb-5">Hãy nhập đầy đủ thông tin của bạn</p>
+<body class="contain-box">
 
-                                <div class="form-outline form-white mb-4">
-                                    <input type="tel" name="phone" id="phone" class="form-control form-control-lg" placeholder="1234-567-678" pattern="[0-9]{4}-[0-9]{3}-[0-9]{3}" />
-                                    <label class="form-label" for="phone">Số điện thoại</label>
-                                </div>
-                                <div class="form-outline form-white mb-4">
-                                    <input type="email" name="email" id="email" class="form-control form-control-lg" />
-                                    <label class="form-label" for="email">Email</label>
-                                </div>
-
-                                <div class="form-outline form-white mb-4">
-                                    <input type="text" name="fullname" id="fullname" class="form-control form-control-lg" />
-                                    <label class="form-label" for="fullname">Họ và Tên</label>
-                                </div>
-
-                                <div class="form-outline form-white mb-4">
-                                    <input type="date" name="birthday" id="birthday" class="form-control form-control-lg" />
-                                    <label class="form-label" for="birthday">Ngày sinh</label>
-                                </div>
-                                <button href="login" class="btn btn-outline-light btn-lg px-5" type="submit">Đăng ký</button>
-                                <a href="login" class="btn btn-outline-light btn-lg px-5">Đăng xuất</a>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+    <div class="sign-upbox">
+        <form class="regisform" action="login">
+            <div>
+                <h1>Đăng ký tài khoản</h1>
+                <h5>Hãy nhập đầy đủ thông tin của bạn</h5>
             </div>
-        </div>
-    </section>
+            <div>
+                <label class="regisform-label" for="phone">Số điện thoại</label>
+                <input type="tel" name="phone" id="phone" class="regisform-input" placeholder="Nhập số điện thoại"
+                    pattern="[0-9]{4}-[0-9]{3}-[0-9]{3}" />
+
+            </div>
+            <div>
+                <label class="regisform-label" for="email">Email</label>
+                <input type="email" name="email" id="email" class="regisform-input" placeholder="Nhập Email" />
+
+            </div>
+
+            <div>
+                <label class="regisform-label" for="fullname">Họ và Tên</label>
+                <input type="text" name="fullname" id="fullname" class="regisform-input" placeholder="Nhập họ và tên" />
+
+            </div>
+
+            <div class="form-group mb-4">
+                <label class="regisform-label" for="birthday">Ngày sinh</label>
+                <input type="date" name="birthday" id="birthday" class="regisform-input" />
+
+            </div>
+            <div>
+                <button href="login" class="regisform-button" type="submit">Đăng ký</button>
+                <a href="login" class=" btn regisform-button-logout   ">Thoát</a>
+            </div>
+        </form>
+    </div>
+
 </body>
 
 </html>
