@@ -30,15 +30,16 @@
     }
 }
 
-
-.card-body{
+.card-body {
     height: 1100px;
 }
-.contain-box{
+
+.contain-box {
     background-color: #344a72;
     font-family: 'Roboto', sans-serif;
 }
-.sign-upbox{
+
+.sign-upbox {
     width: 360px;
     height: 620px;
     margin: auto;
@@ -46,23 +47,28 @@
     background-color: white;
     border-radius: 3px;
 }
-h1{
+
+h1 {
     text-align: center;
     padding-top: 15px;
 }
-h5{
+
+h5 {
     text-align: center;
 }
-.regisform{
+
+.regisform {
     width: 300px;
     margin-left: 20px;
 }
-.regisform-label{
+
+.regisform-label {
     display: flex;
     margin-top: 20px;
     font-size: 18px;
 }
-.regisform-input{
+
+.regisform-input {
     width: 100%;
     padding: 7px;
     border: none;
@@ -70,7 +76,8 @@ h5{
     border-radius: 6px;
     outline: none;
 }
-.regisform-button{
+
+.regisform-button {
     width: 320px;
     height: 35px;
     margin-top: 20px;
@@ -78,7 +85,8 @@ h5{
     color: white;
     font-size: 15px;
 }
-.regisform-button-logout{
+
+.regisform-button-logout {
     width: 320px;
     height: 35px;
     margin-top: 20px;

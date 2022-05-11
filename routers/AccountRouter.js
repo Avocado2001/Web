@@ -24,6 +24,4 @@ Router.get('/', loginValidator, (req, res) => {
 Router.get('/register', registerValidator, (req, res) => {
     res.render('register');
 });
-Router.get('/login', (req, res) => {});
-Router.post('/register', (req, res) => {});
 module.exports = Router;

@@ -19,7 +19,7 @@ app.use(express.static('public'));
 // });
 app.use(express.static(__dirname + '/public'));
 app.use('/', AccountRouter);
-// app.use('/admin', AdminRouter); chưa chạy đc
+app.use('/admin', AdminRouter);
 
 
 
