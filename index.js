@@ -3,6 +3,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const express = require('express');
 const AccountRouter = require('./routers/AccountRouter');
+const AdminRouter = require('./routers/AdminRouter');
 const app = express();
 
 
@@ -16,9 +17,10 @@ app.get('/', (req, res) => {
         message: 'Welcome to API'
     })
 });
-app.use('/account', AccountRouter);
-
 app.use(express.static(__dirname + '/public'));
+app.use('/account', AccountRouter);
+// app.use('/admin', AdminRouter); chưa chạy đc
+
 
 
 //connect moongose and server

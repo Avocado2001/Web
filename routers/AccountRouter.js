@@ -17,13 +17,8 @@ var username = generator.generate({
     numbers: true,
     exclude: ''
 });
-Router.get('/', (req, res) => {
-    res.json({
-        code: 0,
-        message: 'Account'
-    })
-});
-Router.get('/login', loginValidator, (req, res) => {
+
+Router.get('/', loginValidator, (req, res) => {
     res.render('login');
 });
 Router.get('/register', registerValidator, (req, res) => {
