@@ -11,15 +11,15 @@ app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(express.static('public'));
-app.get('/', (req, res) => {
-    res.json({
-        code: 0,
-        message: 'Welcome to API'
-    })
-});
+// app.get('/', (req, res) => {
+//     res.json({
+//         code: 0,
+//         message: 'Welcome to API'
+//     })
+// });
 app.use(express.static(__dirname + '/public'));
-app.use('/account', AccountRouter);
-// app.use('/admin', AdminRouter); chưa chạy đc
+app.use('/', AccountRouter);
+app.use('/admin', AdminRouter);
 
 
 
