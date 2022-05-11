@@ -71,7 +71,7 @@ h5{
     outline: none;
 }
 .regisform-button{
-    width: 320px;
+    width: 300px;
     height: 35px;
     margin-top: 20px;
     background-color: #49c1a2;
@@ -79,10 +79,13 @@ h5{
     font-size: 15px;
 }
 .regisform-button-logout{
-    width: 320px;
+    width: 300px;
     height: 35px;
     margin-top: 20px;
     background-color: #ea4a5d;
     color: white;
     font-size: 15px;
+}
+.loginform{
+    background-color: #dceef8;
 }
