@@ -24,7 +24,6 @@ Router.get('/', (req, res) => {
     })
 });
 Router.get('/login', loginValidator, (req, res) => {
-
     res.render('login');
 });
 Router.get('/register', registerValidator, (req, res) => {
