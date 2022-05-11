@@ -19,5 +19,4 @@ module.exports = [
     .exists().withMessage('Địa chỉ không được để trống')
     .notEmpty().withMessage('Địa chỉ không được để trống')
     .isLength({ min: 6 }).withMessage('Địa chỉ phải có ít nhất 6 ký tự'),
-
 ];

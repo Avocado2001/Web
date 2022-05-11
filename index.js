@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const express = require('express');
 const AccountRouter = require('./routers/AccountRouter');
 const AdminRouter = require('./routers/AdminRouter');
+const UserRouter = require('./routers/UserRouter');
 const app = express();
 
 
@@ -20,7 +21,7 @@ app.use(express.static('public'));
 app.use(express.static(__dirname + '/public'));
 app.use('/', AccountRouter);
 app.use('/admin', AdminRouter);
-
+app.use('/user', UserRouter);
 
 
 //connect moongose and server

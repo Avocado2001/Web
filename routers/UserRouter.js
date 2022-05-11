@@ -1,7 +1,6 @@
 const express = require('express');
 const Router = express.Router();
 Router.get('/', (req, res) => {
-    res.render('admin');
+    res.render('user');
 });
 module.exports = Router;
-//chưa chạy đc nha
