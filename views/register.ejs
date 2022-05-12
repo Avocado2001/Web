@@ -24,7 +24,7 @@
             <div class="row justify-content-center align-items-center h-100">
                 <div class="col-12 col-lg-9 col-xl-7">
                     <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
-                        <div class="card-body p-2 p-md-5">
+                        <div class="card-body p-5 p-md-5">
                             <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">Đăng kí tài khoản</h3>
                             <form method="post" action="/register">
                                 <div class="row">
@@ -84,10 +84,13 @@
                                         <div class="small text-muted mt-2">Upload CMND/CCCD mặt sau</div>
                                     </div>
                                 </div>
-                                <div class="alert alert-danger" role="alert">
-                                    A simple danger alert—check it out!
-                                </div>
-                                <input class="btn btn-primary btn-lg gradient-custom" type="submit" value="Đăng ký" />
+                                <% if(error){ %>
+                                    <div class="alert alert-danger mb-3">
+                                        <strong>Lưu ý!</strong>
+                                        <%= error %>
+                                    </div>
+                                    <%}%>
+                                        <input class="btn btn-primary btn-lg gradient-custom" type="submit" value="Đăng ký" />
                             </form>
                         </div>
                     </div>

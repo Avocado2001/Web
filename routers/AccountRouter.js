@@ -13,7 +13,9 @@ Router.get('/', loginValidator, (req, res) => {
     res.render('login');
 });
 Router.get('/register', registerValidator, (req, res) => {
-    res.render('register');
+    res.render('register', {
+        error: ''
+    });
 });
 Router.post('/login', loginValidator, (req, res) => {
     let result = validationResult(req);
@@ -108,10 +110,7 @@ Router.post('/register', registerValidator, (req, res) => {
             }).then(() => {
                 return res.render('login');
             }).catch(err => {
-                return res.json({
-                    code: 2,
-                    message: 'Đăng kí thất bại ' + err.message
-                })
+                res.render('register', { error: err.message });
             })
     } else {
         let messages = result.mapped();
@@ -120,10 +119,7 @@ Router.post('/register', registerValidator, (req, res) => {
             message = messages[m].msg;
             break;
         }
-        return res.json({
-            code: 1,
-            message
-        })
+        res.render('register', { error: message });
     }
 });
 module.exports = Router;
