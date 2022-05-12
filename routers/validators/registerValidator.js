@@ -11,7 +11,7 @@ module.exports = [
     check('fullname')
     .exists().withMessage('Họ và tên không được để trống')
     .notEmpty().withMessage('Họ và tên không được để trống')
-    .isLength({ min: 6 }).withMessage('họ và tên phải có ít nhất 6 ký tự'),
+    .isLength({ min: 5 }).withMessage('họ và tên phải có ít nhất 6 ký tự'),
     check('birthday')
     .exists().withMessage('Ngày sinh không được để trống')
     .notEmpty().withMessage('Ngày sinh không được để trống'),
