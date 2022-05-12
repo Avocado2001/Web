@@ -106,10 +106,7 @@ Router.post('/register', registerValidator, (req, res) => {
                 });
                 return user.save();
             }).then(() => {
-                return res.json({
-                    code: 0,
-                    message: 'Đăng kí thành công',
-                })
+                return res.render('login');
             }).catch(err => {
                 return res.json({
                     code: 2,

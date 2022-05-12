@@ -15,14 +15,14 @@
 
 <body class="gradient-custom-2">
     <div class="sign-upbox card">
-        <form class="regisform" action="login">
+        <form class="regisform" action="/register" method="post">
             <div>
                 <h1>Đăng ký tài khoản</h1>
                 <h5>Hãy nhập đầy đủ thông tin của bạn</h5>
             </div>
             <div>
                 <label class="regisform-label" for="phone">Số điện thoại</label>
-                <input type="tel" name="phone" id="phone" class="regisform-input" placeholder="Nhập số điện thoại" pattern="[0-9]{4}-[0-9]{3}-[0-9]{3}" />
+                <input type="tel" name="phone" id="phone" class="regisform-input" placeholder="Nhập số điện thoại" pattern="[0-9]{4}[0-9]{3}[0-9]{3}" />
 
             </div>
             <div>
@@ -36,15 +36,17 @@
                 <input type="text" name="fullname" id="fullname" class="regisform-input" placeholder="Nhập họ và tên" />
 
             </div>
-
+            <div>
+                <label class="regisform-label" for="address">Địa chỉ</label>
+                <input type="text" name="address" id="address" class="regisform-input" placeholder="Nhập địa chỉ" />
+            </div>
             <div class="form-group mb-4">
                 <label class="regisform-label" for="birthday">Ngày sinh</label>
                 <input type="date" name="birthday" id="birthday" class="regisform-input" />
-
             </div>
-            <div class="form-group mt-4">
-                <button href="#" class="btn btn-primary btn-block fa-lg mb-3 gradient-custom-2" type="submit">Đăng ký</button>
-                <a href="/" class=" btn regisform-button-logout">Thoát</a>
+            <div class="form-group mb-4">
+                <button class="btn btn-primary btn-block fa-lg mb-3 gradient-custom-2" type="submit">Đăng ký</button>
+                <a href="/" class=" btn regisform-button-logout mb-3">Thoát</a>
             </div>
         </form>
     </div>
