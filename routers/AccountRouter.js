@@ -4,13 +4,20 @@ const bcrypt = require('bcrypt');
 const Account = require('../models/AccountModel');
 const jwt = require('jsonwebtoken');
 const flash = require('express-flash');
+const nodemailer = require('nodemailer');
 const session = require('express-session');
 const registerValidator = require('./validators/registerValidator');
 const loginValidator = require('./validators/loginValidator');
 const { render } = require('express/lib/response');
 const generator = require('generate-password');
 const { validationResult } = require('express-validator');
-
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'ewallet.webnc@gmail.com',
+        pass: 'webnangcao'
+    }
+});
 Router.get('/', loginValidator, (req, res) => {
     res.render('login', { username: '', password: '' });
 });
@@ -116,7 +123,19 @@ Router.post('/register', registerValidator, (req, res) => {
                 });
                 return user.save();
             }).then(() => {
-                return res.redirect('/');
+                var mailOptions = {
+                    from: 'ewallet.webnc@gmail.com',
+                    to: email,
+                    subject: 'E-Wallet',
+                    text: 'Tài khoản của bạn đã được tạo \nUsername: ' + username + '\nPassword: ' + password
+                };
+                transporter.sendMail(mailOptions, function(error, info) {
+                    if (error) {
+                        console.log(error);
+                    } else {
+                        return res.redirect('/');
+                    }
+                });
             }).catch(err => {
                 res.render('register', {
                     email,
