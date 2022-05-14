@@ -6,6 +6,7 @@ const express = require('express');
 const AccountRouter = require('./routers/AccountRouter');
 const AdminRouter = require('./routers/AdminRouter');
 const UserRouter = require('./routers/UserRouter');
+const session = require('express-session');
 const app = express();
 app.use(cors());
 app.set('view engine', 'ejs');
@@ -16,7 +17,7 @@ app.use(express.static(__dirname + '/public'));
 app.use('/', AccountRouter);
 app.use('/admin', AdminRouter);
 app.use('/user', UserRouter);
-
+app.use(session({ secret: 'mySecret', resave: false, saveUninitialized: false }));
 
 //connect moongose and server
 const port = process.env.PORT || 8080;

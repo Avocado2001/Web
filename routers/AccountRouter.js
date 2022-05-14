@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const Account = require('../models/AccountModel');
 const jwt = require('jsonwebtoken');
 const flash = require('express-flash');
+const session = require('express-session');
 const registerValidator = require('./validators/registerValidator');
 const loginValidator = require('./validators/loginValidator');
 const { render } = require('express/lib/response');
@@ -50,9 +51,9 @@ Router.post('/login', loginValidator, (req, res) => {
             }, (err, token) => {
                 if (err) throw err;
                 if (acc.isAdmin) {
-                    return res.render('admin', { token });
+                    return res.redirect('admin');
                 } else {
-                    return res.render('user', { token });
+                    return res.redirect('user');
                 }
             })
         }).catch(err => {
