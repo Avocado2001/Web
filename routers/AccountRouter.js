@@ -3,6 +3,7 @@ const Router = express.Router();
 const bcrypt = require('bcrypt');
 const Account = require('../models/AccountModel');
 const jwt = require('jsonwebtoken');
+const flash = require('express-flash');
 const registerValidator = require('./validators/registerValidator');
 const loginValidator = require('./validators/loginValidator');
 const { render } = require('express/lib/response');
@@ -114,7 +115,7 @@ Router.post('/register', registerValidator, (req, res) => {
                 });
                 return user.save();
             }).then(() => {
-                return res.render('login', { username, password });
+                return res.redirect('/');
             }).catch(err => {
                 res.render('register', {
                     email,
