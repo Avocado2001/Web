@@ -10,7 +10,7 @@ var generator = require('generate-password');
 const { validationResult } = require('express-validator');
 
 Router.get('/', loginValidator, (req, res) => {
-    res.render('login');
+    res.render('login', { username: '', password: '' });
 });
 Router.get('/register', registerValidator, (req, res) => {
     res.render('register', {
@@ -25,9 +25,9 @@ Router.get('/register', registerValidator, (req, res) => {
 Router.post('/login', loginValidator, (req, res) => {
     let result = validationResult(req);
     if (result.errors.length === 0) {
-        let { email, password } = req.body;
+        let { username, password } = req.body;
         let acc = undefined;
-        Account.findOne({ email: email }).then(account => {
+        Account.findOne({ username }).then(account => {
             if (!account) {
                 throw new Error('Username không tồn tại');
             }
@@ -81,6 +81,11 @@ Router.post('/register', registerValidator, (req, res) => {
         phone,
         address,
         birthday,
+        password = generator.generate({
+            // //Tự tạo mật khẩu
+            length: 6,
+            numbers: true
+        }),
         // //Tạo username tự động(chưa so sánh username đã có hay chưa)
         username = generator.generate({
             length: 10,
@@ -90,17 +95,13 @@ Router.post('/register', registerValidator, (req, res) => {
         })
     } = req.body;
     if (result.errors.length === 0) {
+
         Account.findOne({ email, phone }).then(account => {
                 if (account) {
                     throw new Error('Email hoặc số điện thoại đã tồn tại');
                 }
             })
-            .then(() => generator.generate({
-                // //Tự tạo mật khẩu
-                length: 6,
-                numbers: true
-            }))
-            .then(password => bcrypt.hash(password, 10))
+            .then(() => bcrypt.hash(password, 10))
             .then(hashed => {
                 let user = new Account({
                     email,
@@ -113,7 +114,7 @@ Router.post('/register', registerValidator, (req, res) => {
                 });
                 return user.save();
             }).then(() => {
-                return res.render('login', { usename, password });
+                return res.render('login', { username, password });
             }).catch(err => {
                 res.render('register', {
                     email,

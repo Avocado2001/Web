@@ -15,11 +15,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.0.0/mdb.min.js"></script>
 
     <link rel="stylesheet" type="text/css" href="css/style.css" />
-    <script>
-        $('#exampleModal').modal({
-            show: true
-        })
-    </script>
+
     <title>Login</title>
 </head>
 
@@ -38,39 +34,42 @@
                                         <h4 class="mt-1 mb-5 pb-1">Ví điện tử WebPay</h4>
                                     </div>
 
-                                    <form>
+                                    <form action="/login" method="post">
                                         <p>Nhập tài khoản của bạn</p>
                                         <div class="form-outline mb-4">
-                                            <input type="email" id="form2Example11" class="form-control" placeholder="Số tài khoản" />
-                                            <label class="form-label" for="form2Example11">Username</label>
+                                            <input value="<%= username %>" name="username" type="number" id="username" class="form-control" placeholder="Số tài khoản" />
+                                            <label class=" form-label " for="username">Username</label>
                                         </div>
 
-                                        <div class="form-outline mb-4">
-                                            <input type="password" id="form2Example22" class="form-control" />
-                                            <label class="form-label" for="form2Example22">Password</label>
+                                        <div class="form-outline mb-4 ">
+                                            <input value="<%= password %>" name="password" type="password " id="password" class="form-control " />
+                                            <label class="form-label " for="password">Password</label>
                                         </div>
 
-                                        <div class="text-center pt-1 mb-5 pb-1">
-                                            <button class="btn btn-primary btn-block fa-lg gradient-custom mb-3" type="button">Đăng nhập</button>
-                                            <a class="text-muted" href="#!">Quên mật khẩu?</a>
+                                        <div class="text-center pt-1 mb-5 pb-1 ">
+                                            <button class="btn btn-primary btn-block fa-lg gradient-custom mb-3 " type="button ">Đăng nhập</button>
+                                            <a class="text-muted " href="#">Quên mật khẩu?</a>
                                         </div>
 
-                                        <div class="d-flex align-items-center justify-content-center pb-4">
-                                            <p class="mb-0 me-2">Bạn chưa có tài khoản?</p>
-                                            <a href="/register" type="button" class="btn btn-outline-danger">Tạo mới</a>
-
+                                        <div class="d-flex align-items-center justify-content-center pb-4 ">
+                                            <p class="mb-0 me-2 ">Bạn chưa có tài khoản?</p>
+                                            <a href="/register " type="button " class="btn btn-outline-danger ">Tạo mới</a>
+                                            <!-- Button trigger modal -->
+                                            <button type="button " class="btn btn-primary " data-toggle="modal " data-target="#exampleModal ">
+                                                Launch demo modal
+                                            </button>
                                         </div>
                                     </form>
                                 </div>
                             </div>
 
-                            <div class="col-lg-6 d-flex align-items-center gradient-custom">
-                                <div class="text-white px-3 py-4 p-md-5 mx-md-4">
-                                    <h4 class="mb-4">Thành viên</h4>
-                                    <p class="small mb-0">Trương Tấn Hùng - 51900083</p>
-                                    <p class="small mb-0">Huỳnh Quang Huy - 51900088</p>
-                                    <p class="small mb-0">Trần Minh Kha - 51900101</p>
-                                    <p class="small mb-0">Lê Triệu Vỷ - 51900290</p>
+                            <div class="col-lg-6 d-flex align-items-center gradient-custom ">
+                                <div class="text-white px-3 py-4 p-md-5 mx-md-4 ">
+                                    <h4 class="mb-4 ">Thành viên</h4>
+                                    <p class="small mb-0 ">Trương Tấn Hùng - 51900083</p>
+                                    <p class="small mb-0 ">Huỳnh Quang Huy - 51900088</p>
+                                    <p class="small mb-0 ">Trần Minh Kha - 51900101</p>
+                                    <p class="small mb-0 ">Lê Triệu Vỷ - 51900290</p>
                                 </div>
                             </div>
                         </div>
@@ -79,27 +78,26 @@
             </div>
         </div>
         <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
+        <div class="modal fade " id="exampleModal " tabindex="-1 " role="dialog " aria-labelledby="exampleModalLabel " aria-hidden="true ">
+            <div class="modal-dialog " role="document ">
+                <div class="modal-content ">
+                    <div class="modal-header ">
+                        <h5 class="modal-title " id="exampleModalLabel ">Modal title</h5>
+                        <button type="button " class="close " data-dismiss="modal " aria-label="Close ">
+            <span aria-hidden="true ">&times;</span>
           </button>
                     </div>
-                    <div class="modal-body">
-                        Content
+                    <div class="modal-body ">
+                        ...
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
+                    <div class="modal-footer ">
+                        <button type="button " class="btn btn-secondary " data-dismiss="modal ">Close</button>
+                        <button type="button " class="btn btn-primary ">Save changes</button>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-
 
 </body>
 
