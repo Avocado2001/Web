@@ -14,7 +14,12 @@ Router.get('/', loginValidator, (req, res) => {
 });
 Router.get('/register', registerValidator, (req, res) => {
     res.render('register', {
-        error: ''
+        error: '',
+        email: '',
+        phone: '',
+        address: '',
+        fullname: '',
+        birthday: ''
     });
 });
 Router.post('/login', loginValidator, (req, res) => {
@@ -24,7 +29,7 @@ Router.post('/login', loginValidator, (req, res) => {
         let acc = undefined;
         Account.findOne({ email: email }).then(account => {
             if (!account) {
-                throw new Error('Email is not exist');
+                throw new Error('Username không tồn tại');
             }
             acc = account;
             return bcrypt.compare(password, account.password)
@@ -32,27 +37,27 @@ Router.post('/login', loginValidator, (req, res) => {
             if (!match) {
                 return res.status(401).json({
                     code: 3,
-                    message: 'Login fail, password is incorrect'
+                    message: 'Sai mật khẩu'
                 })
             }
             const { JWT_SECRET } = process.env;
             jwt.sign({
                 email: acc.email,
                 fullname: acc.fullname
-            }, 'JWT_SECRET', {
+            }, JWT_SECRET, {
                 expiresIn: '1h'
             }, (err, token) => {
                 if (err) throw err;
                 return res.json({
                     code: 0,
-                    message: 'Login success',
+                    message: 'Đăng nhập thành công',
                     token: token
                 });
             })
         }).catch(err => {
             return res.status(401).json({
                 code: 2,
-                message: 'Login fail ' + err.message
+                message: 'Lỗi đăng nhập ' + err.message
             })
         })
     } else {
@@ -70,21 +75,21 @@ Router.post('/login', loginValidator, (req, res) => {
 });
 Router.post('/register', registerValidator, (req, res) => {
     let result = validationResult(req);
+    let {
+        email,
+        fullname,
+        phone,
+        address,
+        birthday,
+        // //Tạo username tự động(chưa so sánh username đã có hay chưa)
+        username = generator.generate({
+            length: 10,
+            numbers: true,
+            uppercase: false,
+            exclude: 'abcdefghijklmnopqrstuvwxyz'
+        })
+    } = req.body;
     if (result.errors.length === 0) {
-        let {
-            email,
-            fullname,
-            phone,
-            address,
-            birthday,
-            // //Tạo username tự động(chưa so sánh username đã có hay chưa)
-            username = generator.generate({
-                length: 10,
-                numbers: true,
-                uppercase: false,
-                exclude: 'abcdefghijklmnopqrstuvwxyz'
-            })
-        } = req.body;
         Account.findOne({ email, phone }).then(account => {
                 if (account) {
                     throw new Error('Email hoặc số điện thoại đã tồn tại');
@@ -95,22 +100,29 @@ Router.post('/register', registerValidator, (req, res) => {
                 length: 6,
                 numbers: true
             }))
-            //.then(password => bcrypt.hash(password, 10))
-            .then(password => {
+            .then(password => bcrypt.hash(password, 10))
+            .then(hashed => {
                 let user = new Account({
                     email,
                     username,
                     phone,
-                    password,
+                    password: hashed,
                     address,
                     fullname,
                     birthday
                 });
                 return user.save();
             }).then(() => {
-                return res.render('login');
+                return res.render('login', { usename, password });
             }).catch(err => {
-                res.render('register', { error: err.message });
+                res.render('register', {
+                    email,
+                    phone,
+                    address,
+                    fullname,
+                    birthday,
+                    error: err.message
+                });
             })
     } else {
         let messages = result.mapped();
@@ -119,7 +131,17 @@ Router.post('/register', registerValidator, (req, res) => {
             message = messages[m].msg;
             break;
         }
-        res.render('register', { error: message });
+        res.render('register', {
+            email,
+            phone,
+            address,
+            fullname,
+            birthday,
+            error: message
+        });
     }
+});
+Router.get('/changepassword', (req, res) => {
+    res.render('changePassword');
 });
 module.exports = Router;

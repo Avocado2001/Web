@@ -4,4 +4,3 @@ Router.get('/', (req, res) => {
     res.render('admin');
 });
 module.exports = Router;
-//chưa chạy đc nha
