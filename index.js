@@ -1,23 +1,17 @@
 require('dotenv').config();
-const path = require('path');
+
 const mongoose = require('mongoose');
+const cors = require('cors');
 const express = require('express');
 const AccountRouter = require('./routers/AccountRouter');
 const AdminRouter = require('./routers/AdminRouter');
 const UserRouter = require('./routers/UserRouter');
 const app = express();
-
-
+app.use(cors());
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(express.static('public'));
-// app.get('/', (req, res) => {
-//     res.json({
-//         code: 0,
-//         message: 'Welcome to API'
-//     })
-// });
 app.use(express.static(__dirname + '/public'));
 app.use('/', AccountRouter);
 app.use('/admin', AdminRouter);

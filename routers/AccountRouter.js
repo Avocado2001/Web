@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const registerValidator = require('./validators/registerValidator');
 const loginValidator = require('./validators/loginValidator');
 const { render } = require('express/lib/response');
-var generator = require('generate-password');
+const generator = require('generate-password');
 const { validationResult } = require('express-validator');
 
 Router.get('/', loginValidator, (req, res) => {
@@ -48,11 +48,11 @@ Router.post('/login', loginValidator, (req, res) => {
                 expiresIn: '1h'
             }, (err, token) => {
                 if (err) throw err;
-                return res.json({
-                    code: 0,
-                    message: 'Đăng nhập thành công',
-                    token: token
-                });
+                if (acc.isAdmin) {
+                    return res.render('admin', { token });
+                } else {
+                    return res.render('user', { token });
+                }
             })
         }).catch(err => {
             return res.status(401).json({
