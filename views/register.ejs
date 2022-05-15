@@ -1,103 +1,85 @@
-<!DOCTYPE html>
-<html lang="en">
+<%- include('./layouts/head.ejs') %>
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
-    <!-- MDB -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.0.0/mdb.min.css" rel="stylesheet" />
-    <!-- MDB -->
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.0.0/mdb.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <body class="gradient-custom">
+        <section class="vh-100 ">
+            <div class="container py-5 h-100">
+                <div class="row justify-content-center align-items-center h-100">
+                    <div class="col-12 col-lg-9 col-xl-7">
+                        <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
+                            <div class="card-body p-5 p-md-5">
+                                <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">Đăng kí tài khoản</h3>
+                                <form method="post" action="/register">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-4">
 
-    <title>Register</title>
-</head>
+                                            <div class="form">
+                                                <label class="form-label" for="fullname">Họ và Tên</label>
+                                                <input value="<%= fullname %>" type="text" id="fullname" name="fullname" class="form-control form-control-lg" placeholder="Nhập đầy đủ họ tên" />
+                                            </div>
 
-<body class="gradient-custom">
-    <section class="vh-100 ">
-        <div class="container py-5 h-100">
-            <div class="row justify-content-center align-items-center h-100">
-                <div class="col-12 col-lg-9 col-xl-7">
-                    <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
-                        <div class="card-body p-5 p-md-5">
-                            <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">Đăng kí tài khoản</h3>
-                            <form method="post" action="/register">
-                                <div class="row">
-                                    <div class="col-md-6 mb-4">
+                                        </div>
+                                        <div class="col-md-6 mb-4">
 
-                                        <div class="form">
-                                            <label class="form-label" for="fullname">Họ và Tên</label>
-                                            <input value="<%= fullname %>" type="text" id="fullname" name="fullname" class="form-control form-control-lg" placeholder="Nhập đầy đủ họ tên" />
+                                            <div class="form">
+                                                <label class="form-label" for="lastName">Số điện thoại</label>
+                                                <input value="<%= phone %>" type="tel" id="phone" name="phone" class="form-control form-control-lg" placeholder="Nhập số điện thoại" pattern="[0-9]{4}[0-9]{3}[0-9]{3}" />
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6 mb-4 d-flex align-items-center">
+
+                                            <div class="form datepicker w-100">
+                                                <label for="birthday" class="form-label">Ngày sinh</label>
+                                                <input value="<%= birthday %>" type="date" name="birthday" class="form-control form-control-lg" id="birthday" />
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-6 mb-4 d-flex align-items-center">
+
+                                            <div class="form w-100">
+                                                <label for="address" class="form-label">Địa chỉ</label>
+                                                <input value="<%= address %>" type="text" name="address" class="form-control form-control-lg" id="address" placeholder="Nhập số địa chỉ của bạn" />
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12 mb-4 pb-2">
+
+                                            <div class="form">
+                                                <label class="form-label" for="email">Email</label>
+                                                <input value="<%= email %>" type="email" name="email" id="email" class="form-control form-control-lg" placeholder="Nhập email của bạn" />
+                                            </div>
+
                                         </div>
 
                                     </div>
-                                    <div class="col-md-6 mb-4">
-
-                                        <div class="form">
-                                            <label class="form-label" for="lastName">Số điện thoại</label>
-                                            <input value="<%= phone %>" type="tel" id="phone" name="phone" class="form-control form-control-lg" placeholder="Nhập số điện thoại" pattern="[0-9]{4}[0-9]{3}[0-9]{3}" />
+                                    <div class="row">
+                                        <div class="col-md-12 mb-4 pb-2">
+                                            <input class="form-control form-control-lg" id="formFileLg" type="file" />
+                                            <div class="small text-muted mt-2 mb-4">Upload CMND/CCCD mặt trước</div>
+                                            <input class="form-control form-control-lg" id="formFileLg" type="file" />
+                                            <div class="small text-muted mt-2">Upload CMND/CCCD mặt sau</div>
                                         </div>
-
                                     </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-6 mb-4 d-flex align-items-center">
-
-                                        <div class="form datepicker w-100">
-                                            <label for="birthday" class="form-label">Ngày sinh</label>
-                                            <input value="<%= birthday %>" type="date" name="birthday" class="form-control form-control-lg" id="birthday" />
+                                    <% if(error){ %>
+                                        <div class="alert alert-danger mb-3">
+                                            <strong>Lưu ý!</strong>
+                                            <%= error %>
                                         </div>
-
-                                    </div>
-                                    <div class="col-md-6 mb-4 d-flex align-items-center">
-
-                                        <div class="form w-100">
-                                            <label for="address" class="form-label">Địa chỉ</label>
-                                            <input value="<%= address %>" type="text" name="address" class="form-control form-control-lg" id="address" placeholder="Nhập số địa chỉ của bạn" />
-                                        </div>
-
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-12 mb-4 pb-2">
-
-                                        <div class="form">
-                                            <label class="form-label" for="email">Email</label>
-                                            <input value="<%= email %>" type="email" name="email" id="email" class="form-control form-control-lg" placeholder="Nhập email của bạn" />
-                                        </div>
-
-                                    </div>
-
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12 mb-4 pb-2">
-                                        <input class="form-control form-control-lg" id="formFileLg" type="file" />
-                                        <div class="small text-muted mt-2 mb-4">Upload CMND/CCCD mặt trước</div>
-                                        <input class="form-control form-control-lg" id="formFileLg" type="file" />
-                                        <div class="small text-muted mt-2">Upload CMND/CCCD mặt sau</div>
-                                    </div>
-                                </div>
-                                <% if(error){ %>
-                                    <div class="alert alert-danger mb-3">
-                                        <strong>Lưu ý!</strong>
-                                        <%= error %>
-                                    </div>
-                                    <%}%>
-                                        <input class="btn btn-primary btn-lg gradient-custom" type="submit" value="Đăng ký" />
-                            </form>
+                                        <%}%>
+                                            <input class="btn btn-primary btn-lg gradient-custom" type="submit" value="Đăng ký" />
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-</body>
+        </section>
+    </body>
 
-</html>
+    </html>

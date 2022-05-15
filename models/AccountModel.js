@@ -18,6 +18,7 @@ const AccountSchema = new Schema({
     verification: { tipe: Number, default: 0 },
     //kiểm tra xem có phải là đăng nhập lần đầu không true là 1st false đã đổi mk  
     firsttime: { type: Boolean, default: true },
-    isAdmin: { type: Boolean, default: false }
+    isAdmin: { type: Boolean, default: false },
+    account_balance: { type: Number, default: 0 }
 });
 module.exports = mongoose.model('Account', AccountSchema);

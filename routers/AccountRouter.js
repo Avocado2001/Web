@@ -31,7 +31,7 @@ Router.get('/register', registerValidator, (req, res) => {
         birthday: ''
     });
 });
-Router.post('/login', loginValidator, (req, res) => {
+Router.post('/', loginValidator, (req, res) => {
     let result = validationResult(req);
     if (result.errors.length === 0) {
         let { username, password } = req.body;
@@ -58,9 +58,11 @@ Router.post('/login', loginValidator, (req, res) => {
             }, (err, token) => {
                 if (err) throw err;
                 if (acc.isAdmin) {
-                    return res.redirect('admin');
+
+                    return res.render('admin', { token });
                 } else {
-                    return res.redirect('user');
+
+                    return res.render('user', { token, fullname: acc.fullname });
                 }
             })
         }).catch(err => {
@@ -164,6 +166,10 @@ Router.post('/register', registerValidator, (req, res) => {
     }
 });
 Router.get('/changepassword', (req, res) => {
-    res.redirect('/changePassword');
+    res.render('/changePassword');
 });
+// Router.get('/logout', (req, res) => {
+//     jwt.destroy(req.session.token);
+//     res.redirect('/');
+// });
 module.exports = Router;
