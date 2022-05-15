@@ -164,6 +164,6 @@ Router.post('/register', registerValidator, (req, res) => {
     }
 });
 Router.get('/changepassword', (req, res) => {
-    res.render('changePassword');
+    res.redirect('/changePassword');
 });
 module.exports = Router;
