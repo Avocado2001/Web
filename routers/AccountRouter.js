@@ -5,10 +5,11 @@ const Account = require('../models/AccountModel');
 const jwt = require('jsonwebtoken');
 const flash = require('express-flash');
 const nodemailer = require('nodemailer');
-const session = require('express-session');
+//validator
 const registerValidator = require('./validators/registerValidator');
 const loginValidator = require('./validators/loginValidator');
-const { render } = require('express/lib/response');
+const changePassValidator = require('./validators/changePassValidator');
+const { render, redirect } = require('express/lib/response');
 const generator = require('generate-password');
 const { validationResult } = require('express-validator');
 const transporter = nodemailer.createTransport({
@@ -19,7 +20,11 @@ const transporter = nodemailer.createTransport({
     }
 });
 Router.get('/', loginValidator, (req, res) => {
-    res.render('login', { username: '', password: '' });
+    res.render('login', {
+        error: '',
+        username: '',
+        password: ''
+    });
 });
 Router.get('/register', registerValidator, (req, res) => {
     res.render('register', {
@@ -35,36 +40,28 @@ Router.post('/', loginValidator, (req, res) => {
     let result = validationResult(req);
     if (result.errors.length === 0) {
         let { username, password } = req.body;
-        let acc = undefined;
+
         Account.findOne({ username }).then(account => {
             if (!account) {
                 throw new Error('Username không tồn tại');
             }
-            acc = account;
-            return bcrypt.compare(password, account.password)
-        }).then(match => {
-            if (!match) {
+            if (bcrypt.compareSync(password, account.password)) {
+                return account;
+            }
+            return null;
+        }).then(account => {
+            if (!account) {
                 return res.status(401).json({
                     code: 3,
                     message: 'Sai mật khẩu'
-                })
-            }
-            const { JWT_SECRET } = process.env;
-            jwt.sign({
-                email: acc.email,
-                fullname: acc.fullname
-            }, JWT_SECRET, {
-                expiresIn: '1h'
-            }, (err, token) => {
-                if (err) throw err;
-                if (acc.isAdmin) {
-
-                    return res.render('admin', { token });
-                } else {
-
-                    return res.render('user', { token, fullname: acc.fullname });
+                });
+            } else {
+                req.session.account = account;
+                if (account.isAdmin) {
+                    return res.redirect('/admin');
                 }
-            })
+                return res.redirect('/user');
+            }
         }).catch(err => {
             return res.status(401).json({
                 code: 2,
@@ -165,11 +162,55 @@ Router.post('/register', registerValidator, (req, res) => {
         });
     }
 });
-Router.get('/changepassword', (req, res) => {
-    res.render('/changePassword');
+//Đổi mật khẩu
+Router.get('/changePassword', (req, res) => {
+
+    res.render('changePassword', {
+        error: '',
+    });
 });
-// Router.get('/logout', (req, res) => {
-//     jwt.destroy(req.session.token);
-//     res.redirect('/');
-// });
+Router.post('/changePassword', changePassValidator, (req, res) => {
+    let { confirm1, confirm2 } = req.body;
+    let result = validationResult(req);
+    if (result.errors.length === 0) {
+        if (req.session.account) {
+            if (confirm1 === confirm2) {
+                bcrypt.hash(confirm2, 10).then(hashed => {
+                    Account.findByIdAndUpdate(req.session.account._id, {
+                        password: hashed,
+                        firsttime: false
+                    }).then(() => {
+                        req.session.account.firsttime = false;
+                        if (req.session.account.isAdmin) {
+                            return res.redirect('/admin');
+                        }
+                        return res.redirect('/user');
+                    })
+                }).catch(err => {
+                    return res.render('changePassword', {
+                        error: err.message
+                    });
+                })
+            } else {
+                return res.render('changePassword', {
+                    error: 'Mật khẩu không khớp'
+                });
+            }
+        } else {
+            res.redirect('/');
+        }
+    } else {
+        let messages = result.mapped();
+        let message = '';
+        for (m in messages) {
+            message = messages[m].msg;
+            break;
+        }
+        res.render('register', {
+            error: message
+        });
+    }
+
+});
+
 module.exports = Router;

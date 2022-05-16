@@ -15,7 +15,7 @@ const AccountSchema = new Schema({
     fullname: String,
     birthday: Date,
     //4 trạng thái: 0: chưa xác minh, 1: đã xác minh, 2: hủy, 3: yêu cầu bổ sung thông tin
-    verification: { tipe: Number, default: 0 },
+    status: { type: Number, default: 0 },
     //kiểm tra xem có phải là đăng nhập lần đầu không true là 1st false đã đổi mk  
     firsttime: { type: Boolean, default: true },
     isAdmin: { type: Boolean, default: false },

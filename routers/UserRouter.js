@@ -1,25 +1,50 @@
 const express = require('express');
-const CheckLogin = require('../auth/CheckLogin');
+const CheckLogin = require('../auth/CheckForUser');
+const FirstTime = require('../auth/CheckFirstTime');
 const Router = express.Router();
-Router.get('/', (req, res) => {
-    res.render('user');
+
+Router.get('/', CheckLogin, FirstTime, (req, res) => {
+    let user = req.session.account;
+    res.render('user', {
+        fullname: user.fullname,
+        email: user.email,
+        phone: user.phone,
+        address: user.address,
+        birthday: user.birthday
+    });
 });
-Router.get('/profile', (req, res) => {
-    res.render('profile');
+Router.get('/profile', CheckLogin, FirstTime, (req, res) => {
+    let user = req.session.account;
+    res.render('profile', {
+        fullname: user.fullname,
+        email: user.email,
+        phone: user.phone,
+        address: user.address,
+        birthday: user.birthday
+    });
 });
-Router.get('/addMoney', (req, res) => {
-    res.render('addMoney');
+Router.get('/addMoney', CheckLogin, FirstTime, (req, res) => {
+    let user = req.session.account;
+    res.render('addMoney', { fullname: user.fullname });
 });
-Router.get('/withdrawMoney', (req, res) => {
-    res.render('withdrawMoney');
+Router.get('/withdrawMoney', CheckLogin, FirstTime, (req, res) => {
+    let user = req.session.account;
+    res.render('withdrawMoney', { fullname: user.fullname });
 });
-Router.get('/transferMoney', (req, res) => {
-    res.render('transferMoney');
+Router.get('/transferMoney', CheckLogin, FirstTime, (req, res) => {
+    let user = req.session.account;
+    res.render('transferMoney', { fullname: user.fullname });
 });
-Router.get('/buyCard', (req, res) => {
-    res.render('buyCard');
+Router.get('/buyCard', CheckLogin, FirstTime, (req, res) => {
+    let user = req.session.account;
+    res.render('buyCard', { fullname: user.fullname });
 });
-Router.get('/history', (req, res) => {
-    res.render('history');
+Router.get('/history', CheckLogin, FirstTime, (req, res) => {
+    let user = req.session.account;
+    res.render('history', { fullname: user.fullname });
+});
+Router.get('/logout', (req, res) => {
+    req.session.destroy();
+    res.redirect('/');
 });
 module.exports = Router;
