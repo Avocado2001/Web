@@ -27,6 +27,10 @@ Router.get('/addMoney', CheckLogin, FirstTime, (req, res) => {
     let user = req.session.account;
     res.render('addMoney', { fullname: user.fullname });
 });
+Router.post('/addMoney', CheckLogin, FirstTime, (req, res) => {
+    let user = req.session.account;
+    let { numberCard, dateExp, cvv } = req.body;
+});
 Router.get('/withdrawMoney', CheckLogin, FirstTime, (req, res) => {
     let user = req.session.account;
     res.render('withdrawMoney', { fullname: user.fullname });
