@@ -23,7 +23,8 @@
         "generate-password": "^1.7.0",
         "jsonwebtoken": "^8.5.1",
         "mongoose": "^6.3.2",
-        "nodemailer": "^6.7.5"
+        "nodemailer": "^6.7.5",
+        "sweetalert": "^2.1.2"
     },
     "devDependencies": {
         "nodemon": "^2.0.16"
