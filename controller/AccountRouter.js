@@ -137,7 +137,7 @@ Router.post('/register', registerValidator, (req, res) => {
                     if (error) {
                         console.log(error);
                     } else {
-                        return res.redirect('/');
+                        return res.redirect('/' + '?message=thanhcong');
                     }
                 });
             }).catch(err => {
