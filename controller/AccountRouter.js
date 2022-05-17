@@ -8,6 +8,7 @@ const nodemailer = require('nodemailer');
 const registerValidator = require('../routers/validators/registerValidator');
 const loginValidator = require('../routers/validators/loginValidator');
 const changePassValidator = require('../routers/validators/changePassValidator');
+const resetPassValidator = require('../routers/validators/resetPassValidator');
 const { render, redirect } = require('express/lib/response');
 const generator = require('generate-password');
 const { validationResult } = require('express-validator');
@@ -18,21 +19,12 @@ const transporter = nodemailer.createTransport({
         pass: 'webnangcao'
     }
 });
+//login
 Router.get('/', loginValidator, (req, res) => {
     res.render('login', {
         error: '',
         username: '',
         password: ''
-    });
-});
-Router.get('/register', registerValidator, (req, res) => {
-    res.render('register', {
-        error: '',
-        email: '',
-        phone: '',
-        address: '',
-        fullname: '',
-        birthday: ''
     });
 });
 Router.post('/', loginValidator, (req, res) => {
@@ -82,6 +74,17 @@ Router.post('/', loginValidator, (req, res) => {
             error: message
         });
     }
+});
+//register
+Router.get('/register', registerValidator, (req, res) => {
+    res.render('register', {
+        error: '',
+        email: '',
+        phone: '',
+        address: '',
+        fullname: '',
+        birthday: ''
+    });
 });
 Router.post('/register', registerValidator, (req, res) => {
     let result = validationResult(req);
@@ -214,5 +217,76 @@ Router.post('/changePassword', changePassValidator, (req, res) => {
     }
 
 });
-
+//reset mật khẩu
+Router.get('/resetPassword', (req, res) => {
+    res.render('resetPassword', {
+        error: '',
+        email: '',
+        phone: ''
+    });
+});
+Router.post('/resetPassword', resetPassValidator, (req, res) => {
+    let result = validationResult(req);
+    let {
+        email,
+        phone,
+        password = generator.generate({
+            // //Tự tạo mật khẩu
+            length: 6,
+            numbers: true
+        }),
+    } = req.body;
+    if (result.errors.length === 0) {
+        Account.findOne({ email, phone }).then(account => {
+            if (!account) {
+                throw new Error('Email hoặc số điện thoại không tồn tại');
+            } else {
+                bcrypt.hash(password, 10).then(hashed => {
+                    Account.findByIdAndUpdate(account._id, {
+                        password: hashed,
+                        firsttime: true
+                    }).catch(err => {
+                        return res.render('resetPassword', {
+                            error: err.message,
+                            email: '',
+                            phone: ''
+                        });
+                    });
+                });
+            }
+        }).then(() => {
+            var mailOptions = {
+                from: 'ewallet.webnc@gmail.com',
+                to: email,
+                subject: 'E-Wallet',
+                text: 'Mật khẩu mới của bạn: ' + password
+            };
+            transporter.sendMail(mailOptions, function(error, info) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    return res.redirect('/');
+                }
+            });
+        }).catch(err => {
+            res.render('resetPassword', {
+                email,
+                phone,
+                error: err.message
+            });
+        })
+    } else {
+        let messages = result.mapped();
+        let message = '';
+        for (m in messages) {
+            message = messages[m].msg;
+            break;
+        }
+        res.render('resetPassword', {
+            email,
+            phone,
+            error: message
+        });
+    }
+});
 module.exports = Router;
