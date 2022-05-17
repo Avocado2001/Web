@@ -4,7 +4,7 @@ const Account = require('../models/AccountModel');
 const CheckLogin = require('../auth/CheckForUser');
 const FirstTime = require('../auth/CheckFirstTime');
 const currencyFormatter = require('currency-formatter');
-const changePassValidator = require('./validators/changePassValidator');
+const changePassValidator = require('../routers/validators/changePassValidator');
 const { validationResult } = require('express-validator');
 const Router = express.Router();
 

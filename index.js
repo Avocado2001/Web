@@ -3,9 +3,12 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const cors = require('cors');
 const express = require('express');
-const AccountRouter = require('./routers/AccountRouter');
-const AdminRouter = require('./routers/AdminRouter');
-const UserRouter = require('./routers/UserRouter');
+// const AccountRouter = require('./routers/AccountRouter');
+// const AdminRouter = require('./routers/AdminRouter');
+// const UserRouter = require('./routers/UserRouter');
+const AccountRouter = require('./controller/AccountRouter');
+const AdminRouter = require('./controller/AdminRouter');
+const UserRouter = require('./controller/UserRouter');
 const session = require('express-session');
 const app = express();
 

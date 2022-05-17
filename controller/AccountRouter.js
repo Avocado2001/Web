@@ -5,9 +5,9 @@ const Account = require('../models/AccountModel');
 const flash = require('express-flash');
 const nodemailer = require('nodemailer');
 //validator
-const registerValidator = require('./validators/registerValidator');
-const loginValidator = require('./validators/loginValidator');
-const changePassValidator = require('./validators/changePassValidator');
+const registerValidator = require('../routers/validators/registerValidator');
+const loginValidator = require('../routers/validators/loginValidator');
+const changePassValidator = require('../routers/validators/changePassValidator');
 const { render, redirect } = require('express/lib/response');
 const generator = require('generate-password');
 const { validationResult } = require('express-validator');
