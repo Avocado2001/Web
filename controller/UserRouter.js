@@ -30,14 +30,23 @@ Router.get('/', CheckLogin, FirstTime, (req, res) => {
 //Nạp tiền
 Router.get('/addMoney', CheckLogin, FirstTime, (req, res) => {
     let user = req.session.account;
-    res.render('addMoney', { fullname: user.fullname });
+    res.render('addMoney', {
+        error: '',
+        fullname: user.fullname
+    });
 });
 Router.post('/addMoney', CheckLogin, FirstTime, (req, res) => {
     let id = req.session.account._id;
-    let { numberCard, dateExp, cvv, money } = req.body;
+    let {
+        numberCard,
+        dateExp,
+        cvv,
+        money
+    } = req.body;
+    money = parseInt(money);
     Account.findById(id, (err, data) => {
         if (numberCard === '111111') {
-            if (dateExp === '10/10/2022') {
+            if (dateExp === '2022-10-10') {
                 if (cvv === '411') {
                     Account.findByIdAndUpdate(id, {
                         account_balance: data.account_balance + money
@@ -62,7 +71,7 @@ Router.post('/addMoney', CheckLogin, FirstTime, (req, res) => {
                 });
             }
         } else if (numberCard === '222222') {
-            if (dateExp === '11/11/2022') {
+            if (dateExp === '2022-11-11') {
                 if (cvv === '443') {
                     if (money > 1000000) {
                         return res.render('addMoney', {
@@ -94,7 +103,7 @@ Router.post('/addMoney', CheckLogin, FirstTime, (req, res) => {
                 });
             }
         } else if (numberCard === '333333') {
-            if (dateExp === '12/12/2022') {
+            if (dateExp === '2022-12-12') {
                 if (cvv === '577') {
                     return res.render('addMoney', {
                         error: 'Thẻ hết tiền',
