@@ -2,7 +2,6 @@ const express = require('express');
 const Router = express.Router();
 const bcrypt = require('bcrypt');
 const Account = require('../models/AccountModel');
-const jwt = require('jsonwebtoken');
 const flash = require('express-flash');
 const nodemailer = require('nodemailer');
 //validator
@@ -209,7 +208,7 @@ Router.post('/changePassword', changePassValidator, (req, res) => {
             message = messages[m].msg;
             break;
         }
-        res.render('register', {
+        res.render('changePassword', {
             error: message
         });
     }

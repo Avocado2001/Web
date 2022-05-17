@@ -7,10 +7,29 @@
         </div>
         <ul class="nav">
             <li class="nav-item">
-                <a class="nav-link" href="/admin">
+
+
+                <div class="dropdown">
+                <a class="nav-link dropdown-toggle"  href="#"
+                role="button"
+                id="dropdownMenuLink"
+                data-mdb-toggle="dropdown"
+                aria-expanded="false">
                     <i class="fas fa-user-alt"></i>
                     <p>Quản lí tài khoản</p>
                 </a>
+            
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    <li><a class="dropdown-item" href="#">Action</a></li>
+                    <li><a class="dropdown-item" href="#">Another action</a></li>
+                    <li><a class="dropdown-item" href="#">Something else here</a></li>
+                  </ul>
+
+
+            </div>
+
+
+
             </li>
             <li>
                 <a class="nav-link" href="#">
@@ -19,16 +38,16 @@
                 </a>
             </li>
             <li>
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="/admin/changePasswordadmin">
                     <i class="fas fa-undo"></i>
                     <p>Đổi mật khẩu</p>
                 </a>
             </li>
             <li class="nav-item active active-pro">
-                <button class="nav-link active" href="/logout">
+                <a class="nav-link active" href="/user/logout">
                     <i class="fas fa-sign-out-alt"></i>
                     <p>Log out</p>
-                </button>
+                </a>
             </li>
         </ul>
     </div>
