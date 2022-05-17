@@ -33,8 +33,98 @@ Router.get('/addMoney', CheckLogin, FirstTime, (req, res) => {
     res.render('addMoney', { fullname: user.fullname });
 });
 Router.post('/addMoney', CheckLogin, FirstTime, (req, res) => {
-    let user = req.session.account;
-    let { numberCard, dateExp, cvv } = req.body;
+    let id = req.session.account._id;
+    let { numberCard, dateExp, cvv, money } = req.body;
+    Account.findById(id, (err, data) => {
+        if (numberCard === '111111') {
+            if (dateExp === '10/10/2022') {
+                if (cvv === '411') {
+                    Account.findByIdAndUpdate(id, {
+                        account_balance: data.account_balance + money
+                    }).then(() => {
+                        return res.redirect('/user/addMoney');
+                    }).catch(err => {
+                        return res.render('addMoney', {
+                            error: err.message,
+                            fullname: data.fullname
+                        });
+                    })
+                } else {
+                    return res.render('addMoney', {
+                        error: 'Sai mã cvv',
+                        fullname: data.fullname
+                    });
+                }
+            } else {
+                return res.render('addMoney', {
+                    error: 'Sai ngày hết hạn',
+                    fullname: data.fullname
+                });
+            }
+        } else if (numberCard === '222222') {
+            if (dateExp === '11/11/2022') {
+                if (cvv === '443') {
+                    if (money > 1000000) {
+                        return res.render('addMoney', {
+                            error: 'Chỉ được nạp tối đa 1 triệu',
+                            fullname: data.fullname
+                        });
+                    } else {
+                        Account.findByIdAndUpdate(id, {
+                            account_balance: data.account_balance + money
+                        }).then(() => {
+                            return res.redirect('/user/addMoney');
+                        }).catch(err => {
+                            return res.render('addMoney', {
+                                error: err.message,
+                                fullname: data.fullname
+                            });
+                        })
+                    }
+                } else {
+                    return res.render('addMoney', {
+                        error: 'Sai mã cvv',
+                        fullname: user.fullname
+                    });
+                }
+            } else {
+                return res.render('addMoney', {
+                    error: 'Sai ngày hết hạn',
+                    fullname: user.fullname
+                });
+            }
+        } else if (numberCard === '333333') {
+            if (dateExp === '12/12/2022') {
+                if (cvv === '577') {
+                    return res.render('addMoney', {
+                        error: 'Thẻ hết tiền',
+                        fullname: data.fullname
+                    })
+                } else {
+                    return res.render('addMoney', {
+                        error: 'Sai mã cvv',
+                        fullname: data.fullname
+                    });
+                }
+            } else {
+                return res.render('addMoney', {
+                    error: 'Sai ngày hết hạn',
+                    fullname: data.fullname
+                });
+            }
+        } else if (numberCard.length === 6) {
+            return res.render('addMoney', {
+                error: 'Thẻ này không được hỗ trợ',
+                fullname: data.fullname
+            })
+        } else {
+            return res.render('addMoney', {
+                error: 'Sai mã thẻ',
+                fullname: data.fullname
+            });
+        }
+    });
+
 });
 //Rút tiền
 Router.get('/withdrawMoney', CheckLogin, FirstTime, (req, res) => {
@@ -110,33 +200,9 @@ Router.post('/changePassworduser', changePassValidator, (req, res) => {
     }
 
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//Logout
 Router.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/');
 });
-
-
-
-
 module.exports = Router;

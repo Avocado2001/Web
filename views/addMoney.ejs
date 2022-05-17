@@ -4,7 +4,49 @@
         <div class="wrapper">
             <%- include('./layouts/nav-user.ejs') %>
                 <div class="main-panel">
-                    <h1>Nạp tiền vào ví</h1>
+                    <div class="container mt-5">
+                        <div class="card mb-3" style="border-radius: .5rem;">
+                            <div class="row g-0 p-4">
+                                <form action="/user/addMoney" method="post">
+                                    <!-- 2 column grid layout with text inputs for the first and last names -->
+                                    <div class="row mb-4">
+                                        <div class="col">
+                                            <div class="form-outline">
+                                                <input type="text" name="numberCard" id="numberCard" class="form-control" />
+                                                <label class="form-label" for="numberCard">Số thẻ</label>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-outline">
+                                                <input type="text" name="dateExp" id="dateExp" class="form-control" />
+                                                <label class="form-label" for="dateExp">Ngày hết hạn</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Email input -->
+                                    <div class="form-outline mb-4">
+                                        <input type="text" name="cvv" id="cvv" class="form-control" />
+                                        <label class="form-label" for="cvv">Mã CVV</label>
+                                    </div>
+
+                                    <!-- Password input -->
+                                    <div class="form-outline mb-4">
+                                        <input type="text" name="money" id="money" class="form-control" />
+                                        <label class="form-label" for="money">Số tiền nạp</label>
+                                    </div>
+                                    <% if(error){ %>
+                                        <div class="alert alert-danger mb-3">
+                                            <strong>Lưu ý!</strong>
+                                            <%= error %>
+                                        </div>
+                                        <%}%>
+                                            <!-- Submit button -->
+                                            <button type="submit" class="btn btn-primary btn-block ">Nạp</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
         </div>
     </body>
