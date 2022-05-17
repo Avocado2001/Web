@@ -4,9 +4,74 @@
         <div class="wrapper">
             <%- include('./layouts/nav-user.ejs') %>
                 <div class="main-panel">
-                    <h1>Trang chủ</h1>
-                    <h3>số tiền</h3>
-                    <h3>trạng thái tài khoản</h3>
+
+                    <section class="vh-100" style="background-color: #f4f5f7;">
+                        <div class="container py-5 h-100">
+                            <div class="row d-flex justify-content-center align-items-center h-100">
+                                <div class="col col-lg-12 mb-4 mb-lg-0">
+                                    <div class="card mb-3" style="border-radius: .5rem;">
+                                        <div class="row g-0">
+                                            <div class="col-md-4 gradient-custom text-center text-white" style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem;">
+                                                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp" alt="Avatar" class="img-fluid my-5" style="width: 80px;" />
+                                                <h5>
+                                                    <%= fullname %>
+                                                </h5>
+                                                <p>
+                                                    <%= birthday %>
+                                                </p>
+                                                <i class="far fa-edit mb-5"></i>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="card-body p-4">
+                                                    <h6>Thông tin cá nhân</h6>
+                                                    <% if(status == 0){
+                                                        %>
+                                                        <span class="badge rounded-pill bg-warning text-dark">Chưa xác minh</span>
+                                                        <% }else{
+                                                            %>
+                                                            <span class="badge rounded-pill bg-success text-white">Đã xác minh</span>
+                                                            <% } %>
+
+                                                                <hr class="mt-0 mb-4">
+                                                                <div class="row pt-1">
+                                                                    <div class="col-6 mb-3">
+                                                                        <h6>Email</h6>
+                                                                        <p class="text-muted">
+                                                                            <%= email %>
+                                                                        </p>
+                                                                    </div>
+                                                                    <div class="col-6 mb-3">
+                                                                        <h6>Phone</h6>
+                                                                        <p class="text-muted">
+                                                                            <%= phone %>
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                                <h6>Projects</h6>
+                                                                <hr class="mt-0 mb-4">
+                                                                <div class="row pt-1">
+                                                                    <div class="col-6 mb-3">
+                                                                        <h6>Địa chỉ</h6>
+                                                                        <p class="text-muted">
+                                                                            <%= address %>
+                                                                        </p>
+                                                                    </div>
+                                                                    <div class="col-6 mb-3">
+                                                                        <h6>Số dư tài khoản</h6>
+                                                                        <p class="text-muted">
+                                                                            <%= account_balance %>
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
                 </div>
         </div>
     </body>

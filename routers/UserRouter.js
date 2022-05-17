@@ -1,28 +1,27 @@
 const express = require('express');
+const Account = require('../models/AccountModel');
 const CheckLogin = require('../auth/CheckForUser');
 const FirstTime = require('../auth/CheckFirstTime');
+const currencyFormatter = require('currency-formatter');
 const Router = express.Router();
 
 Router.get('/', CheckLogin, FirstTime, (req, res) => {
-    let user = req.session.account;
-    res.render('user', {
-        fullname: user.fullname,
-        email: user.email,
-        phone: user.phone,
-        address: user.address,
-        birthday: user.birthday
-    });
-});
-Router.get('/profile', CheckLogin, FirstTime, (req, res) => {
-    let user = req.session.account;
-    res.render('profile', {
-        fullname: user.fullname,
-        email: user.email,
-        phone: user.phone,
-        address: user.address,
-        birthday: user.birthday,
-        account_balance: user.account_balance,
-        status: user.status
+    let id = req.session.account._id;
+    Account.findById(id, (err, data) => {
+        return res.render('user', {
+            fullname: data.fullname,
+            email: data.email,
+            phone: data.phone,
+            address: data.address,
+            birthday: data.birthday,
+            account_balance: currencyFormatter.format(data.account_balance, {
+                symbol: 'đ',
+                thousand: ',',
+                precision: 1,
+                format: '%v %s'
+            }),
+            status: data.status
+        });
     });
 });
 Router.get('/addMoney', CheckLogin, FirstTime, (req, res) => {

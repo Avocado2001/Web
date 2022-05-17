@@ -51,10 +51,11 @@ Router.post('/', loginValidator, (req, res) => {
             return null;
         }).then(account => {
             if (!account) {
-                return res.status(401).json({
-                    code: 3,
-                    message: 'Sai mật khẩu'
-                });
+                return res.render('login', {
+                    error: 'Sai mật khẩu',
+                    password: '',
+                    username
+                })
             } else {
                 req.session.account = account;
                 if (account.isAdmin) {
@@ -63,10 +64,11 @@ Router.post('/', loginValidator, (req, res) => {
                 return res.redirect('/user');
             }
         }).catch(err => {
-            return res.status(401).json({
-                code: 2,
-                message: 'Lỗi đăng nhập ' + err.message
-            })
+            return res.render('login', {
+                error: 'Lỗi đăng nhập',
+                password: '',
+                username
+            });
         })
     } else {
         let messages = result.mapped();
@@ -75,10 +77,11 @@ Router.post('/', loginValidator, (req, res) => {
             message = messages[m].msg;
             break;
         }
-        return res.json({
-            code: 1,
-            message
-        })
+        return res.render('login', {
+            username: '',
+            password: '',
+            error: message
+        });
     }
 });
 Router.post('/register', registerValidator, (req, res) => {
