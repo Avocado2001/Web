@@ -7,7 +7,7 @@ const currencyFormatter = require('currency-formatter');
 const changePassValidator = require('../routers/validators/changePassValidator');
 const { validationResult } = require('express-validator');
 const Router = express.Router();
-
+//profile
 Router.get('/', CheckLogin, FirstTime, (req, res) => {
     let id = req.session.account._id;
     Account.findById(id, (err, data) => {
@@ -27,6 +27,7 @@ Router.get('/', CheckLogin, FirstTime, (req, res) => {
         });
     });
 });
+//Nạp tiền
 Router.get('/addMoney', CheckLogin, FirstTime, (req, res) => {
     let user = req.session.account;
     res.render('addMoney', { fullname: user.fullname });
@@ -35,51 +36,59 @@ Router.post('/addMoney', CheckLogin, FirstTime, (req, res) => {
     let user = req.session.account;
     let { numberCard, dateExp, cvv } = req.body;
 });
+//Rút tiền
 Router.get('/withdrawMoney', CheckLogin, FirstTime, (req, res) => {
     let user = req.session.account;
     res.render('withdrawMoney', { fullname: user.fullname });
 });
+//Chuyển tiền
 Router.get('/transferMoney', CheckLogin, FirstTime, (req, res) => {
     let user = req.session.account;
     res.render('transferMoney', { fullname: user.fullname });
 });
+//Mua thẻ cào
 Router.get('/buyCard', CheckLogin, FirstTime, (req, res) => {
     let user = req.session.account;
     res.render('buyCard', { fullname: user.fullname });
 });
+//Xem lịch sử giao dịch
 Router.get('/history', CheckLogin, FirstTime, (req, res) => {
     let user = req.session.account;
     res.render('history', { fullname: user.fullname });
 });
-
-
+//Đổi mật khẩu
 Router.get('/changePassworduser', CheckLogin, FirstTime, (req, res) => {
     let user = req.session.account;
-    res.render('changePassworduser', {error: '',fullname: user.fullname});
+    res.render('changePassworduser', { error: '', fullname: user.fullname });
 });
-
-
 Router.post('/changePassworduser', changePassValidator, (req, res) => {
     let user = req.session.account;
-    let { confirm1, confirm2 } = req.body;
+    let { oldpass, confirm1, confirm2 } = req.body;
     let result = validationResult(req);
     if (result.errors.length === 0) {
         if (req.session.account) {
-            if (confirm1 === confirm2) {
-                bcrypt.hash(confirm2, 10).then(hashed => {
-                    Account.findByIdAndUpdate(req.session.account._id, {
-                        password: hashed,
-                    }).then(() => {
-                        return res.redirect('/user/changePassworduser');
+            if (bcrypt.compareSync(oldpass, user.password)) {
+                if (confirm1 === confirm2) {
+                    bcrypt.hash(confirm2, 10).then(hashed => {
+                        Account.findByIdAndUpdate(req.session.account._id, {
+                            password: hashed,
+                        }).then(() => {
+                            return res.redirect('/user/changePassworduser');
+                        })
+                    }).catch(err => {
+                        return res.render('changePassworduser', {
+                            error: err.message
+                        });
                     })
-                }).catch(err => {
+                } else {
                     return res.render('changePassworduser', {
-                        error: err.message
+                        error: 'Mật khẩu không khớp',
+                        fullname: user.fullname
                     });
-                })
+                }
             } else {
                 return res.render('changePassworduser', {
-                    error: 'Mật khẩu không khớp',
+                    error: 'Mật khẩu cũ không đúng',
                     fullname: user.fullname
                 });
             }
