@@ -7,7 +7,7 @@ const AccountSchema = new Schema({
     },
     username: String,
     phone: {
-        type: Number,
+        type: String,
         unique: true
     },
     password: String,

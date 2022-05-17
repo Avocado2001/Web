@@ -20,7 +20,9 @@ Router.get('/profile', CheckLogin, FirstTime, (req, res) => {
         email: user.email,
         phone: user.phone,
         address: user.address,
-        birthday: user.birthday
+        birthday: user.birthday,
+        account_balance: user.account_balance,
+        status: user.status
     });
 });
 Router.get('/addMoney', CheckLogin, FirstTime, (req, res) => {
