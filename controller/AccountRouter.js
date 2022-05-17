@@ -265,7 +265,7 @@ Router.post('/resetPassword', resetPassValidator, (req, res) => {
                 if (error) {
                     console.log(error);
                 } else {
-                    return res.redirect('/');
+                    return res.redirect('/' + '?message=thanhcong');
                 }
             });
         }).catch(err => {
