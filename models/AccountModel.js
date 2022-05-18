@@ -13,7 +13,10 @@ const AccountSchema = new Schema({
     password: String,
     address: String,
     fullname: String,
-    birthday: Date,
+    
+
+    birthday: String,
+  
     idcard_front: String,
     idcard_back: String,
     //4 trạng thái: 0: chưa xác minh, 1: đã xác minh, 2: hủy, 3: yêu cầu bổ sung thông tin

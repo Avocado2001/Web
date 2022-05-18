@@ -12,6 +12,18 @@ const resetPassValidator = require('../routers/validators/resetPassValidator');
 const { render, redirect } = require('express/lib/response');
 const generator = require('generate-password');
 const { validationResult } = require('express-validator');
+
+const app = express();
+const multer = require('multer');
+const upload = multer({dest: './public/uploads/'});
+
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+app.use(express.static('public'));
+
+
+
+
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -83,17 +95,24 @@ Router.get('/register', registerValidator, (req, res) => {
         phone: '',
         address: '',
         fullname: '',
-        birthday: ''
+        birthday: '',
+        idcard_front: '',
+        idcard_back: ''
     });
 });
 Router.post('/register', registerValidator, (req, res) => {
     let result = validationResult(req);
+ 
+
     let {
         email,
         fullname,
         phone,
         address,
+    
         birthday,
+
+      
         password = generator.generate({
             // //Tự tạo mật khẩu
             length: 6,
@@ -105,7 +124,15 @@ Router.post('/register', registerValidator, (req, res) => {
             numbers: true,
             uppercase: false,
             exclude: 'abcdefghijklmnopqrstuvwxyz'
-        })
+        }),
+
+        //upload ảnh
+        idcard_front = req.files.idcard_front,
+        idcard_back = req.files.idcard_back,
+
+
+
+
     } = req.body;
     if (result.errors.length === 0) {
 
@@ -123,7 +150,9 @@ Router.post('/register', registerValidator, (req, res) => {
                     password: hashed,
                     address,
                     fullname,
-                    birthday
+                    birthday,
+                    idcard_front,
+                    idcard_back,
                 });
                 return user.save();
             }).then(() => {
@@ -147,6 +176,8 @@ Router.post('/register', registerValidator, (req, res) => {
                     address,
                     fullname,
                     birthday,
+                    idcard_front,
+                    idcard_back,
                     error: err.message
                 });
             })
@@ -163,10 +194,32 @@ Router.post('/register', registerValidator, (req, res) => {
             address,
             fullname,
             birthday,
+            idcard_front,
+            idcard_back,
             error: message
         });
     }
 });
+
+//upload image to folder public/upload for ID when register
+Router.post('/register', (req, res) => {
+    let file = req.files.file;
+    let fileName = file.name;
+    let filePath = 'public/uploads/' + fileName;
+    file.mv(filePath, (err) => {
+        if (err) {
+            return res.status(500).send(err);
+        }
+        res.send({
+            fileName,
+            filePath
+        });
+    });
+});
+
+
+
+
 //Đổi mật khẩu
 Router.get('/changePassword', (req, res) => {
 
@@ -289,4 +342,19 @@ Router.post('/resetPassword', resetPassValidator, (req, res) => {
         });
     }
 });
+
+//upload image by multer  https://viblo.asia/p/file-upload-voi-multer-nodejs-va-express-E375z4VdZGW
+
+
+Router.post('/uploadfile', upload.single('myFile'), (req, res, next) => {
+    const file = req.file.originalname;
+    console.log(file)
+
+    if (!file) {
+      const error = new Error('Please upload a file')
+      error.httpStatusCode = 400
+      return next(error)
+    }
+    res.send(file)
+  })
 module.exports = Router;

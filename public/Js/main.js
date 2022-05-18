@@ -19,9 +19,20 @@ function getIdDetails() {
 if (getIdDetails().message == "thanhcong") {
   swal({
     title: "SUCCESS",
-    text: "Add to Cart Success",
+    text: "ThanhCong",
     icon: "success",
     buttons: false,
-    dangerMode: true,
+    dangerMode: true,   
   })
 }
+
+if (getIdDetails().message == "addmoneysuccess") {
+  swal({
+    title: "SUCCESS",
+    text: "Add money success",
+    icon: "success",
+    buttons: false,
+    dangerMode: true,   
+  })
+}
+

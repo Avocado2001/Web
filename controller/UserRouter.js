@@ -51,7 +51,7 @@ Router.post('/addMoney', CheckLogin, FirstTime, (req, res) => {
                     Account.findByIdAndUpdate(id, {
                         account_balance: data.account_balance + money
                     }).then(() => {
-                        return res.redirect('/user/addMoney');
+                        return res.redirect('/user/addMoney?message=addmoneysuccess');
                     }).catch(err => {
                         return res.render('addMoney', {
                             error: err.message,
