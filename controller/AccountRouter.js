@@ -22,20 +22,21 @@ const multer = require('multer');
 
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({
-    extended:true
+    extended: true
 }))
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 
 
 
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'mail.phongdaotao.com',
+    port: 25,
     auth: {
-        user: 'ewallet.webnc@gmail.com',
-        pass: 'webnangcao'
+        user: 'sinhvien@phongdaotao.com',
+        pass: 'svtdtu'
     }
 });
 //login
@@ -109,17 +110,17 @@ Router.get('/register', registerValidator, (req, res) => {
 });
 Router.post('/register', registerValidator, (req, res) => {
     let result = validationResult(req);
- 
+
 
     let {
         email,
         fullname,
         phone,
         address,
-    
+
         birthday,
 
-      
+
         password = generator.generate({
             // //Tự tạo mật khẩu
             length: 6,
@@ -164,7 +165,7 @@ Router.post('/register', registerValidator, (req, res) => {
                 return user.save();
             }).then(() => {
                 var mailOptions = {
-                    from: 'ewallet.webnc@gmail.com',
+                    from: 'sinhvien@phongdaotao.com',
                     to: email,
                     subject: 'E-Wallet',
                     text: 'Tài khoản của bạn đã được tạo \nUsername: ' + username + '\nPassword: ' + password
@@ -316,7 +317,7 @@ Router.post('/resetPassword', resetPassValidator, (req, res) => {
             }
         }).then(() => {
             var mailOptions = {
-                from: 'ewallet.webnc@gmail.com',
+                from: 'sinhvien@phongdaotao.com',
                 to: email,
                 subject: 'E-Wallet',
                 text: 'Mật khẩu mới của bạn: ' + password
@@ -353,27 +354,27 @@ Router.post('/resetPassword', resetPassValidator, (req, res) => {
 //upload image by multer  https://viblo.asia/p/file-upload-voi-multer-nodejs-va-express-E375z4VdZGW
 
 var storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-     
-      cb(null, 'public/uploads');
-   
-    },
-    filename: function (req, file, cb) {
-      cb(null, file.originalname);
-    }
-  });
+    destination: function(req, file, cb) {
 
-   
-  var upload = multer({ storage: storage });
+        cb(null, 'public/uploads');
+
+    },
+    filename: function(req, file, cb) {
+        cb(null, file.originalname);
+    }
+});
+
+
+var upload = multer({ storage: storage });
 Router.post('/uploadfile', upload.single('myFile'), (req, res, next) => {
     const file = req.file.originalname;
     console.log(file)
 
     if (!file) {
-      const error = new Error('Please upload a file')
-      error.httpStatusCode = 400
-      return next(error)
+        const error = new Error('Please upload a file')
+        error.httpStatusCode = 400
+        return next(error)
     }
     res.send(file)
-  })
+})
 module.exports = Router;
