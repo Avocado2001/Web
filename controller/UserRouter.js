@@ -143,6 +143,110 @@ Router.get('/withdrawMoney', CheckLogin, FirstTime, (req, res) => {
         fullname: user.fullname
     });
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+Router.post('/withdrawMoney', CheckLogin, FirstTime, (req, res) => {
+    let id = req.session.account._id;
+    let {
+        numberCard,
+        dateExp,
+        cvv,
+        money
+    } = req.body;
+    money = parseInt(money);
+    Account.findById(id, (err, data) => {
+        if (numberCard === '111111') {
+            if (dateExp === '2022-10-10') {
+                if (cvv === '411') {
+                    if (money > data.account_balance) {
+                        return res.render('withdrawMoney', {
+                            error: 'Số dư không đủ',
+                            fullname: data.fullname
+                        });
+                    } else if(money % 50 != 0){
+                        return res.render('withdrawMoney', {
+                            error: 'Số tiền rút phải là bội số của 50',
+                            fullname: data.fullname
+                    });
+                } else{
+                    Account.findByIdAndUpdate(id, {
+                        account_balance: data.account_balance - money - (money * 0.05)
+                    }).then(() => {
+                        return res.redirect('/user/withdrawMoney?message=withdrawmoneysuccess');
+                    }).catch(err => {
+                        return res.render('withdrawMoney', {
+                            error: err.message,
+                            fullname: data.fullname
+                        });
+                    })
+                } 
+            }else {
+                    return res.render('withdrawMoney', {
+                        error: 'Sai mã cvv',
+                        fullname: data.fullname
+                    });
+                }
+            } else {
+                return res.render('withdrawMoney', {
+                    error: 'Sai ngày hết hạn',
+                    fullname: data.fullname
+                });
+            }
+        }  else if (numberCard.length === 6) {
+            return res.render('withdrawMoney', {
+                error: 'Thẻ này không được hỗ trợ',
+                fullname: data.fullname
+            })
+        } else {
+            return res.render('withdrawMoney', {
+                error: 'Sai mã thẻ',
+                fullname: data.fullname
+            });
+        }
+    });
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //Chuyển tiền
 Router.get('/transferMoney', CheckLogin, FirstTime, (req, res) => {
     let user = req.session.account;

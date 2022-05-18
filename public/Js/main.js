@@ -36,3 +36,12 @@ if (getIdDetails().message == "addmoneysuccess") {
   })
 }
 
+if (getIdDetails().message == "withdrawmoneysuccess") {
+  swal({
+    title: "SUCCESS",
+    text: "Withdraw money success",
+    icon: "success",
+    buttons: false,
+    dangerMode: true,   
+  })
+}

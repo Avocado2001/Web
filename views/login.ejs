@@ -17,14 +17,16 @@
 
                                         <form action="/" method="post">
                                             <p>Nhập tài khoản của bạn</p>
-                                            <div class="form-outline mb-4">
-                                                <input value="<%= username %>" name="username" type="text" id="username" class="form-control" placeholder="Số tài khoản" />
+                                            <div class="form-group mb-4">
                                                 <label class=" form-label " for="username">Username</label>
+                                                <input value="<%= username %>" name="username" type="text" id="username" class="form-control" placeholder="Số tài khoản" />
+                                                
                                             </div>
 
-                                            <div class="form-outline mb-4 ">
-                                                <input value="<%= password %>" name="password" type="password " id="password" class="form-control " />
+                                            <div class="form-group mb-4 ">
                                                 <label class="form-label " for="password">Password</label>
+                                                <input value="<%= password %>" name="password" type="password " id="password" placeholder="Nhập mật khẩu" class="form-control " />
+                                                
                                             </div>
 
                                             <div class="text-center pt-1 mb-5 pb-1 ">
