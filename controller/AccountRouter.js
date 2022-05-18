@@ -110,17 +110,12 @@ Router.get('/register', registerValidator, (req, res) => {
 });
 Router.post('/register', registerValidator, (req, res) => {
     let result = validationResult(req);
-
-
     let {
         email,
         fullname,
         phone,
         address,
-
         birthday,
-
-
         password = generator.generate({
             // //Tự tạo mật khẩu
             length: 6,
@@ -133,14 +128,9 @@ Router.post('/register', registerValidator, (req, res) => {
             uppercase: false,
             exclude: 'abcdefghijklmnopqrstuvwxyz'
         }),
-
         //upload ảnh
         idcard_front = req.files.idcard_front,
         idcard_back = req.files.idcard_back,
-
-
-
-
     } = req.body;
     if (result.errors.length === 0) {
 
@@ -352,7 +342,6 @@ Router.post('/resetPassword', resetPassValidator, (req, res) => {
 });
 
 //upload image by multer  https://viblo.asia/p/file-upload-voi-multer-nodejs-va-express-E375z4VdZGW
-
 var storage = multer.diskStorage({
     destination: function(req, file, cb) {
 
@@ -363,8 +352,6 @@ var storage = multer.diskStorage({
         cb(null, file.originalname);
     }
 });
-
-
 var upload = multer({ storage: storage });
 Router.post('/uploadfile', upload.single('myFile'), (req, res, next) => {
     const file = req.file.originalname;
