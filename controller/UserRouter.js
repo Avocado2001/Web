@@ -138,7 +138,10 @@ Router.post('/addMoney', CheckLogin, FirstTime, (req, res) => {
 //Rút tiền
 Router.get('/withdrawMoney', CheckLogin, FirstTime, (req, res) => {
     let user = req.session.account;
-    res.render('withdrawMoney', { fullname: user.fullname });
+    res.render('withdrawMoney', {
+        error: '',
+        fullname: user.fullname
+    });
 });
 //Chuyển tiền
 Router.get('/transferMoney', CheckLogin, FirstTime, (req, res) => {

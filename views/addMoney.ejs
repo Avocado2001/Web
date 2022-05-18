@@ -7,8 +7,9 @@
                     <div class="container mt-5">
                         <div class="card mb-3" style="border-radius: .5rem;">
                             <div class="row g-0 p-4">
+                                <h1>Nạp tiền vào tài khoản</h1>
                                 <form action="/user/addMoney" method="post">
-                                    <!-- 2 column grid layout with text inputs for the first and last names -->
+                                    <!-- số the và ngày hết hạn -->
                                     <div class="row mb-4">
                                         <div class="col">
                                             <div class="form-outline">
@@ -24,13 +25,13 @@
                                         </div>
                                     </div>
 
-                                    <!-- Email input -->
+                                    <!-- Mã Cvv -->
                                     <div class="form-outline mb-4">
                                         <input type="text" name="cvv" id="cvv" class="form-control" />
                                         <label class="form-label" for="cvv">Mã CVV</label>
                                     </div>
 
-                                    <!-- Password input -->
+                                    <!-- Số tiền cần nạp -->
                                     <div class="form-outline mb-4">
                                         <input type="number" min="0.0" name="money" id="money" class="form-control" />
                                         <label class="form-label" for="money">Số tiền nạp</label>
@@ -49,7 +50,7 @@
                     </div>
                 </div>
         </div>
-    <script src="/Js/main.js"></script>
+        <script src="/Js/main.js"></script>
 
     </body>
 
