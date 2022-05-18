@@ -334,7 +334,7 @@ Router.get('/logout', (req, res) => {
     res.redirect('/');
 });
 
-//up hình bổ sung
+//up hình bổ sung profile
 const multer = require('multer');
 
 
