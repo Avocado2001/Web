@@ -15,8 +15,15 @@ const { validationResult } = require('express-validator');
 
 const app = express();
 const multer = require('multer');
-const upload = multer({dest: './public/uploads/'});
+// const upload = multer({dest: './public/uploads/'});
 
+
+
+
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({
+    extended:true
+}))
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(express.static('public'));
@@ -202,20 +209,20 @@ Router.post('/register', registerValidator, (req, res) => {
 });
 
 //upload image to folder public/upload for ID when register
-Router.post('/register', (req, res) => {
-    let file = req.files.file;
-    let fileName = file.name;
-    let filePath = 'public/uploads/' + fileName;
-    file.mv(filePath, (err) => {
-        if (err) {
-            return res.status(500).send(err);
-        }
-        res.send({
-            fileName,
-            filePath
-        });
-    });
-});
+// Router.post('/register', (req, res) => {
+//     let file = req.files.file;
+//     let fileName = file.name;
+//     let filePath = 'public/uploads/' + fileName ;
+//     file.mv(filePath, (err) => {
+//         if (err) {
+//             return res.status(500).send(err);
+//         }
+//         res.send({
+//             fileName,
+//             filePath
+//         });
+//     });
+// });
 
 
 
@@ -345,7 +352,19 @@ Router.post('/resetPassword', resetPassValidator, (req, res) => {
 
 //upload image by multer  https://viblo.asia/p/file-upload-voi-multer-nodejs-va-express-E375z4VdZGW
 
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+     
+      cb(null, 'public/uploads');
+   
+    },
+    filename: function (req, file, cb) {
+      cb(null, file.originalname);
+    }
+  });
 
+   
+  var upload = multer({ storage: storage });
 Router.post('/uploadfile', upload.single('myFile'), (req, res, next) => {
     const file = req.file.originalname;
     console.log(file)
