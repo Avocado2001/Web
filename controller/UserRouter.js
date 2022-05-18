@@ -1,6 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const Account = require('../models/AccountModel');
+const History=require('../models/TransactionModel');
 const CheckLogin = require('../auth/CheckForUser');
 const FirstTime = require('../auth/CheckFirstTime');
 const currencyFormatter = require('currency-formatter');
@@ -135,7 +136,7 @@ Router.post('/addMoney', CheckLogin, FirstTime, (req, res) => {
     });
 
 });
-//Rút tiền
+//Rút tiền - bắt đầu
 Router.get('/withdrawMoney', CheckLogin, FirstTime, (req, res) => {
     let user = req.session.account;
     res.render('withdrawMoney', {
@@ -218,7 +219,7 @@ Router.post('/withdrawMoney', CheckLogin, FirstTime, (req, res) => {
 
 });
 
-
+// Rút tiền - kết thúc
 
 
 
@@ -257,11 +258,13 @@ Router.get('/buyCard', CheckLogin, FirstTime, (req, res) => {
     let user = req.session.account;
     res.render('buyCard', { fullname: user.fullname });
 });
-//Xem lịch sử giao dịch
+//Xem lịch sử giao dịch - bắt đầu
 Router.get('/history', CheckLogin, FirstTime, (req, res) => {
     let user = req.session.account;
     res.render('history', { fullname: user.fullname });
 });
+
+// Xem lịch sử giao dịch - kết thúc
 //Đổi mật khẩu
 Router.get('/changePassworduser', CheckLogin, FirstTime, (req, res) => {
     let user = req.session.account;
