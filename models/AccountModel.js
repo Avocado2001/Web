@@ -13,10 +13,10 @@ const AccountSchema = new Schema({
     password: String,
     address: String,
     fullname: String,
-    
+
 
     birthday: String,
-  
+
     idcard_front: String,
     idcard_back: String,
     //4 trạng thái: 0: chưa xác minh, 1: đã xác minh, 2: hủy, 3: yêu cầu bổ sung thông tin
@@ -24,6 +24,8 @@ const AccountSchema = new Schema({
     //kiểm tra xem có phải là đăng nhập lần đầu không true là 1st false đã đổi mk  
     firsttime: { type: Boolean, default: true },
     isAdmin: { type: Boolean, default: false },
-    account_balance: { type: Number, default: 0 }
+    account_balance: { type: Number, default: 0 },
+    login_fail: { type: Number, default: 0 },
+    wrong_pass: { type: Number, default: 0 }
 });
 module.exports = mongoose.model('Account', AccountSchema);
