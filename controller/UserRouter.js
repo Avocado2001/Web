@@ -259,9 +259,16 @@ Router.get('/buyCard', CheckLogin, FirstTime, (req, res) => {
     res.render('buyCard', { fullname: user.fullname });
 });
 //Xem lịch sử giao dịch - bắt đầu
-Router.get('/history', CheckLogin, FirstTime, (req, res) => {
+Router.get('/history',CheckLogin, FirstTime,(req, res) => {
     let user = req.session.account;
-    res.render('history', { fullname: user.fullname });
+    History.find({}).then(his=>{
+        res.render('history',{ his:his,fullname: user.fullname})
+    })
+
+    // const history=await History.find();
+    //  let list= [res.json(history)]
+    //   res.render('history',{his:list});
+
 });
 
 // Xem lịch sử giao dịch - kết thúc
