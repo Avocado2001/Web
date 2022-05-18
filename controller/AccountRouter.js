@@ -28,7 +28,7 @@ var storage = multer.diskStorage({
     }
 });
 var upload = multer({ storage: storage });
-var multipleUpload = upload.fields([{name:'idcard_front'},{name:'idcard_back'}]);
+var multipleUpload = upload.fields([{ name: 'idcard_front' }, { name: 'idcard_back' }]);
 
 
 // var storage_back = multer.diskStorage({
@@ -53,10 +53,6 @@ var multipleUpload = upload.fields([{name:'idcard_front'},{name:'idcard_back'}])
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
-
-
-
-
 const transporter = nodemailer.createTransport({
     host: 'mail.phongdaotao.com',
     port: 25,
@@ -86,15 +82,15 @@ Router.post('/', loginValidator, (req, res) => {
     let result = validationResult(req);
     if (result.errors.length === 0) {
         let { username, password } = req.body;
-
         Account.findOne({ username }).then(account => {
             if (!account) {
                 throw new Error('Username không tồn tại');
             }
             if (bcrypt.compareSync(password, account.password)) {
                 return account;
+            } else {
+                return null;
             }
-            return null;
         }).then(account => {
             if (!account) {
                 return res.render('login', {
@@ -143,7 +139,7 @@ Router.get('/register', registerValidator, (req, res) => {
         idcard_back: ''
     });
 });
-Router.post('/register',multipleUpload, registerValidator, (req, res) => {
+Router.post('/register', multipleUpload, registerValidator, (req, res) => {
     let result = validationResult(req);
     // const file = req.file.originalname;
     let {
@@ -152,8 +148,8 @@ Router.post('/register',multipleUpload, registerValidator, (req, res) => {
         phone,
         address,
         birthday,
-        idcard_front=req.files.idcard_front[0].originalname,
-        idcard_back =req.files.idcard_back[0].originalname,
+        idcard_front = req.files.idcard_front[0].originalname,
+        idcard_back = req.files.idcard_back[0].originalname,
         password = generator.generate({
             // //Tự tạo mật khẩu
             length: 6,
@@ -375,7 +371,4 @@ Router.post('/resetPassword', resetPassValidator, (req, res) => {
         });
     }
 });
-
-
-
 module.exports = Router;
