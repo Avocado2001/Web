@@ -12,12 +12,12 @@ const resetPassValidator = require('../routers/validators/resetPassValidator');
 const { render, redirect } = require('express/lib/response');
 const generator = require('generate-password');
 const { validationResult } = require('express-validator');
-
+const path = require('path');
 const app = express();
 const multer = require('multer');
 
 
-var storage_front = multer.diskStorage({
+var storage = multer.diskStorage({
     destination: function(req, file, cb) {
 
         cb(null, 'public/uploads');
@@ -27,8 +27,8 @@ var storage_front = multer.diskStorage({
         cb(null, file.originalname);
     }
 });
-var upload_front = multer({ storage: storage_front });
-
+var upload = multer({ storage: storage });
+var multipleUpload = upload.fields([{name:'idcard_front'},{name:'idcard_back'}]);
 
 
 // var storage_back = multer.diskStorage({
@@ -143,17 +143,17 @@ Router.get('/register', registerValidator, (req, res) => {
         idcard_back: ''
     });
 });
-Router.post('/register',upload_front.single('idcard_front'), registerValidator, (req, res) => {
+Router.post('/register',multipleUpload, registerValidator, (req, res) => {
     let result = validationResult(req);
-    const file = req.file.originalname;
+    // const file = req.file.originalname;
     let {
         email,
         fullname,
         phone,
         address,
         birthday,
-        idcard_front=file,
-        idcard_back,
+        idcard_front=req.files.idcard_front[0].originalname,
+        idcard_back =req.files.idcard_back[0].originalname,
         password = generator.generate({
             // //Tự tạo mật khẩu
             length: 6,
@@ -166,9 +166,6 @@ Router.post('/register',upload_front.single('idcard_front'), registerValidator, 
             uppercase: false,
             exclude: 'abcdefghijklmnopqrstuvwxyz'
         }),
-        //upload ảnh
-        // idcard_front = req.files.idcard_front,
-        // idcard_back = req.files.idcard_back,
     } = req.body;
     if (result.errors.length === 0) {
 
@@ -381,20 +378,4 @@ Router.post('/resetPassword', resetPassValidator, (req, res) => {
 
 
 
-
-
-
-//upload image by multer  https://viblo.asia/p/file-upload-voi-multer-nodejs-va-express-E375z4VdZGW
-
-// Router.post('/uploadfile', upload.single('myFile'), (req, res, next) => {
-//     const file = req.file.originalname;
-//     console.log(file)
-
-//     if (!file) {
-//         const error = new Error('Please upload a file')
-//         error.httpStatusCode = 400
-//         return next(error)
-//     }
-//     res.send(file)
-// })
 module.exports = Router;

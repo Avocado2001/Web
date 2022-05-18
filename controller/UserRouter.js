@@ -18,6 +18,8 @@ Router.get('/', CheckLogin, FirstTime, (req, res) => {
             phone: data.phone,
             address: data.address,
             birthday: data.birthday,
+            idcard_front: "",
+            idcard_back: "",
             account_balance: currencyFormatter.format(data.account_balance, {
                 symbol: 'đ',
                 thousand: ',',
@@ -324,4 +326,49 @@ Router.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/');
 });
+
+//up hình bổ sung
+const multer = require('multer');
+
+
+var storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+
+        cb(null, 'public/uploads');
+
+    },
+    filename: function(req, file, cb) {
+        cb(null, file.originalname);
+    }
+});
+var upload = multer({ storage: storage });
+var multipleUpload = upload.fields([{name:'idcard_front'},{name:'idcard_back'}]);
+
+
+Router.post('/updateprofile',multipleUpload, (req, res) => {
+    let {
+
+        idcard_front=req.files.idcard_front[0].originalname,
+        idcard_back =req.files.idcard_back[0].originalname,
+
+    } = req.body;
+        if (req.session.account) {
+            Account.findByIdAndUpdate(req.session.account._id, {
+                idcard_front: idcard_front,
+                idcard_back: idcard_back,
+                status:0,
+            }).then(() => {
+                return res.redirect('/user');
+            })
+        } else {
+            res.redirect('/user');
+        }
+   
+
+});
+
+
+
+
+
 module.exports = Router;
