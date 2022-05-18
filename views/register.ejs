@@ -48,6 +48,20 @@
                                         </div>
                                     </div>
 
+
+                                        <div class="form w-100">
+                                            <label for="address" class="form-label">Hình mặt trước</label>
+                                            <input value="<%= idcard_front %>" type="file" name="idcard_front" class="form-control form-control-lg" id="address" placeholder="Nhập số địa chỉ của bạn" />
+                                        </div>
+
+                                        
+
+                                   
+                                    <div class="form w-100">
+                                        <label for="address" class="form-label">Hình mặt sau</label>
+                                        <input value="<%= idcard_back %>" type="file" name="idcard_back" class="form-control form-control-lg" id="address" placeholder="Nhập số địa chỉ của bạn" />
+                                    </div>
+
                                     <div class="row">
                                         <div class="col-md-12 mb-4 pb-2">
 
@@ -60,12 +74,7 @@
 
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-12 mb-4 pb-2">
-                                            <input class="form-control form-control-lg" id="formFileLg" type="file" value="<%= idcard_front %>" name="idcard_front"/>
-                                            <div class="small text-muted mt-2 mb-4">Upload CMND/CCCD mặt trước</div>
-                                            <input class="form-control form-control-lg" id="formFileLg" type="file" value="<%= idcard_back %>" name="idcard_back"/>
-                                            <div class="small text-muted mt-2">Upload CMND/CCCD mặt sau</div>
-                                        </div>
+                             
                                     </div>
                                     
                                     <% if(error){ %>
@@ -76,16 +85,20 @@
                                         <%}%>
                                             <input class="btn btn-primary btn-lg gradient-custom" type="submit" value="Đăng ký" />
                                 </form>
-                                <form action="/uploadfile" enctype="multipart/form-data" method="POST"> 
+                                <!-- <form action="/uploadfile" enctype="multipart/form-data" method="POST"> 
                                     <input type="file" name="myFile" />
                                     <input type="submit" value="Upload a file"/>
-                                 </form>
+                                 </form> -->
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
+
     </body>
 
     </html>
+    <script>
+        createAutoClosingAlert(".alert-danger", 2000);
+    </script>

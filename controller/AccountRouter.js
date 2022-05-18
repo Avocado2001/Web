@@ -15,15 +15,41 @@ const { validationResult } = require('express-validator');
 
 const app = express();
 const multer = require('multer');
-// const upload = multer({dest: './public/uploads/'});
+
+
+var storage_front = multer.diskStorage({
+    destination: function(req, file, cb) {
+
+        cb(null, 'public/uploads');
+
+    },
+    filename: function(req, file, cb) {
+        cb(null, file.originalname);
+    }
+});
+var upload_front = multer({ storage: storage_front });
 
 
 
+// var storage_back = multer.diskStorage({
+//     destination: function(req, file, cb) {
 
-const bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded({
-    extended: true
-}))
+//         cb(null, 'public/uploads');
+
+//     },
+//     filename: function(req, file, cb) {
+//         cb(null, file.originalname);
+//     }
+// });
+// var upload_back = multer({ storage: storage_back });
+
+
+// var upload_back = multer({ storage: storage });
+
+// const bodyParser = require('body-parser');
+// app.use(bodyParser.urlencoded({
+//     extended: true
+// }))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
@@ -34,9 +60,18 @@ app.use(express.static('public'));
 const transporter = nodemailer.createTransport({
     host: 'mail.phongdaotao.com',
     port: 25,
+    secure: false, // true for 465, false for other ports
     auth: {
         user: 'sinhvien@phongdaotao.com',
         pass: 'svtdtu'
+    },
+    tls: {
+        // do not fail on invalid certs
+        rejectUnauthorized: false
+    },
+    ssl: {
+        // do not fail on invalid certs
+        rejectUnauthorized: false
     }
 });
 //login
@@ -108,14 +143,17 @@ Router.get('/register', registerValidator, (req, res) => {
         idcard_back: ''
     });
 });
-Router.post('/register', registerValidator, (req, res) => {
+Router.post('/register',upload_front.single('idcard_front'), registerValidator, (req, res) => {
     let result = validationResult(req);
+    const file = req.file.originalname;
     let {
         email,
         fullname,
         phone,
         address,
         birthday,
+        idcard_front=file,
+        idcard_back,
         password = generator.generate({
             // //Tự tạo mật khẩu
             length: 6,
@@ -129,8 +167,8 @@ Router.post('/register', registerValidator, (req, res) => {
             exclude: 'abcdefghijklmnopqrstuvwxyz'
         }),
         //upload ảnh
-        idcard_front = req.files.idcard_front,
-        idcard_back = req.files.idcard_back,
+        // idcard_front = req.files.idcard_front,
+        // idcard_back = req.files.idcard_back,
     } = req.body;
     if (result.errors.length === 0) {
 
@@ -199,7 +237,7 @@ Router.post('/register', registerValidator, (req, res) => {
     }
 });
 
-//upload image to folder public/upload for ID when register
+// upload image to folder public/upload for ID when register
 // Router.post('/register', (req, res) => {
 //     let file = req.files.file;
 //     let fileName = file.name;
@@ -341,27 +379,22 @@ Router.post('/resetPassword', resetPassValidator, (req, res) => {
     }
 });
 
+
+
+
+
+
 //upload image by multer  https://viblo.asia/p/file-upload-voi-multer-nodejs-va-express-E375z4VdZGW
-var storage = multer.diskStorage({
-    destination: function(req, file, cb) {
 
-        cb(null, 'public/uploads');
+// Router.post('/uploadfile', upload.single('myFile'), (req, res, next) => {
+//     const file = req.file.originalname;
+//     console.log(file)
 
-    },
-    filename: function(req, file, cb) {
-        cb(null, file.originalname);
-    }
-});
-var upload = multer({ storage: storage });
-Router.post('/uploadfile', upload.single('myFile'), (req, res, next) => {
-    const file = req.file.originalname;
-    console.log(file)
-
-    if (!file) {
-        const error = new Error('Please upload a file')
-        error.httpStatusCode = 400
-        return next(error)
-    }
-    res.send(file)
-})
+//     if (!file) {
+//         const error = new Error('Please upload a file')
+//         error.httpStatusCode = 400
+//         return next(error)
+//     }
+//     res.send(file)
+// })
 module.exports = Router;

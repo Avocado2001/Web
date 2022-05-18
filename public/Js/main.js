@@ -19,7 +19,7 @@ function getIdDetails() {
 if (getIdDetails().message == "thanhcong") {
   swal({
     title: "SUCCESS",
-    text: "ThanhCong",
+    text: "Kiểm tra email của bạn để lấy thông tin đăng nhập",
     icon: "success",
     buttons: false,
     dangerMode: true,   
@@ -29,7 +29,7 @@ if (getIdDetails().message == "thanhcong") {
 if (getIdDetails().message == "addmoneysuccess") {
   swal({
     title: "SUCCESS",
-    text: "Add money success",
+    text: "Nạp tiền thành công",
     icon: "success",
     buttons: false,
     dangerMode: true,   
@@ -39,7 +39,7 @@ if (getIdDetails().message == "addmoneysuccess") {
 if (getIdDetails().message == "withdrawmoneysuccess") {
   swal({
     title: "SUCCESS",
-    text: "Withdraw money success",
+    text: "Rút tiền thành công",
     icon: "success",
     buttons: false,
     dangerMode: true,   

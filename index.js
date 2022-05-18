@@ -3,7 +3,7 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const cors = require('cors');
 const express = require('express');
-const bodyParser = require('body-parser');
+// const bodyParser = require('body-parser');
 // const AccountRouter = require('./routers/AccountRouter');
 // const AdminRouter = require('./routers/AdminRouter');
 // const UserRouter = require('./routers/UserRouter');
@@ -12,9 +12,9 @@ const AdminRouter = require('./controller/AdminRouter');
 const UserRouter = require('./controller/UserRouter');
 const session = require('express-session');
 const app = express();
-app.use(bodyParser.urlencoded({
-    extended:true
-}));
+// app.use(bodyParser.urlencoded({
+//     extended:true
+// }));
 app.set('view engine', 'ejs');
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
