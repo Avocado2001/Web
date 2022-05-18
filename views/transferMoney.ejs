@@ -4,9 +4,90 @@
         <div class="wrapper">
             <%- include('./layouts/nav-user.ejs') %>
                 <div class="main-panel">
-                    <h1>Chuyển tiền</h1>
+                    <div class="container mt-5">
+                        <div class="card mb-3" style="border-radius: .5rem;">
+                            <div class="row g-0 p-4">
+                                <h1>Chuyển tiền</h1>
+                                <form action="/user/transferMoney" method="post">
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="row mb-4">
+                                                <div class="col">
+                                                    <div class="form-group">
+                                                        <label class="form-label" for="phone">Số điện thoại người nhận</label>
+                                                        <input value = "<%= phone %>" type="tel" name="phone" id="phone" class="form-control" />
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="form-group">
+                                                        <label class="form-label" for="money">Số tiền cần chuyển</label>
+                                                        <input value = "<%= money %>" type="number" min="0.0" name="money" id="money" class="form-control" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- ghi chú -->
+                                            <div class="col mb-3">
+                                                <label for="note" class="form-label">Ghi chú</label>
+                                                <div class="row">
+                                                    <div class="col-9">
+                                                        <textarea class="form-control" id="note" name ="note" rows="3"><%= note %></textarea>
+                                                    </div>
+                                                    <div class="col-3">
+                                                        <button type="submit" class="btn btn-primary btn-block ">Kiểm tra</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col">
+                                            <div class="row mb-4">
+                                                <div class="col">
+                                                    <div class="form-group">
+                                                        <label class="form-label" for="receiver">Tên người nhận</label>
+                                                        <input value="<%= receiver %>" type="text" name="receiver" id="receiver" class="form-control" readonly/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        
+                                            <div class="col mb-3">
+                                                <div class="form-group">
+                                                    <label class="form-label" for="OTP_code">Mã OTP email:</label>
+                                                    <div class="row">
+                                                        <div class="col-9">
+                                                            <input type="text" name="OTP_code" id="OTP_code" class="form-control" />
+                                                        </div>
+                                                        <div class="col-3">
+                                                            <button type="submit" class="btn btn-primary ">Lấy mã OTP</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="form-group">
+                                                    <label class="form-label" >Phí chuyển tiền 5%:</label>
+                                                    <input type="number" min="0.0" name="fee" id="fee" class="form-control" readonly/>
+                                                    <div class="form-check mt-3">
+                                                        <input type="radio" class="form-check-input" id="nguoichuyentra" name="nguoitra" value="nguoichuyentra" checked>
+                                                        <label class="form-check-label" for="nguoichuyentra">Người chuyển trả</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input type="radio" class="form-check-input" id="nguoinhantra" name="nguoitra" value="nguoinhantra">
+                                                        <label class="form-check-label" for="nguoinhantra">Người nhận trả</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>                                      
+                                        <button type="submit" class="btn btn-primary btn-block mt-3">Xác nhận chuyển</button>
+                                    </div>  
+                                </form>
+                            </div>
+                        </div>    
+                    </div>
                 </div>
         </div>
+        <script src="/Js/main.js"></script>
+        <script>
+            createAutoClosingAlert(".alert-danger", 2000);
+        </script>
     </body>
-
-    </html>
+</html>
