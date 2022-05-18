@@ -45,3 +45,10 @@ if (getIdDetails().message == "withdrawmoneysuccess") {
     dangerMode: true,   
   })
 }
+
+
+//auto close lert
+function createAutoClosingAlert(selector, delay) {
+  var alert = $(selector).alert();
+  window.setTimeout(function() { alert.alert('close') }, delay);
+}
