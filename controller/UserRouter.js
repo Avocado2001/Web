@@ -2,6 +2,7 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const Account = require("../models/AccountModel");
 const History = require("../models/TransactionModel");
+const Transaction = require('../models/TransactionModel')
 const CheckLogin = require("../auth/CheckForUser");
 const FirstTime = require("../auth/CheckFirstTime");
 const currencyFormatter = require("currency-formatter");
@@ -309,25 +310,57 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
     //xác nhận giao dịch
     if (OTP_code === OTP_code_check && time<61) {
       let account_balance_after = user.account_balance-money;
-      let time = new Date().toLocaleDateString('pt-PT');
-      var mailOptions = {
-        from: "ewallet.webnc@gmail.com",
-        to: user.email,
-        subject: "Giao dịch thành công E-Wallet",
-        text:
-          "Tài khoản của bạn " +
-          user.fullname +
-          "\nVừa chuyển: " +
-          money +" VND."+
-          "\nSố dư: " +
-          account_balance_after+" VND."+
-          "\nNgày giao dich: "+time+".",
-      };
-      transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-          console.log(error);
-        }
-      });
+      let time = new Date().toISOString();
+      if(money>5000000)
+      {
+        let transaction = new Transaction({
+          username:user.username,
+          time:Date.parse(time),
+          money:money,
+          numberCard:user.numberCard,
+          kind:0,
+          status:1,
+        });
+        transaction.save();
+        var mailOptions = {
+          from: "ewallet.webnc@gmail.com",
+          to: user.email,
+          subject: "Chờ duyệt giao dịch E-Wallet",
+          text:
+            "Tài khoản của bạn " +
+            user.fullname +
+            "\nVừa chuyển: " +
+            money +" VND."+
+            "\nTrạng thái: Chờ duyệt"+
+            "\nNgày giao dich: "+time+".",
+        };
+        transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+            console.log(error);
+          }
+        });
+      }
+      else
+      {
+        var mailOptions = {
+          from: "ewallet.webnc@gmail.com",
+          to: user.email,
+          subject: "Giao dịch thành công E-Wallet",
+          text:
+            "Tài khoản của bạn " +
+            user.fullname +
+            "\nVừa chuyển: " +
+            money +" VND."+
+            "\nSố dư: " +
+            account_balance_after+" VND."+
+            "\nNgày giao dich: "+time+".",
+        };
+        transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+            console.log(error);
+          }
+        });
+      }
       res.render("transferMoney", {
         fullname: user.fullname,
         phone: '',
