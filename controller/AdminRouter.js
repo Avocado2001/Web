@@ -24,9 +24,7 @@ Router.get('/waitActive', CheckLogin, (req, res) => {
         });
     });
 });
-
-
-
+// Xem thông tin chi tiết
 Router.get('/detailuser/:id', CheckLogin, (req, res) => {
     Account.findById(req.params.id, function(err, user) {
         res.render('detailuser', {
@@ -34,6 +32,30 @@ Router.get('/detailuser/:id', CheckLogin, (req, res) => {
         });
     });
 });
+// Xác minh tài khoản
+Router.post('/detailuser/:id', CheckLogin, (req, res) => {
+    let {status}=req.body
+    console.log(status)
+    if(status===1){
+    Account.findByIdAndUpdate(req.params.id,  {
+       status
+        });
+    return res.redirect('/admin/detailuser/'+req.params.id)
+    }
+    else if (status===0){
+        Account.findByIdAndUpdate(req.params.id,  {
+            status
+         });
+         return res.redirect('/admin/detailuser/'+req.params.id)
+    }
+    else {
+        Account.findByIdAndUpdate(req.params.id,  {
+            status
+         });
+         return res.redirect('/admin/detailuser/'+req.params.id)
+    }
+});
+
 
 
 
