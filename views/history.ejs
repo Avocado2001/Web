@@ -9,8 +9,9 @@
                             <tr>
                                 <th>MÃ GIAO DỊCH</th>
                                 <th>TIỀN GIAO DỊCH</th>
-                                <th>TRẠNG THÁI</th>
                                 <th>LOẠI GIAO DỊCH</th>
+                                <th>TRẠNG THÁI</th>
+                             
                                 <th>NGÀY GIAO DỊCH</th>
                                 <th>ACTION</th>
                             </tr>
@@ -18,27 +19,44 @@
                         <tbody>
                         
                          
-                            <% his.forEach(function(h) { %>
+                            <% his.forEach(function(h,index) { %>
                                 <td>
-                                  0123456789
+                                  <%= (index + 1) %>
                                 </td>
                                 <td>
                                     <%=h.money%>
                                   </td>
-                                  <td>
-                                    <%=h.status%>
+                                  <!-- kind-chuyển tiền: 0, nạp tiền: 1, rút tiền: 2, mua thẻ: 3 -->  
+                                    <td>
+                                      <% if(h.kind === 0) { %>
+                                          <span class="badge badge-success rounded-pill d-inline">Chuyển tiền</span> 
+                                          <% }else if(h.kind === 1){ %>
+                                              <span class="badge badge-success rounded-pill d-inline">Nạp tiền</span>
+                                              <% }else if(h.kind === 2){ %>
+                                                  <span class="badge badge-success rounded-pill d-inline">Rút tiền</span>
+                                                  <% }else{ %>
+                                                      <span class="badge badge-success rounded-pill d-inline">Mua thẻ</span>
+                                                      <% } %>
+
                                   </td>
-                                  <td>
-                                    <%=h.kind%>
+                                  <!-- 0:duyệt, 1:chờ duyệt, 2:từ chối -->
+                                  <td> 
+                                    <% if(h.status === 0) { %>
+                                      <span class="badge badge-success  rounded-pill d-inline">Duyệt</span> 
+                                      <% }else if(h.status === 1){ %>
+                                          <span class="badge  badge-primary rounded-pill d-inline">Chờ duyệt</span>
+                                          <% }else{ %>
+                                            <span class="badge badge-warning rounded-pill d-inline">Từ chối</span>
+                                            <% } %>
                                   </td>
                                   <td>
                                     <%=h.time%>
                                   </td>
                                 <td>
-                                    <button type="button" class="btn btn-link btn-sm btn-rounded">
+                                    <button type="button" class="btn-primary btn-link btn-sm btn-rounded">
                                       Edit
                                   </button>
-                                  <button type="button" class="btn btn-link btn-sm btn-rounded">
+                                  <button type="button" class="btn-danger btn-link btn-sm btn-rounded ">
                                    Delete
                                 </button>
                                 </td>
