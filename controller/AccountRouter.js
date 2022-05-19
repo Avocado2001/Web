@@ -31,25 +31,7 @@ var upload = multer({ storage: storage });
 var multipleUpload = upload.fields([{ name: 'idcard_front' }, { name: 'idcard_back' }]);
 
 
-// var storage_back = multer.diskStorage({
-//     destination: function(req, file, cb) {
 
-//         cb(null, 'public/uploads');
-
-//     },
-//     filename: function(req, file, cb) {
-//         cb(null, file.originalname);
-//     }
-// });
-// var upload_back = multer({ storage: storage_back });
-
-
-// var upload_back = multer({ storage: storage });
-
-// const bodyParser = require('body-parser');
-// app.use(bodyParser.urlencoded({
-//     extended: true
-// }))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
@@ -85,9 +67,18 @@ Router.get('/', loginValidator, (req, res) => {
 });
 Router.post('/', loginValidator, (req, res) => {
     let result = validationResult(req);
+    
     if (result.errors.length === 0) {
         let { username, password } = req.body;
         Account.findOne({ username }).then(account => {
+            // if(account.status===2)
+            // {
+            //     return res.render('login', {
+            //         error: 'Tài khoản bạn đã bị khóa, vui lòng liên hệ 18001008',
+            //         password: '',
+            //         username
+            //     });
+            // }
             if (!account) {
                 throw new Error('Username không tồn tại');
             }

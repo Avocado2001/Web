@@ -60,6 +60,17 @@ Router.post("/addMoney", CheckLogin, FirstTime, (req, res) => {
             account_balance: data.account_balance + money,
           })
             .then(() => {
+              let transaction = new Transaction({
+                username:data.username,
+                money,
+                kind:0,
+                status_transation:0,
+                
+
+            });
+              return transaction.save()
+             
+            }).then(()=>{
               return res.redirect("/user/addMoney?message=addmoneysuccess");
             })
             .catch((err) => {
@@ -93,6 +104,16 @@ Router.post("/addMoney", CheckLogin, FirstTime, (req, res) => {
               account_balance: data.account_balance + money,
             })
               .then(() => {
+                let transaction = new Transaction({
+                  username:data.username,
+                  money,
+                  kind:0,
+                  status_transation:1, // Nạp tiền mặc định là duyệt
+  
+              });
+              return transaction.save()
+                
+              }).then(()=>{
                 return res.redirect("/user/addMoney");
               })
               .catch((err) => {
@@ -178,6 +199,16 @@ Router.post("/withdrawMoney", CheckLogin, FirstTime, (req, res) => {
               account_balance: data.account_balance - money - money * 0.05,
             })
               .then(() => {
+                let transaction = new Transaction({
+                  username:data.username,
+                  money,
+                  kind:2,
+                  status_transation:0,
+                  note:data.note,
+                });
+                return transaction.save()
+                
+              }).then(()=>{
                 return res.redirect(
                   "/user/withdrawMoney?message=withdrawmoneysuccess"
                 );
@@ -500,5 +531,6 @@ Router.post("/updateprofile", multipleUpload, (req, res) => {
     res.redirect("/user");
   }
 });
+
 
 module.exports = Router;

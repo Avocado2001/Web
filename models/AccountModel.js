@@ -31,6 +31,8 @@ const AccountSchema = new Schema({
     account_balance: { type: Number, default: 0 },
     //khóa tài khoản
     login_fail: { type: Number, default: 0 },
-    wrong_pass: { type: Number, default: 0 }
+    wrong_pass: { type: Number, default: 0 },
+    
+    
 });
 module.exports = mongoose.model('Account', AccountSchema);

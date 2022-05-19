@@ -18,12 +18,16 @@ Router.get('/', CheckLogin, (req, res) => {
 
 //danh sách chờ xác minh
 Router.get('/waitActive', CheckLogin, (req, res) => {
+   
     Account.find({ status: 0 }, function(err, users) {
-        res.render('waitActive', {
+        res.render('/waiActive', {
             users
         });
     });
+
 });
+
+
 // Xem thông tin chi tiết
 Router.get('/detailuser/:id', CheckLogin, (req, res) => {
     Account.findById(req.params.id, function(err, user) {
@@ -70,9 +74,11 @@ Router.get('/actived', CheckLogin, (req, res) => {
         });
     });
 });
+
+
 //danh sách bị vô hiệu hóa
 Router.get('/banning', CheckLogin, (req, res) => {
-    Account.find({ status: 2 }, function(err, users) {
+    Account.find({ status: 3 }, function(err, users) {
         res.render('banning', {
             users
         });
@@ -80,7 +86,7 @@ Router.get('/banning', CheckLogin, (req, res) => {
 });
 //danh sách bị khóa vô thời hạn
 Router.get('/bannedForever', CheckLogin, (req, res) => {
-    Account.find({ status: 3 }, function(err, users) {
+    Account.find({ status: 4 }, function(err, users) {
         res.render('bannedForever', {
             users
         });
