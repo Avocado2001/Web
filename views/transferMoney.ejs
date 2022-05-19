@@ -54,7 +54,7 @@
                                                     <label class="form-label" for="OTP_code">Mã OTP email:</label>
                                                     <div class="row">
                                                         <div class="col-9">
-                                                            <input type="text" name="OTP_code" id="OTP_code" class="form-control" />
+                                                            <input value="<%=OTP_code%>" type="text" name="OTP_code" id="OTP_code" class="form-control" />
                                                         </div>
                                                         <div class="col-3">
                                                             <button type="submit" class="btn btn-primary ">Lấy mã OTP</button>
@@ -65,7 +65,7 @@
                                             <div class="row">
                                                 <div class="form-group">
                                                     <label class="form-label" >Phí chuyển tiền 5%:</label>
-                                                    <input type="number" min="0.0" name="fee" id="fee" class="form-control" readonly/>
+                                                    <input value="<%= fee%>" type="number" min="0.0" name="fee" id="fee" class="form-control" readonly/>
                                                     <div class="form-check mt-3">
                                                         <input type="radio" class="form-check-input" id="nguoichuyentra" name="nguoitra" value="nguoichuyentra" checked>
                                                         <label class="form-check-label" for="nguoichuyentra">Người chuyển trả</label>

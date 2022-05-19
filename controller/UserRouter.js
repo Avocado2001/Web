@@ -5,9 +5,18 @@ const History = require("../models/TransactionModel");
 const CheckLogin = require("../auth/CheckForUser");
 const FirstTime = require("../auth/CheckFirstTime");
 const currencyFormatter = require("currency-formatter");
+const generator = require("generate-password");
 const changePassValidator = require("../routers/validators/changePassValidator");
 const { validationResult } = require("express-validator");
+const nodemailer = require("nodemailer");
 const Router = express.Router();
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "ewallet.webnc@gmail.com",
+    pass: "webnangcao",
+  },
+});
 //profile
 Router.get("/", CheckLogin, FirstTime, (req, res) => {
   let id = req.session.account._id;
@@ -221,35 +230,73 @@ Router.get("/transferMoney", CheckLogin, FirstTime, (req, res) => {
     OTP_code: "",
   });
 });
+let OTP_code_check = "";
+let OTP_timecheck="";
 Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
   let user = req.session.account;
   let id = req.session.account._id;
+  let OTP_timecheck_curren=new Date().getTime();
   let { phone, money, note, receiver, fee, nguoitra, OTP_code } = req.body;
   money = parseInt(money);
+  if (receiver === "Not found") {
+    receiver = "";
+  }
+  let id_receiver;
+  Account.findOne({ phone: phone }, (err, data) => (id_receiver = data._id));
   if (phone !== "" && money !== "" && note !== "" && receiver === "") {
-    Account.findOne({phone:phone}, (err, data) => {
-        fee = (money / 100) * 5;
-        res.render("transferMoney", {
+    //check infor receiver
+    Account.findOne({ phone: phone }, (err, data) => {
+      fee = (money / 100) * 5;
+      res.render("transferMoney", {
         fullname: user.fullname,
         phone: phone,
         money: money,
         note: note,
         receiver: data.fullname,
-        });
+        OTP_code,
+        fee: fee,
+      });
     });
   } else if (
+    //button get OTP
     phone !== "" &&
-    money !=="" &&
+    money !== "" &&
     note !== "" &&
     receiver !== "" &&
     OTP_code === ""
   ) {
+    OTP_code_check = generator.generate({
+      //Tự tạo OTP
+      length: 6,
+      numbers: true,
+    });
+    OTP_timecheck= new Date().getTime();
+    var mailOptions = {
+      from: "ewallet.webnc@gmail.com",
+      to: user.email,
+      subject: "E-Wallet",
+      text:
+        "Chuyển tiền đến " +
+        receiver +
+        "\nSố tiền: " +
+        money +
+        "\nMã OTP: " +
+        OTP_code_check+
+        "\nLưu ý: Mã OTP chỉ có hiệu lực trong vòng một phút."
+    };
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+      }
+    });
     res.render("transferMoney", {
       fullname: user.fullname,
       phone: phone,
       money: money,
       note: note,
-      receiver: "Not found",
+      receiver: receiver,
+      fee: fee,
+      OTP_code,
     });
   } else if (
     phone !== "" &&
@@ -258,21 +305,39 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
     receiver !== "" &&
     OTP_code !== ""
   ) {
+    let time = (OTP_timecheck_curren - OTP_timecheck)/1000;
+    //xác nhận giao dịch
+    if (OTP_code === OTP_code_check && time<61) {
+      res.render("transferMoney", {
+        fullname: user.fullname,
+        phone: '',
+        money: '',
+        note: "",
+        fee: "",
+        receiver: "",
+        OTP_code: "",
+      });
+    } else {
+      res.render("transferMoney", {
+        fullname: user.fullname,
+        phone: "",
+        money: "",
+        note: "",
+        fee: "",
+        receiver: "",
+        OTP_code: "",
+      });
+    }
+  } else {
+    //not infor
     res.render("transferMoney", {
       fullname: user.fullname,
-      phone: phone,
-      money: money,
-      note: note,
+      phone: "",
+      money: "",
+      note: "",
+      fee: "",
       receiver: "Not found",
-    });
-  }
-  else{
-    res.render("transferMoney", {
-      fullname: user.fullname,
-      phone: phone,
-      money: money,
-      note: note,
-      receiver: "Not found",
+      OTP_code: "",
     });
   }
 });
