@@ -24,6 +24,21 @@ Router.get('/waitActive', CheckLogin, (req, res) => {
         });
     });
 });
+
+
+
+Router.get('/detailuser/:id', CheckLogin, (req, res) => {
+    Account.findById(req.params.id, function(err, user) {
+        res.render('detailuser', {
+            user
+        });
+    });
+});
+
+
+
+
+
 //danh sách đã xác minh
 Router.get('/actived', CheckLogin, (req, res) => {
     Account.find({ status: 1 }, function(err, users) {
