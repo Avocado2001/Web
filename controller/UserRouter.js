@@ -339,6 +339,7 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
             console.log(error);
           }
         });
+        return res.redirect('/user/transferMoney' + '?message=transferMoneySuccess');
       }
       else
       {
@@ -360,16 +361,8 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
             console.log(error);
           }
         });
+        return res.redirect('/user/transferMoney' + '?message=transferMoneySuccess');
       }
-      res.render("transferMoney", {
-        fullname: user.fullname,
-        phone: '',
-        money: '',
-        note: "",
-        fee: "",
-        receiver: "",
-        OTP_code: "",
-      });
     } else {
       res.render("transferMoney", {
         fullname: user.fullname,

@@ -53,7 +53,15 @@ if (getIdDetails().message == "changePassSuccess") {
         dangerMode: true,
     })
 }
-
+if (getIdDetails().message == "transferMoneySuccess") {
+    swal({
+        title: "SUCCESS",
+        text: "Giao dịch hoàn tất",
+        icon: "success",
+        buttons: false,
+        dangerMode: true,
+    })
+}
 //auto close lert
 function createAutoClosingAlert(selector, delay) {
     var alert = $(selector).alert();
