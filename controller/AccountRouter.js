@@ -146,7 +146,6 @@ Router.get('/register', registerValidator, (req, res) => {
 });
 Router.post('/register', multipleUpload, registerValidator, (req, res) => {
     let result = validationResult(req);
-    // const file = req.file.originalname;
     let {
         email,
         fullname,

@@ -21,7 +21,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(express.static('public'));
 app.use(express.static(__dirname + '/public'));
-app.use(session({ secret: 'mySecret' }));
+app.use(session({ secret: 'mySecret', resave: false, saveUninitialized: false }));
 app.use('/', AccountRouter);
 app.use('/admin', AdminRouter);
 app.use('/user', UserRouter);

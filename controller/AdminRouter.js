@@ -53,46 +53,54 @@ Router.get('/changePasswordadmin', CheckLogin, (req, res) => {
     let user = req.session.account;
     res.render('changePasswordadmin', { error: '', fullname: user.fullname });
 });
-Router.post('/changePasswordadmin', changePassValidator, (req, res) => {
+Router.post("/changePasswordadmin", changePassValidator, (req, res) => {
     let user = req.session.account;
-    let { confirm1, confirm2 } = req.body;
+    let { oldpass, confirm1, confirm2 } = req.body;
     let result = validationResult(req);
     if (result.errors.length === 0) {
         if (req.session.account) {
-            if (confirm1 === confirm2) {
-                bcrypt.hash(confirm2, 10).then(hashed => {
-                    Account.findByIdAndUpdate(req.session.account._id, {
-                        password: hashed,
-                    }).then(() => {
-                        return res.redirect('/admin/changePasswordadmin');
-                    })
-                }).catch(err => {
-                    return res.render('changePasswordadmin', {
-                        error: err.message
+            if (bcrypt.compareSync(oldpass, user.password)) {
+                if (confirm1 === confirm2) {
+                    bcrypt
+                        .hash(confirm2, 10)
+                        .then((hashed) => {
+                            Account.findByIdAndUpdate(req.session.account._id, {
+                                password: hashed,
+                            }).then(() => {
+                                return res.redirect("/admin/changePasswordadmin");
+                            });
+                        })
+                        .catch((err) => {
+                            return res.render("changePasswordadmin", {
+                                error: err.message,
+                            });
+                        });
+                } else {
+                    return res.render("changePassworduser", {
+                        error: "Mật khẩu không khớp",
+                        fullname: user.fullname,
                     });
-                })
+                }
             } else {
-                return res.render('changePasswordadmin', {
-                    error: 'Mật khẩu không khớp',
-                    fullname: user.fullname
+                return res.render("changePasswordadmin", {
+                    error: "Mật khẩu cũ không đúng",
+                    fullname: user.fullname,
                 });
             }
         } else {
-            res.redirect('/');
+            res.redirect("/");
         }
     } else {
         let messages = result.mapped();
-        let message = '';
+        let message = "";
         for (m in messages) {
             message = messages[m].msg;
             break;
         }
-        res.render('changePasswordadmin', {
+        res.render("changePasswordadmin", {
             error: message,
-            fullname: user.fullname
-
+            fullname: user.fullname,
         });
     }
-
 });
 module.exports = Router;
