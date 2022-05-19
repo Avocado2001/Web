@@ -274,12 +274,12 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
     var mailOptions = {
       from: "ewallet.webnc@gmail.com",
       to: user.email,
-      subject: "E-Wallet",
+      subject: "OTP chuyển tiền E-Wallet",
       text:
-        "Chuyển tiền đến " +
+        "Người nhận: " +
         receiver +
         "\nSố tiền: " +
-        money +
+        money +" VND."+
         "\nMã OTP: " +
         OTP_code_check+
         "\nLưu ý: Mã OTP chỉ có hiệu lực trong vòng một phút."
@@ -308,6 +308,26 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
     let time = (OTP_timecheck_curren - OTP_timecheck)/1000;
     //xác nhận giao dịch
     if (OTP_code === OTP_code_check && time<61) {
+      let account_balance_after = user.account_balance-money;
+      let time = new Date().toLocaleDateString('pt-PT');
+      var mailOptions = {
+        from: "ewallet.webnc@gmail.com",
+        to: user.email,
+        subject: "Giao dịch thành công E-Wallet",
+        text:
+          "Tài khoản của bạn " +
+          user.fullname +
+          "\nVừa chuyển: " +
+          money +" VND."+
+          "\nSố dư: " +
+          account_balance_after+" VND."+
+          "\nNgày giao dich: "+time+".",
+      };
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.log(error);
+        }
+      });
       res.render("transferMoney", {
         fullname: user.fullname,
         phone: '',
