@@ -9,6 +9,8 @@
                         <thead class="bg-light">
                             <tr>
                                 <th>THỨ TỰ GIAO DỊCH</th>
+                                <th>MÃ GIAO DỊCH</th>
+                                <th>TÀI KHOẢN GIAO DỊCH</th>
                                 <th>TIỀN GIAO DỊCH</th>
                                 <th>LOẠI GIAO DỊCH</th>
                                 <th>TRẠNG THÁI</th>
@@ -24,6 +26,12 @@
                               <tr>
                                 <td>
                                   <%= (index + 1) %>
+                                </td>
+                                <td>
+                                  <%= h._id %>
+                                </td>
+                                <td>
+                                  <%= h.username %>
                                 </td>
                                 <td>
                                     <%=h.money.toLocaleString("en-US")%>
