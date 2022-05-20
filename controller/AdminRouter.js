@@ -149,7 +149,7 @@ Router.post("/changePasswordadmin", changePassValidator, (req, res) => {
         });
     }
 });
-
+//Quản lý giao dịch
 Router.get('/acceptTransaction', CheckLogin, (req, res) => {
     Transaction.find({status_transation:1 }, function(err, transaction) {
         res.render('acceptTransaction', {
