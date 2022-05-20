@@ -20,7 +20,7 @@ Router.get('/', CheckLogin, (req, res) => {
 Router.get('/waitActive', CheckLogin, (req, res) => {
    
     Account.find({ status: 0 }, function(err, users) {
-        res.render('/waiActive', {
+        res.render('waitActive', {
             users
         });
     });
@@ -147,4 +147,8 @@ Router.post("/changePasswordadmin", changePassValidator, (req, res) => {
         });
     }
 });
+
+
+
+
 module.exports = Router;

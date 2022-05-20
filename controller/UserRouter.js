@@ -427,12 +427,11 @@ Router.get("/buyCard", CheckLogin, FirstTime, (req, res) => {
 Router.get("/history", CheckLogin, FirstTime, (req, res) => {
   let user = req.session.account;
   History.find({}).then((his) => {
-    res.render("history", { his: his, fullname: user.fullname });
+    res.render("history", { his: his, fullname: user.fullname,
+    
+    });
   });
 
-  // const history=await History.find();
-  //  let list= [res.json(history)]
-  //   res.render('history',{his:list});
 });
 
 // Xem lịch sử giao dịch - kết thúc
