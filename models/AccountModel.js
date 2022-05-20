@@ -15,12 +15,10 @@ const AccountSchema = new Schema({
     address: String,
     fullname: String,
     date_register: {
-        type: Date,
-        default: Date.now,
-        format: "%d/%m/%Y"
+        type: String, default:today.getDate()+'-'+(today.getMonth()+1)+'-'+today.getFullYear()+' '
+    +today.getHours()+":"+today.getMinutes()+":"+today.getSeconds()
     },
-
-
+   
     birthday: String,
 
     idcard_front: String,

@@ -20,12 +20,12 @@ Router.get('/', CheckLogin, (req, res) => {
 
 //danh sách chờ xác minh
 Router.get('/waitActive', CheckLogin, (req, res) => {
-   
+    var sort = {  date_register: -1 };
     Account.find({ $or: [{status: 0},{status:2}] }, function(err, users) {
         res.render('waitActive', {
             users
         });
-    });
+    }).sort(sort);
 
 });
 

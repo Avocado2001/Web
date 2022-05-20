@@ -524,9 +524,8 @@ var multipleUpload = upload.fields([
 ]);
 
 Router.post("/updateprofile", multipleUpload, (req, res) => {
-
+  var today = new Date()
   let {
- 
     idcard_front = req.files.idcard_front[0].originalname,
     idcard_back = req.files.idcard_back[0].originalname,
   } = req.body;
@@ -535,7 +534,8 @@ Router.post("/updateprofile", multipleUpload, (req, res) => {
       idcard_front: idcard_front,
       idcard_back: idcard_back,
       status: 0,
-      date_upload,
+      date_register:today.getDate()+'-'+(today.getMonth()+1)+'-'+today.getFullYear()+' '
+      +today.getHours()+":"+today.getMinutes()+":"+today.getSeconds()
   
     }).then(() => {
       return res.redirect("/user");

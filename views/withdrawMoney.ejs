@@ -9,56 +9,47 @@
                             <div class="row g-0 p-4">
                                 <h1>Rút tiền</h1>
                                 <form action="/user/withdrawMoney" method="post">
-                                  <!-- số the và ngày hết hạn -->
-                                  <div class="row mb-4">
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <label class="form-label" for="numberCard">Số thẻ</label>
-                                            <input type="text" name="numberCard" id="numberCard" class="form-control" />
-                                           
+                                    <!-- số the và ngày hết hạn -->
+                                    <div class="row mb-4">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label class="form-label" for="numberCard">Số thẻ</label>
+                                                <input type="text" name="numberCard" id="numberCard"
+                                                    class="form-control" />
+
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label class="form-label" for="dateExp">Ngày hết hạn</label>
+                                                <input type="date" name="dateExp" id="dateExp" class="form-control" />
+
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <label class="form-label" for="dateExp">Ngày hết hạn</label>
-                                            <input type="date" name="dateExp" id="dateExp" class="form-control" />
-                                            
+
+                                    <!-- Mã Cvv và số tiền rút -->
+                                    <div class="row mb-4">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label class="form-label" for="cvv">Mã CVV</label>
+                                                <input type="text" name="cvv" id="cvv" class="form-control" />
+
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label class="form-label" for="money">Số tiền rút</label>
+                                                <input type="number" min="0.0" name="money" id="money"
+                                                    class="form-control" />
+                                            </div>
                                         </div>
                                     </div>
-                                  </div>
 
-                                   <!-- Mã Cvv và số tiền rút -->
-                                   <div class="row mb-4">
-                                    <div class="col">
-                                <div class="form-group">
-                                    <label class="form-label" for="cvv">Mã CVV</label>
-                                    <input type="text" name="cvv" id="cvv" class="form-control" />
-                                    
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="form-group">
-                                    <label class="form-label" for="money">Số tiền rút</label>
-                                    <input type="number" min="0.0" name="money" id="money" class="form-control" />
-                                </div>
-                            </div>
-                        </div>
-
-
-
-                            <!-- chưa làm -->
-                                    <!-- ghi chú -->
                                     <div class="mb-3">
                                         <label for="form-label" class="form-label">Ghi chú</label>
                                         <textarea class="form-control" name="note" id="note" rows="3"></textarea>
                                     </div>
-
-
-<!-- ============================= -->
-
-
-
-
 
                                     <% if(error){ %>
                                         <div class="alert alert-danger mb-3">
