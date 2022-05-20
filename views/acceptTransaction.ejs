@@ -20,7 +20,7 @@
                         <tbody>
                           
 
-                            <% his.forEach(function(h,index) { %>
+                            <% transaction.forEach(function(h,index) { %>
                               <tr>
                                 <td>
                                   <%= (index + 1) %>
@@ -32,8 +32,6 @@
                                   <td>
                                       <% if(h.kind === 0) { %>
                                           <span class="badge badge-success rounded-pill d-inline">Chuyển tiền</span> 
-                                          <% }else if(h.kind === 1){ %>
-                                              <span class="badge badge-success rounded-pill d-inline">Nạp tiền</span>
                                               <% }else if(h.kind === 2){ %>
                                                   <span class="badge badge-success rounded-pill d-inline">Rút tiền</span>
                                                   <% }else{ %>
@@ -43,12 +41,10 @@
                                   </td>
                                   <!-- 0:duyệt, 1:chờ duyệt, 2:từ chối -->
                                   <td> 
-                                    <% if(h.status_transation === 0) { %>
-                                      <span class="badge badge-success  rounded-pill d-inline">Duyệt</span> 
-                                      <% }else if(h.status_transation === 1){ %>
+
+                                      <% if(h.status_transation === 1){ %>
                                           <span class="badge  badge-primary rounded-pill d-inline">Chờ duyệt</span>
-                                          <% }else{ %>
-                                            <span class="badge badge-warning rounded-pill d-inline">Từ chối</span>
+
                                             <% } %>
                                   </td>
                                   <td>

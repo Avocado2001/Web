@@ -1,11 +1,13 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const Account = require('../models/AccountModel');
+const Transaction = require('../models/TransactionModel');
 const CheckLogin = require('../auth/CheckForAdmin');
 const currencyFormatter = require('currency-formatter');
 const changePassValidator = require('../routers/validators/changePassValidator');
 const { validationResult } = require('express-validator');
 const { render } = require('ejs');
+const TransactionModel = require('../models/TransactionModel');
 let userList = new Map();
 const Router = express.Router();
 Router.get('/', CheckLogin, (req, res) => {
@@ -148,7 +150,14 @@ Router.post("/changePasswordadmin", changePassValidator, (req, res) => {
     }
 });
 
-
+Router.get('/acceptTransaction', CheckLogin, (req, res) => {
+    Transaction.find({status_transation:1 }, function(err, transaction) {
+        res.render('acceptTransaction', {
+            transaction
+        });
+    });
+    
+});
 
 
 module.exports = Router;
