@@ -8,7 +8,7 @@
                     <table class="table align-middle mb-0 bg-white">
                         <thead class="bg-light">
                             <tr>
-                                <th>MÃ GIAO DỊCH</th>
+                                <th>THỨ TỰ GIAO DỊCH</th>
                                 <th>TIỀN GIAO DỊCH</th>
                                 <th>LOẠI GIAO DỊCH</th>
                                 <th>TRẠNG THÁI</th>
@@ -26,7 +26,7 @@
                                   <%= (index + 1) %>
                                 </td>
                                 <td>
-                                    <%=h.money%>
+                                    <%=h.money.toLocaleString("en-US")%>
                                   </td>
                                   <!-- kind-chuyển tiền: 0, nạp tiền: 1, rút tiền: 2, mua thẻ: 3 -->  
                                   <td>
@@ -48,7 +48,7 @@
                                             <% } %>
                                   </td>
                                   <td>
-                                    <%=h.time%>
+                                    <%=h.time.toLocaleString('vi-VN', { hour12: true })%>
                                   </td>
                                
                               </tr>
