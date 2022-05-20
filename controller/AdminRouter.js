@@ -68,13 +68,14 @@ Router.post('/detailuser/:id', CheckLogin, (req, res) => {
 
 
 
-//danh sách đã xác minh
+//danh sách đã xác minh - sắp xếp giảm dần theo ngày tạo
 Router.get('/actived', CheckLogin, (req, res) => {
+    var sort = {  date_register: -1 };
     Account.find({ status: 1 }, function(err, users) {
         res.render('actived', {
             users
         });
-    });
+    }).sort(sort);
 });
 
 
@@ -149,7 +150,7 @@ Router.post("/changePasswordadmin", changePassValidator, (req, res) => {
         });
     }
 });
-//Quản lý giao dịch
+//Quản lý giao dịch - bắt đầu
 Router.get('/acceptTransaction', CheckLogin, (req, res) => {
     Transaction.find({status_transation:1 }, function(err, transaction) {
         res.render('acceptTransaction', {
@@ -158,6 +159,15 @@ Router.get('/acceptTransaction', CheckLogin, (req, res) => {
     });
     
 });
+// Xem thông tin chi tiết giao dịch
+Router.get('/acceptTransaction/:id', CheckLogin, (req, res) => {
+    Transaction.findById(req.params.id, function(err, transaction) {
+        res.render('detailTransaction', {
+            transaction
+        });
+    });
+});
 
+//Quản lý giao dịch - kết thúc
 
 module.exports = Router;

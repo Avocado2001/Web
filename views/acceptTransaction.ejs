@@ -16,6 +16,7 @@
                                 <th>TRẠNG THÁI</th>
                              
                                 <th>NGÀY GIAO DỊCH</th>
+                                <th>THAO TÁC</th>
                               
                             </tr>
                         </thead>
@@ -39,11 +40,9 @@
                                   <!-- kind-chuyển tiền: 0, nạp tiền: 1, rút tiền: 2, mua thẻ: 3 -->  
                                   <td>
                                       <% if(h.kind === 0) { %>
-                                          <span class="badge badge-success rounded-pill d-inline">Chuyển tiền</span> 
+                                          <span class="badge badge-primary rounded-pill d-inline">Chuyển tiền</span> 
                                               <% }else if(h.kind === 2){ %>
-                                                  <span class="badge badge-success rounded-pill d-inline">Rút tiền</span>
-                                                  <% }else{ %>
-                                                      <span class="badge badge-success rounded-pill d-inline">Mua thẻ</span>
+                                                  <span class="badge badge-danger rounded-pill d-inline">Rút tiền</span>
                                                       <% } %>
 
                                   </td>
@@ -51,13 +50,17 @@
                                   <td> 
 
                                       <% if(h.status_transation === 1){ %>
-                                          <span class="badge  badge-primary rounded-pill d-inline">Chờ duyệt</span>
+                                          <span class="badge   badge-warning rounded-pill d-inline">Chờ duyệt</span>
 
                                             <% } %>
                                   </td>
                                   <td>
                                     <%=h.time.toLocaleString('vi-VN', { hour12: true })%>
                                   </td>
+                                  <td>
+                                    <a  href="/admin/acceptTransaction/<%=h._id %>" type="button" class="btn-primary  btn-sm btn-rounded"> Xem chi tiết</a>
+                                </td>
+                               
                                
                               </tr>
                                 <% }); %>
