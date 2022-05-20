@@ -43,19 +43,21 @@ Router.get("/", CheckLogin, FirstTime, (req, res) => {
 //Nạp tiền
 Router.get("/addMoney", CheckLogin, FirstTime, (req, res) => {
   let user = req.session.account;
-  if(user.status===0)
-  {
-    res.render("notactive",{
+  Account.findById(user._id,function(err,data){
+    if(data.status==0)
+    {
+      res.render("notactive",{
+        fullname: user.fullname,
+      })
+    }
+    else
+    {
+    res.render("addMoney", {
+      error: "",
       fullname: user.fullname,
-    })
-  }
-  else
-  {
-  res.render("addMoney", {
-    error: "",
-    fullname: user.fullname,
-  });
-  }
+    });
+    }
+  })
 });
 Router.post("/addMoney", CheckLogin, FirstTime, (req, res) => {
   let id = req.session.account._id;
@@ -178,20 +180,24 @@ Router.post("/addMoney", CheckLogin, FirstTime, (req, res) => {
 });
 //Rút tiền - bắt đầu
 Router.get("/withdrawMoney", CheckLogin, FirstTime, (req, res) => {
+
   let user = req.session.account;
-  if(user.status===0)
-  {
-    res.render("notactive",{
+  Account.findById(user._id,function(err,data){
+    if(data.status==0)
+    {
+      res.render("notactive",{
+        fullname: user.fullname,
+      })
+    }
+    else
+    {
+    res.render("withdrawMoney", {
+      error: "",
       fullname: user.fullname,
-    })
-  }
-  else
-  {
-  res.render("withdrawMoney", {
-    error: "",
-    fullname: user.fullname,
-  });
-  }
+    });
+    }
+  })
+ 
 });
 
 Router.post("/withdrawMoney", CheckLogin, FirstTime, (req, res) => {
@@ -446,20 +452,24 @@ Router.get("/buyCard", CheckLogin, FirstTime, (req, res) => {
 //Xem lịch sử giao dịch - bắt đầu
 Router.get("/history", CheckLogin, (req, res) => {
   let user = req.session.account;
-  if(user.status===0)
-  {
-    res.render("notactive",{
-      fullname: user.fullname,
-    })
-  }
-  else
-  {
-    Transaction.find({}).then((his) => {
-      res.render("history", { his: his,
-         fullname: user.fullname,
+  Account.findById(user._id,function(err,data){
+    if(data.status==0)
+    {
+      res.render("notactive",{
+        fullname: user.fullname,
+      })
+    }
+    else
+    {
+      Transaction.find({}).then((his) => {
+        res.render("history", { his: his,
+           fullname: user.fullname,
+        });
       });
-    });
-  }
+    }
+  })
+
+ 
 });
 //Xem chi tiết giao dịch
 Router.get('/detailhistory/:id', CheckLogin, (req, res) => {
