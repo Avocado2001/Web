@@ -1,7 +1,7 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const Account = require("../models/AccountModel");
-const History = require("../models/TransactionModel");
+
 const Transaction = require('../models/TransactionModel')
 const CheckLogin = require("../auth/CheckForUser");
 const FirstTime = require("../auth/CheckFirstTime");
@@ -426,7 +426,7 @@ Router.get("/buyCard", CheckLogin, FirstTime, (req, res) => {
 //Xem lịch sử giao dịch - bắt đầu
 Router.get("/history", CheckLogin, (req, res) => {
   let user = req.session.account;
-  History.find({}).then((his) => {
+  Transaction.find({}).then((his) => {
     res.render("history", { his: his,
        fullname: user.fullname,
     
@@ -434,7 +434,14 @@ Router.get("/history", CheckLogin, (req, res) => {
   });
 
 });
-
+//Xem chi tiết giao dịch
+Router.get('/detailhistory/:id', CheckLogin, (req, res) => {
+  Transaction.findById(req.params.id, function(err, transaction) {
+      res.render('detailhistory', {
+          transaction,fullname: transaction.fullname,
+      });
+  });
+});
 // Xem lịch sử giao dịch - kết thúc
 //Đổi mật khẩu
 Router.get("/changePassworduser", CheckLogin, FirstTime, (req, res) => {

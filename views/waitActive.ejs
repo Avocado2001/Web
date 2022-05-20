@@ -36,10 +36,10 @@
 
                                     </td>
                                     <td>
-                                        <span class="badge badge-success rounded-pill d-inline"><%= e.date_register %></span>
+                                        <span class="badge badge-success rounded-pill d-inline"><%= e.date_register.toLocaleString("en-US") %></span>
                                     </td>
                                     <td>
-                                        <a  href="/admin/detailuser/<%=e._id %>" type="button" class="btn btn-link btn-sm btn-rounded"> Xem chi tiết</a>
+                                        <a  href="/admin/detailuser/<%=e._id %>" type="button" class="btn-primary  btn-sm btn-rounded"> Xem chi tiết</a>
                                     </td>
                                 </tr>
                                 <% })%>

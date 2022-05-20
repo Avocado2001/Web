@@ -12,8 +12,8 @@
                                 <th>TIỀN GIAO DỊCH</th>
                                 <th>LOẠI GIAO DỊCH</th>
                                 <th>TRẠNG THÁI</th>
-                             
                                 <th>NGÀY GIAO DỊCH</th>
+                                <th>THAO TÁC</th>
                               
                             </tr>
                         </thead>
@@ -33,11 +33,11 @@
                                       <% if(h.kind === 0) { %>
                                           <span class="badge badge-success rounded-pill d-inline">Chuyển tiền</span> 
                                           <% }else if(h.kind === 1){ %>
-                                              <span class="badge badge-success rounded-pill d-inline">Nạp tiền</span>
+                                              <span class="badge badge-primary rounded-pill d-inline">Nạp tiền</span>
                                               <% }else if(h.kind === 2){ %>
-                                                  <span class="badge badge-success rounded-pill d-inline">Rút tiền</span>
+                                                  <span class="badge  badge-info rounded-pill d-inline">Rút tiền</span>
                                                   <% }else{ %>
-                                                      <span class="badge badge-success rounded-pill d-inline">Mua thẻ</span>
+                                                      <span class="badge badge-dark rounded-pill d-inline">Mua thẻ</span>
                                                       <% } %>
 
                                   </td>
@@ -54,6 +54,9 @@
                                   <td>
                                     <%=h.time.toLocaleString('vi-VN', { hour12: true })%>
                                   </td>
+                                  <td>
+                                    <a  href="/user/detailhistory/<%=h._id %>" type="button" class="btn-primary  btn-sm btn-rounded"> Xem chi tiết</a>
+                                </td>
                                
                               </tr>
                                 <% }); %>

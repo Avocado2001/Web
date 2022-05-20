@@ -36,12 +36,10 @@
 
                                     </td>
                                     <td>
-                                        <span class="badge badge-success rounded-pill d-inline"><%= e.date_register %></span>
+                                        <span class="badge badge-success rounded-pill d-inline"><%= e.date_register.toLocaleString("en-US") %></span>
                                     </td>
                                     <td>
-                                        <button type="button" class="btn btn-link btn-sm btn-rounded">
-                            Edit
-                          </button>
+                                        <button type="button" class="btn btn-link btn-sm btn-rounded"> Xem chi tiết </button>
                                     </td>
                                 </tr>
                                 <% })%>
