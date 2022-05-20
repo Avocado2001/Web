@@ -76,7 +76,13 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>                                      
+                                        </div>  
+                                        <% if(error){ %>
+                                            <div class="alert alert-danger mb-3">
+                                                <strong>Lưu ý!</strong>
+                                                <%= error %>
+                                            </div>
+                                            <%}%>                                        
                                         <button type="submit" class="btn btn-primary btn-block mt-3">Xác nhận chuyển</button>
                                     </div>  
                                 </form>

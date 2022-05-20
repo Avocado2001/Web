@@ -62,6 +62,15 @@ if (getIdDetails().message == "transferMoneySuccess") {
         dangerMode: true,
     })
 }
+if (getIdDetails().message == "transferMoneychoduyet") {
+    swal({
+        title: "SUCCESS",
+        text: "Giao dịch hoàn tất, vui lòng chờ quản trị viên duyệt giao dịch",
+        icon: "success",
+        buttons: false,
+        dangerMode: true,
+    })
+}
 //auto close lert
 function createAutoClosingAlert(selector, delay) {
     var alert = $(selector).alert();
