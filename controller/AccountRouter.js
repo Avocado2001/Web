@@ -71,14 +71,14 @@ Router.post('/', loginValidator, (req, res) => {
     if (result.errors.length === 0) {
         let { username, password } = req.body;
         Account.findOne({ username }).then(account => {
-            // if(account.status===2)
-            // {
-            //     return res.render('login', {
-            //         error: 'Tài khoản bạn đã bị khóa, vui lòng liên hệ 18001008',
-            //         password: '',
-            //         username
-            //     });
-            // }
+            if(account.status===3)
+            {
+                return res.render('login', {
+                    error: 'Tài khoản bạn đã bị khóa, vui lòng liên hệ 18001008',
+                    password: '',
+                    username
+                });
+            }
             if (!account) {
                 throw new Error('Username không tồn tại');
             }

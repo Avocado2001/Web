@@ -21,7 +21,7 @@ Router.get('/', CheckLogin, (req, res) => {
 //danh sách chờ xác minh
 Router.get('/waitActive', CheckLogin, (req, res) => {
    
-    Account.find({ status: 0 }, function(err, users) {
+    Account.find({ $or: [{status: 0},{status:2}] }, function(err, users) {
         res.render('waitActive', {
             users
         });

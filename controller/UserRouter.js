@@ -424,10 +424,11 @@ Router.get("/buyCard", CheckLogin, FirstTime, (req, res) => {
   res.render("buyCard", { fullname: user.fullname });
 });
 //Xem lịch sử giao dịch - bắt đầu
-Router.get("/history", CheckLogin, FirstTime, (req, res) => {
+Router.get("/history", CheckLogin, (req, res) => {
   let user = req.session.account;
   History.find({}).then((his) => {
-    res.render("history", { his: his, fullname: user.fullname,
+    res.render("history", { his: his,
+       fullname: user.fullname,
     
     });
   });
