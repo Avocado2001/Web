@@ -81,11 +81,12 @@ Router.get('/actived', CheckLogin, (req, res) => {
 
 //danh sách bị vô hiệu hóa
 Router.get('/banning', CheckLogin, (req, res) => {
+    var sort = {  date_register: -1 };
     Account.find({ status: 3 }, function(err, users) {
         res.render('banning', {
             users
         });
-    });
+    }).sort(sort);
 });
 //danh sách bị khóa vô thời hạn
 Router.get('/bannedForever', CheckLogin, (req, res) => {
