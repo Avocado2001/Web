@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const today = new Date();
 const AccountSchema = new Schema({
     email: {
         type: String,
@@ -18,6 +19,7 @@ const AccountSchema = new Schema({
         default: Date.now,
         format: "%d/%m/%Y"
     },
+
 
     birthday: String,
 

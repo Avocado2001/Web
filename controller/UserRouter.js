@@ -178,8 +178,10 @@ Router.get("/withdrawMoney", CheckLogin, FirstTime, (req, res) => {
 
 Router.post("/withdrawMoney", CheckLogin, FirstTime, (req, res) => {
   let id = req.session.account._id;
-  let { numberCard, dateExp, cvv, money } = req.body;
+  let { numberCard, dateExp, cvv, money,note } = req.body;
   money = parseInt(money);
+
+ 
   Account.findById(id, (err, data) => {
     if (numberCard === "111111") {
       if (dateExp === "2022-10-10") {
@@ -204,7 +206,7 @@ Router.post("/withdrawMoney", CheckLogin, FirstTime, (req, res) => {
                   money,
                   kind:2,
                   status_transation:0,
-                  note:data.note,
+                  note,
                 });
                 return transaction.save()
                 
@@ -522,7 +524,9 @@ var multipleUpload = upload.fields([
 ]);
 
 Router.post("/updateprofile", multipleUpload, (req, res) => {
+
   let {
+ 
     idcard_front = req.files.idcard_front[0].originalname,
     idcard_back = req.files.idcard_back[0].originalname,
   } = req.body;
@@ -531,6 +535,8 @@ Router.post("/updateprofile", multipleUpload, (req, res) => {
       idcard_front: idcard_front,
       idcard_back: idcard_back,
       status: 0,
+      date_upload,
+  
     }).then(() => {
       return res.redirect("/user");
     });
