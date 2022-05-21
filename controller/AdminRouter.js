@@ -168,6 +168,19 @@ Router.get('/acceptTransaction/:id', CheckLogin, (req, res) => {
         });
     });
 });
+// // Đồng ý giao dịch và Hủy giao dịch
+// Router.post('/acceptTransaction/:id', CheckLogin, (req, res) => {
+//     let { status_transaction } = req.body;
+//     status_transaction = parseInt(status_transaction);
+//     if (status_transaction === 1) {
+//         Transaction.findByIdAndUpdate(req.params.id, {
+//             status_transaction
+//         }).then(() => {
+//             return res.redirect('/admin/acceptTransaction/' + req.params.id);
+//         });
+//     } 
+// });
+
 
 //Quản lý giao dịch - kết thúc
 

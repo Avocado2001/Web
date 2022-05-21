@@ -39,7 +39,7 @@
                                   </td>
                                   <!-- kind-chuyển tiền: 0, nạp tiền: 1, rút tiền: 2, mua thẻ: 3 -->  
                                   <td>
-                                      <% if(h.kind === 0) { %>
+                                      <% if(h.kind === 1) { %>
                                           <span class="badge badge-primary rounded-pill d-inline">Chuyển tiền</span> 
                                               <% }else if(h.kind === 2){ %>
                                                   <span class="badge badge-danger rounded-pill d-inline">Rút tiền</span>
@@ -48,11 +48,9 @@
                                   </td>
                                   <!-- 0:duyệt, 1:chờ duyệt, 2:từ chối -->
                                   <td> 
-
                                       <% if(h.status_transation === 1){ %>
                                           <span class="badge   badge-warning rounded-pill d-inline">Chờ duyệt</span>
-
-                                            <% } %>
+                                          <% } %>
                                   </td>
                                   <td>
                                     <%=h.time.toLocaleString('vi-VN', { hour12: true })%>
