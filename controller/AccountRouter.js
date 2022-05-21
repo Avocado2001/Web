@@ -71,10 +71,10 @@ Router.post('/', loginValidator, (req, res) => {
     if (result.errors.length === 0) {
         let { username, password } = req.body;
         Account.findOne({ username }).then(account => {
-            if (account.status === 3) {
-                throw new Error('Tài khoản bạn đã bị khóa, vui lòng liên hệ 18001008');
-            } else if (!account) {
+            if (!account) {
                 throw new Error('Username không tồn tại');
+            } else if (account.status === 3) {
+                throw new Error('Tài khoản bạn đã bị khóa, vui lòng liên hệ 18001008');
             } else if (bcrypt.compareSync(password, account.password)) {
                 return account;
             } else {
@@ -237,26 +237,6 @@ Router.post('/register', multipleUpload, registerValidator, (req, res) => {
         });
     }
 });
-
-// upload image to folder public/upload for ID when register
-// Router.post('/register', (req, res) => {
-//     let file = req.files.file;
-//     let fileName = file.name;
-//     let filePath = 'public/uploads/' + fileName ;
-//     file.mv(filePath, (err) => {
-//         if (err) {
-//             return res.status(500).send(err);
-//         }
-//         res.send({
-//             fileName,
-//             filePath
-//         });
-//     });
-// });
-
-
-
-
 //Đổi mật khẩu
 Router.get('/changePassword', (req, res) => {
 

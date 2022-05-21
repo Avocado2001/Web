@@ -11,7 +11,7 @@ const TransactionModel = require('../models/TransactionModel');
 let userList = new Map();
 const Router = express.Router();
 Router.get('/', CheckLogin, (req, res) => {
-    Account.find({}, function(err, users) {
+    Account.find({ isAdmin: false }, function(err, users) {
         res.render('admin', {
             users
         });
@@ -20,8 +20,8 @@ Router.get('/', CheckLogin, (req, res) => {
 
 //danh sách chờ xác minh
 Router.get('/waitActive', CheckLogin, (req, res) => {
-    var sort = {  date_register: -1 };
-    Account.find({ $or: [{status: 0},{status:2}] }, function(err, users) {
+    var sort = { date_register: -1 };
+    Account.find({ isAdmin: false, $or: [{ status: 0 }, { status: 2 }] }, function(err, users) {
         res.render('waitActive', {
             users
         });
@@ -70,8 +70,8 @@ Router.post('/detailuser/:id', CheckLogin, (req, res) => {
 
 //danh sách đã xác minh - sắp xếp giảm dần theo ngày tạo
 Router.get('/actived', CheckLogin, (req, res) => {
-    var sort = {  date_register: -1 };
-    Account.find({ status: 1 }, function(err, users) {
+    var sort = { date_register: -1 };
+    Account.find({ isAdmin: false, status: 1 }, function(err, users) {
         res.render('actived', {
             users
         });
@@ -81,8 +81,8 @@ Router.get('/actived', CheckLogin, (req, res) => {
 
 //danh sách bị vô hiệu hóa
 Router.get('/banning', CheckLogin, (req, res) => {
-    var sort = {  date_register: -1 };
-    Account.find({ status: 3 }, function(err, users) {
+    var sort = { date_register: -1 };
+    Account.find({ isAdmin: false, status: 3 }, function(err, users) {
         res.render('banning', {
             users
         });
@@ -90,7 +90,7 @@ Router.get('/banning', CheckLogin, (req, res) => {
 });
 //danh sách bị khóa vô thời hạn
 Router.get('/bannedForever', CheckLogin, (req, res) => {
-    Account.find({ status: 4 }, function(err, users) {
+    Account.find({ isAdmin: false, status: 4 }, function(err, users) {
         res.render('bannedForever', {
             users
         });
@@ -153,12 +153,12 @@ Router.post("/changePasswordadmin", changePassValidator, (req, res) => {
 });
 //Quản lý giao dịch - bắt đầu
 Router.get('/acceptTransaction', CheckLogin, (req, res) => {
-    Transaction.find({status_transation:1 }, function(err, transaction) {
+    Transaction.find({ status_transation: 1 }, function(err, transaction) {
         res.render('acceptTransaction', {
             transaction
         });
     });
-    
+
 });
 // Xem thông tin chi tiết giao dịch
 Router.get('/acceptTransaction/:id', CheckLogin, (req, res) => {
