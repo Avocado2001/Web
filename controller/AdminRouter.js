@@ -168,18 +168,24 @@ Router.get('/acceptTransaction/:id', CheckLogin, (req, res) => {
         });
     });
 });
-// // Đồng ý giao dịch và Hủy giao dịch
-// Router.post('/acceptTransaction/:id', CheckLogin, (req, res) => {
-//     let { status_transaction } = req.body;
-//     status_transaction = parseInt(status_transaction);
-//     if (status_transaction === 1) {
-//         Transaction.findByIdAndUpdate(req.params.id, {
-//             status_transaction
-//         }).then(() => {
-//             return res.redirect('/admin/acceptTransaction/' + req.params.id);
-//         });
-//     } 
-// });
+// Đồng ý giao dịch và Hủy giao dịch
+Router.post('/acceptTransaction/:id', CheckLogin, (req, res) => {
+    let {status_transation} = req.body;
+    status_transation = parseInt(status_transation);
+    if (status_transation === 1) {
+        Transaction.findByIdAndUpdate(req.params.id, {
+            status_transation
+        }).then(() => {
+            return res.redirect('/admin/acceptTransaction/' + req.params.id);
+        });
+    } else {
+        Transaction.findByIdAndUpdate(req.params.id, {
+            status_transation
+        }).then(() => {
+            return res.redirect('/admin/acceptTransaction/' + req.params.id);
+        });
+    } 
+});
 
 
 //Quản lý giao dịch - kết thúc
