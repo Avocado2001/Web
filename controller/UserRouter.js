@@ -600,10 +600,170 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
     }
 });
 //Mua thẻ cào
-Router.get("/buyCard", CheckLogin, FirstTime, (req, res) => {
+Router.get("/buyCard", CheckLogin,FirstTime, (req, res) => {
     let user = req.session.account;
-    res.render("buyCard", { fullname: user.fullname });
+    res.render("buyCard", { fullname: user.fullname,error:'' });
 });
+
+Router.post("/buyCard", CheckLogin,FirstTime, (req, res) => {
+    let user = req.session.account._id;
+    let { number_card = generator.generate({
+        length: 5,
+        numbers: true,
+        uppercase: false,
+        exclude: 'abcdefghijklmnopqrstuvwxyz'
+    }) 
+        ,name_card
+        , price
+        , fee
+        , quantity
+        ,money } = req.body;
+        money = parseInt(money);
+
+    Account.findById(user, (err, data) => {
+        if (name_card === "Viettel") {
+            if(quantity > 5){
+                return res.render("buyCard", {
+                    error: "Số lượng card không được lớn hơn 5",
+                    fullname: data.fullname,
+            });
+            }else{
+                     if (price * quantity > data.account_balance) {
+                        return res.render("buyCard", {
+                            error: "Số dư không đủ",
+                            fullname: data.fullname,
+                        });
+                    } else {
+                        number_card = "11111" + number_card;
+                        money=price*quantity;
+                        Account.findByIdAndUpdate(user, {
+                            account_balance: data.account_balance - money ,
+                            })
+                            .then(() => {
+                                let transaction = new Transaction({
+                                    username: data.username,
+                                    kind: 3,
+                                    number_card ,
+                                    status_transation: 0,
+                                    price,
+                                    fee,
+                                    money: price * quantity,
+                                    quantity,
+                                    name_card,                  
+                                });
+                                return transaction.save()
+
+                            }).then(() => {
+                                return res.render("buyCardreceipt", {
+                                    error: err.message,
+                                    fullname: data.fullname,
+                                });
+                            })
+                            .catch((err) => {
+                                return res.render("buyCardreceipt", {
+                                    error: err.message,
+                                    fullname: data.fullname,
+                                });
+                            });
+            } 
+        } 
+        }else if(name_card === "Mobifone") {
+            if(quantity > 5){
+                return res.render("buyCard", {
+                    error: "Số lượng card không được lớn hơn 5",
+                    fullname: data.fullname,
+            });
+            }else{
+                     if (price * quantity > data.account_balance) {
+                        return res.render("buyCard", {
+                            error: "Số dư không đủ",
+                            fullname: data.fullname,
+                        });
+                    } else {
+                        number_card = "22222" + number_card;
+                        money=price*quantity;
+                        Account.findByIdAndUpdate(user, {
+                            account_balance: data.account_balance - money ,
+                            })
+                            .then(() => {
+                                let transaction = new Transaction({
+                                    username: data.username,
+                                    kind: 3,
+                                    number_card ,
+                                    status_transation: 0,
+                                    price,
+                                    fee,
+                                    money: price * quantity,
+                                    quantity,
+                                    name_card,                  
+                                });
+                                return transaction.save()
+
+                            }).then(() => {
+                                return res.render("buyCardreceipt", {
+                                    error: err.message,
+                                    fullname: data.fullname,
+                                });
+                            })
+                            .catch((err) => {
+                                return res.render("buyCardreceipt", {
+                                    error: err.message,
+                                    fullname: data.fullname,
+                                });
+                            });
+            } 
+        }
+    }else if(name_card === "Vinaphone") {
+        if(quantity > 5){
+            return res.render("buyCard", {
+                error: "Số lượng card không được lớn hơn 5",
+                fullname: data.fullname,
+        });
+        }else{
+                 if (price * quantity > data.account_balance) {
+                    return res.render("buyCard", {
+                        error: "Số dư không đủ",
+                        fullname: data.fullname,
+                    });
+                } else {
+                    number_card = "33333" + number_card;
+                    money=price*quantity;
+                    Account.findByIdAndUpdate(user, {
+                        account_balance: data.account_balance - money ,
+                        })
+                        .then(() => {
+                            let transaction = new Transaction({
+                                username: data.username,
+                                kind: 3,
+                                number_card ,
+                                status_transation: 0,
+                                price,
+                                fee,
+                                money: price * quantity,
+                                quantity,
+                                name_card,                  
+                            });
+                            return transaction.save()
+
+                        }).then(() => {
+                            return res.render("buyCardreceipt", {
+                                error: err.message,
+                                fullname: data.fullname,
+                            });
+                        })
+                        .catch((err) => {
+                            return res.render("buyCardreceipt", {
+                                error: err.message,
+                                fullname: data.fullname,
+                            });
+                        });
+        } 
+    }
+
+}
+    });
+});
+
 //Xem lịch sử giao dịch - bắt đầu
 Router.get("/history", CheckLogin, (req, res) => {
     let user = req.session.account;

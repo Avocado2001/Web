@@ -12,5 +12,12 @@ const TransactionSchema = new Schema({
     //0:duyệt, 1:chờ duyệt, 2:từ chối
     status_transation: { type: Number, default: 0 },
     note:String,
+
+    quantity: { type: Number  ,default:1 },
+    fee: { type: Number, default: 0 },
+    // mệnh giá 1:100000, 2:200000,3:500000,4:100000
+    price: { type: Number },
+    number_card: String,
+    name_card: String,
 });
 module.exports = mongoose.model('Transaction', TransactionSchema);

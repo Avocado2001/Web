@@ -32,6 +32,8 @@ const AccountSchema = new Schema({
     //khóa tài khoản
     login_fail: { type: Number, default: 0 },
     wrong_pass: { type: Number, default: 0 },
+
+    
     
     
 });
