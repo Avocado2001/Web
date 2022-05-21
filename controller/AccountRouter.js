@@ -67,25 +67,35 @@ Router.get('/', loginValidator, (req, res) => {
 });
 Router.post('/', loginValidator, (req, res) => {
     let result = validationResult(req);
-    
+
     if (result.errors.length === 0) {
         let { username, password } = req.body;
         Account.findOne({ username }).then(account => {
-            if(account.status===3)
-            {
+            if (account.status === 3) {
                 return res.render('login', {
                     error: 'Tài khoản bạn đã bị khóa, vui lòng liên hệ 18001008',
                     password: '',
                     username
                 });
-            }
-            if (!account) {
+            } else if (!account) {
                 throw new Error('Username không tồn tại');
-            }
-            if (bcrypt.compareSync(password, account.password)) {
+            } else if (bcrypt.compareSync(password, account.password)) {
                 return account;
             } else {
-                return null;
+                if (account.wrong_pass < 3) {
+                    Account.findByIdAndUpdate(account._id, { $inc: { wrong_pass: 1 } })
+                        .then(() => {
+                            return null;
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        })
+                } else {
+                    Account.findByIdAndUpdate(account._id, { $set: { status: 3 } })
+                        .catch(err => {
+                            console.log(err);
+                        })
+                }
             }
         }).then(account => {
             if (!account) {
@@ -96,14 +106,18 @@ Router.post('/', loginValidator, (req, res) => {
                 })
             } else {
                 req.session.account = account;
-                if (account.isAdmin) {
-                    return res.redirect('/admin');
-                }
-                return res.redirect('/user');
+                Account.findByIdAndUpdate(account._id, { $set: { wrong_pass: 0 } }).then(() => {
+                    if (account.isAdmin) {
+                        return res.redirect('/admin');
+                    }
+                    return res.redirect('/user');
+                }).catch(err => {
+                    console.log(err);
+                });
             }
         }).catch(err => {
             return res.render('login', {
-                error: 'Lỗi đăng nhập',
+                error: err.message,
                 password: '',
                 username
             });
