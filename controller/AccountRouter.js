@@ -72,17 +72,16 @@ Router.post('/', loginValidator, (req, res) => {
         let { username, password } = req.body;
         Account.findOne({ username }).then(account => {
             if (account.status === 3) {
-                return res.render('login', {
-                    error: 'Tài khoản bạn đã bị khóa, vui lòng liên hệ 18001008',
-                    password: '',
-                    username
-                });
+                throw new Error('Tài khoản bạn đã bị khóa, vui lòng liên hệ 18001008');
             } else if (!account) {
                 throw new Error('Username không tồn tại');
             } else if (bcrypt.compareSync(password, account.password)) {
                 return account;
             } else {
                 if (account.wrong_pass < 3) {
+                    // if (account.wrong_pass === 2) {
+
+                    // }
                     Account.findByIdAndUpdate(account._id, { $inc: { wrong_pass: 1 } })
                         .then(() => {
                             return null;
@@ -92,6 +91,9 @@ Router.post('/', loginValidator, (req, res) => {
                         })
                 } else {
                     Account.findByIdAndUpdate(account._id, { $set: { status: 3 } })
+                        .then(() => {
+                            return null;
+                        })
                         .catch(err => {
                             console.log(err);
                         })
