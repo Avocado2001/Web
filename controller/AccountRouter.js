@@ -101,11 +101,7 @@ Router.post('/', loginValidator, (req, res) => {
             }
         }).then(account => {
             if (!account) {
-                return res.render('login', {
-                    error: 'Sai mật khẩu',
-                    password: '',
-                    username
-                })
+                throw new Error('Sai mật khẩu', 'password', username);
             } else {
                 req.session.account = account;
                 Account.findByIdAndUpdate(account._id, { $set: { wrong_pass: 0 } }).then(() => {
