@@ -7,7 +7,7 @@ const TransactionSchema = new Schema({
     +today.getHours()+":"+today.getMinutes()+":"+today.getSeconds()},
     money: { type: Number, default: 0 },
  
-    //chuyển tiền: 0, nạp tiền: 1, rút tiền: 2, mua thẻ: 3
+    //nạp tiền: 0, chuyển tiền: 1, rút tiền: 2, mua thẻ: 3
     kind: { type: Number, default: 0 },
     //0:duyệt, 1:chờ duyệt, 2:từ chối
     status_transation: { type: Number, default: 0 },
