@@ -153,7 +153,7 @@ Router.post("/changePasswordadmin", changePassValidator, (req, res) => {
 });
 //Quản lý giao dịch - bắt đầu
 Router.get('/acceptTransaction', CheckLogin, (req, res) => {
-    Transaction.find({ status_transation: 1 }, function (err, transaction) {
+    Transaction.find({ status_transaction: 1 }, function (err, transaction) {
         res.render('acceptTransaction', {
             transaction
         });
@@ -170,12 +170,12 @@ Router.get('/acceptTransaction/:id', CheckLogin, (req, res) => {
 });
 // Đồng ý giao dịch và Hủy giao dịch
 Router.post('/acceptTransaction/:id', CheckLogin, (req, res) => {
-    let { status_transation} = req.body;
-    status_transation = parseInt(status_transation);
+    let { status_transaction} = req.body;
+    status_transaction = parseInt(status_transaction);
     let id = req.params.id
-    if (status_transation === 0) {
+    if (status_transaction === 0) {
         Transaction.findOne({_id:id}).then(transaction => {
-            Transaction.findByIdAndUpdate(id, { status_transation },
+            Transaction.findByIdAndUpdate(id, { status_transaction },
 
             ).then(() => {
                 username=transaction.username

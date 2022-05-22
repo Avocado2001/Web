@@ -66,7 +66,7 @@ Router.post("/addMoney", CheckLogin, FirstTime, (req, res) => {
                                 username: data.username,
                                 money,
                                 kind: 0,
-                                status_transation: 0,
+                                status_transaction: 0,
                             });
                             return transaction.save()
 
@@ -108,7 +108,7 @@ Router.post("/addMoney", CheckLogin, FirstTime, (req, res) => {
                                     username: data.username,
                                     money,
                                     kind: 0,
-                                    status_transation: 1, // Nạp tiền mặc định là duyệt
+                                    status_transaction: 1, // Nạp tiền mặc định là duyệt
 
                                 });
                                 return transaction.save()
@@ -212,7 +212,7 @@ Router.post("/withdrawMoney", CheckLogin, FirstTime, (req, res) => {
                             username: data.username,
                             money,
                             kind: 2,
-                            status_transation: 1,
+                            status_transaction: 1,
                             note,
                         });
                       
@@ -239,7 +239,7 @@ Router.post("/withdrawMoney", CheckLogin, FirstTime, (req, res) => {
                                     username: data.username,
                                     money,
                                     kind: 2,
-                                    status_transation: 0,
+                                    status_transaction: 0,
                                     note,
                                 });
                                 return transaction.save()
@@ -454,7 +454,7 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
                     username: user.username,
                     money: money,
                     kind: 0,
-                    status_transation: 1,
+                    status_transaction: 1,
                     note: note,
                 });
                 transaction.save();
@@ -485,7 +485,7 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
                             username: user.username,
                             money,
                             kind: 0,
-                            status_transation: 0,
+                            status_transaction: 0,
                             note: note,
                         });
                         return transaction.save()
@@ -682,7 +682,7 @@ Router.post("/buyCard", CheckLogin, FirstTime, (req, res) => {
                                 username: data.username,
                                 kind: 3,
                                 number_card,
-                                status_transation: 0,
+                                status_transaction: 0,
                                 price,
                                 fee:0,
                                 money: price * quantity,
@@ -696,7 +696,7 @@ Router.post("/buyCard", CheckLogin, FirstTime, (req, res) => {
                                 username: data.username, 
                                 kind: 3,
                                 number_card,
-                                status_transation: 0,
+                                status_transaction: 0,
                                 price,
                                 fee:0,
                                 money: price * quantity,
@@ -736,7 +736,7 @@ Router.post("/buyCard", CheckLogin, FirstTime, (req, res) => {
                                 username: data.username,
                                 kind: 3,
                                 number_card,
-                                status_transation: 0,
+                                status_transaction: 0,
                                 price,
                                 fee:0,
                                 money: price * quantity,
@@ -750,7 +750,7 @@ Router.post("/buyCard", CheckLogin, FirstTime, (req, res) => {
                                 username: data.username, 
                                 kind: 3,
                                 number_card,
-                                status_transation: 0,
+                                status_transaction: 0,
                                 price,
                                 fee:0,
                                 money: price * quantity,
@@ -790,7 +790,7 @@ Router.post("/buyCard", CheckLogin, FirstTime, (req, res) => {
                                 username: data.username,
                                 kind: 3,
                                 number_card,
-                                status_transation: 0,
+                                status_transaction: 0,
                                 price,
                                 fee:0,
                                 money: price * quantity,
@@ -804,7 +804,7 @@ Router.post("/buyCard", CheckLogin, FirstTime, (req, res) => {
                                 username: data.username, 
                                 kind: 3,
                                 number_card,
-                                status_transation: 0,
+                                status_transaction: 0,
                                 price,
                                 fee:0,
                                 money: price * quantity,
