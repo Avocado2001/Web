@@ -91,3 +91,27 @@ for (i = 0; i < dropdown.length; i++) {
         }
     });
 }
+if (getIdDetails().message == "withdrawmoneywaiting") {
+    swal({
+        title: "SUCCESS",
+        text: "Vui lòng chờ xác nhận vì số tiền lớn hơn 5.000.000",
+        icon: "success",
+        buttons: false,
+        dangerMode: true,
+    })
+}
+
+function calcFee() {
+    var money = document.getElementById("money").value;
+    var fee = money * 0.05;
+    document.getElementById("fee").value = fee;
+}
+
+
+function calc() {
+    var price = parseInt(document.getElementById("price").value);
+    var quantity = parseInt(document.getElementById("quantity").value);
+    var fee = parseInt(document.getElementById("fee").value);
+    var total = ((price * quantity) / 100) * (fee + 100);
+    document.getElementById("total").value = total.toLocaleString("en-US");
+}

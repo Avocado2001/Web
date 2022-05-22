@@ -11,7 +11,7 @@ const TransactionModel = require('../models/TransactionModel');
 let userList = new Map();
 const Router = express.Router();
 Router.get('/', CheckLogin, (req, res) => {
-    Account.find({ isAdmin: false }, function(err, users) {
+    Account.find({ isAdmin: false }, function (err, users) {
         res.render('admin', {
             users
         });
@@ -21,7 +21,7 @@ Router.get('/', CheckLogin, (req, res) => {
 //danh sách chờ xác minh
 Router.get('/waitActive', CheckLogin, (req, res) => {
     var sort = { date_register: -1 };
-    Account.find({ isAdmin: false, $or: [{ status: 0 }, { status: 2 }] }, function(err, users) {
+    Account.find({ isAdmin: false, $or: [{ status: 0 }, { status: 2 }] }, function (err, users) {
         res.render('waitActive', {
             users
         });
@@ -32,7 +32,7 @@ Router.get('/waitActive', CheckLogin, (req, res) => {
 
 // Xem thông tin chi tiết
 Router.get('/detailuser/:id', CheckLogin, (req, res) => {
-    Account.findById(req.params.id, function(err, user) {
+    Account.findById(req.params.id, function (err, user) {
         res.render('detailuser', {
             user
         });
@@ -71,7 +71,7 @@ Router.post('/detailuser/:id', CheckLogin, (req, res) => {
 //danh sách đã xác minh - sắp xếp giảm dần theo ngày tạo
 Router.get('/actived', CheckLogin, (req, res) => {
     var sort = { date_register: -1 };
-    Account.find({ isAdmin: false, status: 1 }, function(err, users) {
+    Account.find({ isAdmin: false, status: 1 }, function (err, users) {
         res.render('actived', {
             users
         });
@@ -82,7 +82,7 @@ Router.get('/actived', CheckLogin, (req, res) => {
 //danh sách bị vô hiệu hóa
 Router.get('/banning', CheckLogin, (req, res) => {
     var sort = { date_register: -1 };
-    Account.find({ isAdmin: false, status: 3 }, function(err, users) {
+    Account.find({ isAdmin: false, status: 3 }, function (err, users) {
         res.render('banning', {
             users
         });
@@ -90,7 +90,7 @@ Router.get('/banning', CheckLogin, (req, res) => {
 });
 //danh sách bị khóa vô thời hạn
 Router.get('/bannedForever', CheckLogin, (req, res) => {
-    Account.find({ isAdmin: false, status: 4 }, function(err, users) {
+    Account.find({ isAdmin: false, status: 4 }, function (err, users) {
         res.render('bannedForever', {
             users
         });
@@ -153,7 +153,7 @@ Router.post("/changePasswordadmin", changePassValidator, (req, res) => {
 });
 //Quản lý giao dịch - bắt đầu
 Router.get('/acceptTransaction', CheckLogin, (req, res) => {
-    Transaction.find({ status_transation: 1 }, function(err, transaction) {
+    Transaction.find({ status_transation: 1 }, function (err, transaction) {
         res.render('acceptTransaction', {
             transaction
         });
@@ -162,7 +162,7 @@ Router.get('/acceptTransaction', CheckLogin, (req, res) => {
 });
 // Xem thông tin chi tiết giao dịch
 Router.get('/acceptTransaction/:id', CheckLogin, (req, res) => {
-    Transaction.findById(req.params.id, function(err, transaction) {
+    Transaction.findById(req.params.id, function (err, transaction) {
         res.render('detailTransaction', {
             transaction
         });
@@ -170,22 +170,36 @@ Router.get('/acceptTransaction/:id', CheckLogin, (req, res) => {
 });
 // Đồng ý giao dịch và Hủy giao dịch
 Router.post('/acceptTransaction/:id', CheckLogin, (req, res) => {
-    let {status_transation} = req.body;
+    let { status_transation} = req.body;
     status_transation = parseInt(status_transation);
-    if (status_transation === 1) {
-        Transaction.findByIdAndUpdate(req.params.id, {
-            status_transation
-        }).then(() => {
-            return res.redirect('/admin/acceptTransaction/' + req.params.id);
-        });
-    } else {
-        Transaction.findByIdAndUpdate(req.params.id, {
-            status_transation
-        }).then(() => {
-            return res.redirect('/admin/acceptTransaction/' + req.params.id);
-        });
-    } 
+    let id = req.params.id
+    if (status_transation === 0) {
+        Transaction.findOne({_id:id}).then(transaction => {
+            Transaction.findByIdAndUpdate(id, { status_transation },
+
+            ).then(() => {
+                username=transaction.username
+                Account.findOne({username}).then(account=>{
+                    Account.findByIdAndUpdate(account._id, { $inc: { account_balance: -transaction.money*1.05 } })
+
+                    .catch(err => {
+                        console.log(err);
+                    })
+                })
+            }
+            ).then(() => {
+                return res.redirect('/admin/acceptTransaction/' + req.params.id);
+            }).catch(err=>{
+                console.log(err)
+            })
+
+
+        })
+
+    }
+
 });
+
 
 
 //Quản lý giao dịch - kết thúc

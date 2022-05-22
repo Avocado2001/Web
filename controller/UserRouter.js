@@ -1,11 +1,9 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const Account = require("../models/AccountModel");
-
 const Transaction = require('../models/TransactionModel')
 const CheckLogin = require("../auth/CheckForUser");
 const FirstTime = require("../auth/CheckFirstTime");
-const currencyFormatter = require("currency-formatter");
 const generator = require("generate-password");
 const changePassValidator = require("../routers/validators/changePassValidator");
 const { validationResult } = require("express-validator");
@@ -30,12 +28,7 @@ Router.get("/", CheckLogin, FirstTime, (req, res) => {
             birthday: data.birthday,
             idcard_front: "",
             idcard_back: "",
-            account_balance: currencyFormatter.format(data.account_balance, {
-                symbol: "đ",
-                thousand: ",",
-                precision: 1,
-                format: "%v %s",
-            }),
+            account_balance:data.account_balance,
             status: data.status,
         });
     });
@@ -214,7 +207,30 @@ Router.post("/withdrawMoney", CheckLogin, FirstTime, (req, res) => {
                             error: "Số tiền rút phải là bội số của 50",
                             fullname: data.fullname,
                         });
-                    } else {
+                    }else if(money >5000000){
+                        let transaction = new Transaction({
+                            username: data.username,
+                            money,
+                            kind: 2,
+                            status_transation: 1,
+                            note,
+                        });
+                      
+                        return transaction.save().then(() => {
+                            return res.redirect(
+                                "/user/withdrawMoney?message=withdrawmoneywaiting"
+                            );
+                        })
+                        .catch((err) => {
+                            return res.render("withdrawMoney", {
+                                error: err.message,
+                                fullname: data.fullname,
+                            });
+                        });
+                        
+
+                    }
+                     else {
                         Account.findByIdAndUpdate(id, {
                                 account_balance: data.account_balance - money - money * 0.05,
                             })
