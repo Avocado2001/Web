@@ -211,6 +211,7 @@ Router.post("/withdrawMoney", CheckLogin, FirstTime, (req, res) => {
                         let transaction = new Transaction({
                             username: data.username,
                             money,
+                            fee: money*0.05,
                             kind: 2,
                             status_transaction: 1,
                             note,
@@ -238,6 +239,7 @@ Router.post("/withdrawMoney", CheckLogin, FirstTime, (req, res) => {
                                 let transaction = new Transaction({
                                     username: data.username,
                                     money,
+                                    fee: money*0.05,
                                     kind: 2,
                                     status_transaction: 0,
                                     note,
