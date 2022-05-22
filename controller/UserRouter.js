@@ -852,12 +852,6 @@ Router.get("/buyCard_done", CheckLogin, FirstTime, (req, res) => {
 
 
 
-
-
-
-
-
-
 //Xem lịch sử giao dịch - bắt đầu
 Router.get("/history", CheckLogin, (req, res) => {
     let user = req.session.account;

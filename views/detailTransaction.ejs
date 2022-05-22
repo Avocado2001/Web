@@ -9,9 +9,9 @@
                             <div class="row g-0 p-4">
                                 <div class="card-body p-4">
                                 <h6>Chi tiết giao dịch</h6>
-                                <% if(transaction.status_transation === 0) { %>
+                                <% if(transaction.status_transaction === 0) { %>
                                     <span class="badge badge-success  rounded-pill d-inline">Duyệt</span> 
-                                    <% }else if(transaction.status_transation === 1){ %>
+                                    <% }else if(transaction.status_transaction === 1){ %>
                                         <span class="badge  badge-primary rounded-pill d-inline">Chờ duyệt</span>
                                         <% }else{ %>
                                           <span class="badge badge-warning rounded-pill d-inline">Từ chối</span>
@@ -96,18 +96,18 @@
                                 </div>
 
                                 <!--các button-->
-                                <% if(transaction.status_transation !== 0){ %>
+                                <% if(transaction.status_transaction !== 0){ %>
                                 <hr class="mt-0 mb-4">
                                 <div class="row mb-4">
                                     <div class="col">
                                         <form method="post" >
-                                            <button value="0" name="status_transation" class="btn btn-primary" >Đồng ý</button>
+                                            <button value="0" name="status_transaction" class="btn btn-primary" >Đồng ý</button>
                                        </form>
                                     </div>
                                     <div class="col">
                                         <div class="form-group"> 
                                             <form method="post"> 
-                                                <button value="2"name="status_transation" class="btn btn-danger">Huỷ</button>
+                                                <button value="2"name="status_transaction" class="btn btn-danger">Huỷ</button>
                                             </form>
                                         </div>
                                     </div>
