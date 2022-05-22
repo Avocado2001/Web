@@ -322,18 +322,17 @@ Router.get("/transferMoney", CheckLogin, FirstTime, (req, res) => {
 });
 let OTP_code_check = "";
 let OTP_timecheck = "";
+
 Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
     let user = req.session.account;
     let id = req.session.account._id;
     let OTP_timecheck_curren = new Date().getTime();
     let { phone, money, note, receiver, fee, nguoitra, OTP_code } = req.body;
-    let receiver_id, receiver_account_balance, receiver_email;
+    // let receiver_id, receiver_account_balance, receiver_email;
     money = parseInt(money);
     fee = (money / 100) * 5;
     fee = parseInt(fee);
-    if (receiver === "Not found") {
-        receiver = "";
-    }
+   
     if (phone === '' && money === "" && note === "" && receiver === "" && fee === "" && OTP_code == '') {
         return res.render("transferMoney", {
             fullname: user.fullname,
@@ -379,37 +378,41 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
             error: 'Số dư của bạn không đủ thực hiện giao dịch.',
         });
     }
-    Account.findOne({ phone: phone }, (err, account) => {
-        if (!account) {
-            return res.render("transferMoney", {
-                fullname: user.fullname,
-                phone: '',
-                money: '',
-                note: '',
-                receiver: '',
-                OTP_code: '',
-                fee: '',
-                error: 'Không tìm thấy người nhận!',
-            });
-        }
+    // Account.findOne({ phone: phone }, (err, account) => {
+        
 
-        // Account.findOne({ phone: phone }, (err, data) =>(receiver_id = data._id)); 
-        // Account.findOne({ phone: phone }, (err, data) =>(receiver_account_balance = data.account_balance)); 
-        // Account.findOne({ phone: phone }, (err, data) =>(receiver_email = data.email));
-    });
-    if (phone !== "" && money !== "" && note !== "" && receiver === "") {
+    //     // Account.findOne({ phone: phone }, (err, data) =>(receiver_id = data._id)); 
+    //     // Account.findOne({ phone: phone }, (err, data) =>(receiver_account_balance = data.account_balance)); 
+    //     // Account.findOne({ phone: phone }, (err, data) =>(receiver_email = data.email));
+    // });
+    else if (phone !== "" && money !== "" && note !== "" && receiver === "") {
         //check infor receiver
         Account.findOne({ phone: phone }, (err, data) => {
-            return res.render("transferMoney", {
-                fullname: user.fullname,
-                phone: phone,
-                money: money,
-                note: note,
-                receiver: data.fullname,
-                OTP_code: '',
-                fee: fee,
-                error: '',
-            });
+            if (!data) {
+                return res.render("transferMoney", {
+                    fullname: user.fullname,
+                    phone: '',
+                    money: '',
+                    note: '',
+                    receiver: '',
+                    OTP_code: '',
+                    fee: '',
+                    error: 'Không tìm thấy người nhận!',
+                });
+            }
+            else
+            {
+                return res.render("transferMoney", {
+                    fullname: user.fullname,
+                    phone: phone,
+                    money: money,
+                    note: note,
+                    receiver: data.fullname,
+                    OTP_code: '',
+                    fee: fee,
+                    error: '',
+                });
+            }
         });
     } else if (phone !== "" && money !== "" && note !== "" && receiver !== "" &&
         OTP_code === "") {
@@ -437,7 +440,8 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
                 console.log(error);
             }
         });
-        return res.render("transferMoney", {
+        return res.render("transferMoney", 
+        {
             fullname: user.fullname,
             phone: phone,
             money: money,
@@ -445,175 +449,204 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
             receiver: receiver,
             error: '',
             fee: fee,
+            nguoitra :'',
             OTP_code: OTP_code_check,
         });
     } else if (phone !== "" && money !== "" && note !== "" && receiver !== "" &&
         OTP_code !== "" && fee !== '') {
         //xác nhận giao dịch
-        let time = (OTP_timecheck_curren - OTP_timecheck) / 1000;
-        if (OTP_code === OTP_code_check && time < 61) {
-            let account_balance_after, receiver_account_balance_after;
-            let time = new Date().toISOString();
-            if (nguoitra == 'nguoichuyentra') {
-                account_balance_after = user.account_balance - money - fee;
-                //receiver_account_balance_after = receiver_account_balance + money;
-            } else if (nguoitra == 'nguoinhantra') {
-                account_balance_after = user.account_balance - money;
-                //receiver_account_balance_after = receiver_account_balance + money - fee;
-            }
+        let timecheck = (OTP_timecheck_curren - OTP_timecheck) / 1000;
+        let time = new Date().toISOString();
+        if (OTP_code === OTP_code_check && timecheck < 61) {
             if (money > 5000000) {
                 let transaction = new Transaction({
                     username: user.username,
                     money: money,
-                    kind: 0,
+                    kind: 1,
                     status_transaction: 1,
                     note: note,
+                    fee,
+                    price: 0,
+                    number_card: '',
+                    name_card: '',
                 });
-                transaction.save();
-                var mailOptions = {
-                    from: "ewallet.webnc@gmail.com",
-                    to: user.email,
-                    subject: "Chờ duyệt giao dịch E-Wallet",
-                    text: "Tài khoản của bạn " +
-                        user.fullname +
-                        "\nVừa chuyển: " +
-                        money + " VND." +
-                        "\nTrạng thái: Chờ duyệt" +
-                        "\nNgày giao dich: " + time + ".",
-                };
-                transporter.sendMail(mailOptions, function(error, info) {
-                    if (error) {
-                        console.log(error);
-                    }
-                });
-                return res.redirect('/user/transferMoney' + '?message=transferMoneychoduyet');
-            } else {
-                //update balance 
-                Account.findByIdAndUpdate(id, {
-                        account_balance: account_balance_after,
-                    })
-                    .then(() => {
-                        let transaction = new Transaction({
-                            username: user.username,
-                            money,
-                            kind: 0,
-                            status_transaction: 0,
-                            note: note,
-                        });
-                        return transaction.save()
-                    })
-                    .then(() => {
-                        var mailOptions = {
-                            from: "ewallet.webnc@gmail.com",
-                            to: user.email,
-                            subject: "Giao dịch thành công E-Wallet",
-                            text: "Tài khoản của bạn " +
-                                user.fullname +
-                                "\nVừa chuyển: " +
-                                money + " VND." +
-                                "\nSố dư: " +
-                                account_balance_after + " VND." +
-                                "\nNgày giao dich: " + time + ".",
-                        };
-                        transporter.sendMail(mailOptions, function(error, info) {
-                            if (error) {
-                                console.log(error);
-                            }
-                        });
-                    })
-                    .catch((err) => {
-                        return res.render("transferMoney", {
-                            fullname: user.fullname,
-                            error: "Lỗi cập nhật số dư người gửi!",
-                            phone: '',
-                            money: '',
-                            note: '',
-                            receiver: '',
-                            OTP_code: '',
-                            fee: '',
-                        });
+                return transaction.save().then(()=>{
+                    var mailOptions = {
+                        from: "ewallet.webnc@gmail.com",
+                        to: user.email,
+                        subject: "Chờ duyệt giao dịch E-Wallet",
+                        text: "Tài khoản của bạn: " +
+                            user.fullname +
+                            "\nVừa chuyển: " +
+                            money + " VND." +
+                            "\nTrạng thái: Chờ duyệt" +
+                            "\nNgày giao dich: " + time + ".",
+                    };
+                    transporter.sendMail(mailOptions, function(error, info) {
+                        if (error) {
+                            console.log(error);
+                        }
                     });
-
-                //update balance receiver
-                if (nguoitra == 'nguoichuyentra') {
-                    Account.findOneAndUpdate({ phone: phone }, (err, data) => {
-                            account_balance: data.account_balance + money;
+                })
+                .then(()=>{
+                    return res.redirect('/user/transferMoney' + '?message=transferMoneychoduyet');
+                });           
+            } 
+            else 
+            {
+                //update balance 
+                Account.findById(id,(err,data)=>{
+                    if (nguoitra === 'nguoichuyentra') {
+                        Account.findByIdAndUpdate(id, {
+                            account_balance: data.account_balance - money - fee
                         })
-                        .then(() => {
-                            var mailOptions = {
-                                from: "ewallet.webnc@gmail.com",
-                                to: receiver_email,
-                                subject: "Giao dịch thành công E-Wallet",
-                                text: "Tài khoản của bạn " +
-                                    receiver +
-                                    "\nVừa nhận: " +
-                                    money + " VND." +
-                                    "\nTừ: " +
-                                    user.fullname + " VND." +
-                                    "\nSố dư: " +
-                                    receiver_account_balance_after + " VND." +
-                                    "\nNgày giao dich: " + time + ".",
-                            };
-                            transporter.sendMail(mailOptions, function(error, info) {
-                                if (error) {
-                                    console.log(error);
-                                }
-                            });
-                        })
-                        .catch((err) => {
-                            return res.render("transferMoney", {
+                        .catch((err)=>{
+                            return res.render("transferMoney", 
+                            {
                                 fullname: user.fullname,
-                                error: "Lỗi cập nhật số dư người nhận!",
                                 phone: '',
                                 money: '',
                                 note: '',
                                 receiver: '',
-                                OTP_code: '',
+                                error: 'Lỗi cập nhật số dư ví người gửi',
                                 fee: '',
+                                nguoitra :'',
+                                OTP_code: '',
                             });
                         });
-                } else if (nguoitra == 'nguoinhantra') {
-                    Account.findOneAndUpdate({ phone: phone }, (err, data) => {
-                            account_balance: data.account_balance + money - fee;
-                        })
-                        .then(() => {
-                            var mailOptions = {
-                                from: "ewallet.webnc@gmail.com",
-                                to: receiver_email,
-                                subject: "Giao dịch thành công E-Wallet",
-                                text: "Tài khoản của bạn " +
-                                    receiver +
-                                    "\nVừa nhận: " +
-                                    money + " VND." +
-                                    "\nTừ: " +
-                                    user.fullname + " VND." +
-                                    "\nSố dư: " +
-                                    receiver_account_balance_after + " VND." +
-                                    "\nNgày giao dich: " + time + ".",
-                            };
-                            transporter.sendMail(mailOptions, function(error, info) {
-                                if (error) {
-                                    console.log(error);
-                                }
-                            });
-                        })
-                        .catch((err) => {
-                            return res.render("transferMoney", {
+                    } else if (nguoitra === 'nguoinhantra') {
+                        Account.findByIdAndUpdate(id, {
+                            account_balance: data.account_balance - money
+                        }).catch((err)=>{
+                            return res.render("transferMoney", 
+                            {
                                 fullname: user.fullname,
-                                error: "Lỗi cập nhật số dư người nhận!",
                                 phone: '',
                                 money: '',
                                 note: '',
                                 receiver: '',
-                                OTP_code: '',
+                                error: 'Lỗi cập nhật số dư ví người gửi',
                                 fee: '',
+                                nguoitra :'',
+                                OTP_code: '',
                             });
                         });
-                }
-                return res.redirect('/user/transferMoney' + '?message=transferMoneySuccess');
+                    }
+                })
+                
+                let transaction = new Transaction({
+                    username: user.username,
+                    money,
+                    kind: 1,
+                    status_transaction: 0,
+                    note: note,
+                    fee,
+                    price: 0,
+                    number_card: '',
+                    name_card: '',
+                });
+                return transaction.save().then(()=>{
+                    var mailOptions = {
+                        from: "ewallet.webnc@gmail.com",
+                        to: user.email,
+                        subject: "Giao dịch thành công E-Wallet",
+                        text: "Tài khoản của bạn " +
+                            user.fullname +
+                            "\nVừa chuyển: " +
+                            money + " VND." +
+                            "\nSố dư: " +
+                            user.account_balance + " VND." +
+                            "\nNgày giao dich: " + time + ".",
+                    };
+                    transporter.sendMail(mailOptions, function(error, info) {
+                        if (error) {
+                            console.log(error);
+                        }
+                    });
+                }).then(()=>
+                {
+                    // update balance receiver
+                    Account.find({phone},(err,data) =>{
+                        if(nguoitra ==='nguoichuyentra')
+                        {
+                            // Account.updateOne({phone:phone},{
+                            //     $set:{
+                            //         account_balance:data.account_balance + money
+                            //     }
+                            // });
+                            return res.render("transferMoney", 
+                            {
+                                fullname: user.fullname,
+                                phone: '',
+                                money: '',
+                                note: '',
+                                receiver: '',
+                                error: 'nguoichuyentra',
+                                fee: '',
+                                nguoitra :'',
+                                OTP_code: '',
+                            });
+                        }
+                        else if(nguoitra ==='nguoinhantra')
+                        {
+                            // Account.updateOne({phone:phone},{
+                            //     $set:{
+                            //         account_balance:data.account_balance + money - fee
+                            //     }
+                            // });
+                            return res.render("transferMoney", 
+                            {
+                                fullname: user.fullname,
+                                phone: '',
+                                money: '',
+                                note: '',
+                                receiver: '',
+                                error: 'nguoinhantra',
+                                fee: '',
+                                nguoitra :'',
+                                OTP_code: '',
+                            });
+                        }
+                        //thong bao so du receiver
+                        // var mailOptions = {
+                        //     from: "ewallet.webnc@gmail.com",
+                        //     to: data.email,
+                        //     subject: "Giao dịch thành công E-Wallet",
+                        //     text: "Tài khoản của bạn " +
+                        //         receiver +
+                        //         "\nVừa nhận: " +
+                        //         money + " VND." +
+                        //         "\nTừ: " +
+                        //         user.fullname + " VND." +
+                        //         "\nSố dư: " +
+                        //         data.account_balance + " VND." +
+                        //         "\nNgày giao dich: " + time + ".",
+                        // };
+                        // transporter.sendMail(mailOptions, function(error, info) {
+                        //     if (error) {
+                        //         console.log(error);
+                        //     }
+                        // });
+                    })
+                
+                }).then(()=>{
+                    return res.redirect('/user/transferMoney' + '?message=transferMoneySuccess');
+                // }).catch((err) => {
+                //     return res.render("transferMoney", {
+                //         fullname: user.fullname,
+                //         error: "Lỗi cập nhật số dư người nhận!",
+                //         phone: '',
+                //         money: '',
+                //         note: '',
+                //         receiver: '',
+                //         OTP_code: '',
+                //         fee: '',
+                //     });
+                // });
+            });
             }
         } else {
-            res.render("transferMoney", {
+            return res.render("transferMoney", {
                 fullname: user.fullname,
                 error: "Mã OTP sai hoặc quá hạn!",
                 phone: '',
