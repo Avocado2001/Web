@@ -91,9 +91,14 @@
                                     </div>
                                     <div class="col">
                                         <div class="form-group">
-                                            <h6>Phí giao dịch</h6>
+                                            <h6>Phí giao dịch</h6>      
                                             <p class="text-muted">
-                                                <%= (transaction.money*0.05).toLocaleString("en-US") %>
+                                                <% if(transaction.kind === 0 || transaction.kind === 1 || transaction.kind === 2) { %>
+                                                    <%= (transaction.money*0.05).toLocaleString("en-US")
+                                                     %>
+                                                    <% } else {%>
+                                                        <%= (transaction.money*0).toLocaleString("en-US") %>
+                                                        <% } %>
                                             </p>
                                         </div>
                                     </div>
