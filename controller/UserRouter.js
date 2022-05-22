@@ -191,10 +191,19 @@ Router.post("/withdrawMoney", CheckLogin, FirstTime, (req, res) => {
     let id = req.session.account._id;
     let { numberCard, dateExp, cvv, money, note } = req.body;
     money = parseInt(money);
-
-
+    const today =new Date();
+    let timecurrent=today.getDate()+'-'+(today.getMonth()+1)+'-'+today.getFullYear();
+    timecurrent=String(timecurrent)
+ 
+  
     Account.findById(id, (err, data) => {
-        if (numberCard === "111111") {
+        Transaction.find( { $and:[{ kind: 2 }, {time:{$regex:timecurrent}}]}).count().then((limit_withdraw)=>{
+            if(limit_withdraw>1){
+                return res.render("withdrawMoney", {
+                    error: "Số lần rút tiền đã tối đa trong ngày",
+                    fullname: data.fullname,
+                });
+            } else if (numberCard === "111111") {
             if (dateExp === "2022-10-10") {
                 if (cvv === "411") {
                     if (money > data.account_balance) {
@@ -281,6 +290,7 @@ Router.post("/withdrawMoney", CheckLogin, FirstTime, (req, res) => {
                 fullname: data.fullname,
             });
         }
+    });
     });
 });
 
