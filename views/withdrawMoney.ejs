@@ -14,8 +14,7 @@
                                         <div class="col">
                                             <div class="form-group">
                                                 <label class="form-label" for="numberCard">Số thẻ</label>
-                                                <input type="text" name="numberCard" id="numberCard"
-                                                    class="form-control" />
+                                                <input type="text" name="numberCard" id="numberCard" class="form-control" />
 
                                             </div>
                                         </div>
@@ -40,8 +39,13 @@
                                         <div class="col">
                                             <div class="form-group">
                                                 <label class="form-label" for="money">Số tiền rút</label>
-                                                <input type="number" min="0.0" name="money" id="money"
-                                                    class="form-control" />
+                                                <input onclick="calcFee()" step="10000" type="number" min="0.0" name="money" id="money" class="form-control" />
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label class="form-label" for="fee">Phí giao dịch</label>
+                                                <input type="number" name="fee" id="fee" class="form-control" disabled />
                                             </div>
                                         </div>
                                     </div>
@@ -65,6 +69,13 @@
                     </div>
                 </div>
         </div>
+        <script>
+            function calcFee() {
+                var money = document.getElementById("money").value;
+                var fee = money * 0.05;
+                document.getElementById("fee").value = fee;
+            }
+        </script>
         <script src="/Js/main.js"></script>
         <script>
             createAutoClosingAlert(".alert-danger", 2000);
