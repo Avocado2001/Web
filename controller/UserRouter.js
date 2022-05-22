@@ -655,6 +655,8 @@ Router.post("/buyCard", CheckLogin, FirstTime, (req, res) => {
         }), name_card, price, fee, quantity, money
     } = req.body;
     money = parseInt(money);
+    fee = parseInt(fee);
+    price = parseInt(price);
 
     Account.findById(user, (err, data) => {
         if (name_card === "Viettel") {
@@ -682,7 +684,7 @@ Router.post("/buyCard", CheckLogin, FirstTime, (req, res) => {
                                 number_card,
                                 status_transation: 0,
                                 price,
-                                fee,
+                                fee:0,
                                 money: price * quantity,
                                 quantity,
                                 name_card,
@@ -691,7 +693,15 @@ Router.post("/buyCard", CheckLogin, FirstTime, (req, res) => {
 
                         }).then(() => {
                             return res.render("buyCardreceipt", {
-                                error: err.message,
+                                username: data.username, 
+                                kind: 3,
+                                number_card,
+                                status_transation: 0,
+                                price,
+                                fee:0,
+                                money: price * quantity,
+                                quantity,
+                                name_card,
                                 fullname: data.fullname,
                             });
                         })
@@ -728,7 +738,7 @@ Router.post("/buyCard", CheckLogin, FirstTime, (req, res) => {
                                 number_card,
                                 status_transation: 0,
                                 price,
-                                fee,
+                                fee:0,
                                 money: price * quantity,
                                 quantity,
                                 name_card,
@@ -737,7 +747,15 @@ Router.post("/buyCard", CheckLogin, FirstTime, (req, res) => {
 
                         }).then(() => {
                             return res.render("buyCardreceipt", {
-                                error: err.message,
+                                username: data.username, 
+                                kind: 3,
+                                number_card,
+                                status_transation: 0,
+                                price,
+                                fee:0,
+                                money: price * quantity,
+                                quantity,
+                                name_card,
                                 fullname: data.fullname,
                             });
                         })
@@ -774,7 +792,7 @@ Router.post("/buyCard", CheckLogin, FirstTime, (req, res) => {
                                 number_card,
                                 status_transation: 0,
                                 price,
-                                fee,
+                                fee:0,
                                 money: price * quantity,
                                 quantity,
                                 name_card,
@@ -783,7 +801,15 @@ Router.post("/buyCard", CheckLogin, FirstTime, (req, res) => {
 
                         }).then(() => {
                             return res.render("buyCardreceipt", {
-                                error: err.message,
+                                username: data.username, 
+                                kind: 3,
+                                number_card,
+                                status_transation: 0,
+                                price,
+                                fee:0,
+                                money: price * quantity,
+                                quantity,
+                                name_card,
                                 fullname: data.fullname,
                             });
                         })

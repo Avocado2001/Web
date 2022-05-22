@@ -112,6 +112,6 @@ function calc() {
     var price = parseInt(document.getElementById("price").value);
     var quantity = parseInt(document.getElementById("quantity").value);
     var fee = parseInt(document.getElementById("fee").value);
-    var total = ((price * quantity) / 100) * (fee + 100);
+    var total = ((price * quantity) / 100) * ( fee+ 100);
     document.getElementById("total").value = total.toLocaleString("en-US");
 }

@@ -14,7 +14,7 @@ const TransactionSchema = new Schema({
     note:String,
 
     quantity: { type: Number  ,default:1 },
-    fee: { type: Number, default: 0 },
+    fee: {type:Number,default:0},
     // mệnh giá 1:100000, 2:200000,3:500000,4:100000
     price: { type: Number },
     number_card: String,
