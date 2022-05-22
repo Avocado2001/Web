@@ -826,6 +826,38 @@ Router.post("/buyCard", CheckLogin, FirstTime, (req, res) => {
     });
 });
 
+
+
+
+
+Router.get("/buyCard_done", CheckLogin, FirstTime, (req, res) => {
+    let user = req.session.account;
+    Account.findById(user._id, function(err, data) {
+        if (data.status == 0) {
+            res.render("notactive", {
+                fullname: user.fullname,
+                pagename: "Chức năng mua thẻ cào",
+            })
+        } else {
+            res.render("buyCard", {
+                fullname: user.fullname,
+                error: ''
+            });
+        }
+    });
+});
+
+
+
+
+
+
+
+
+
+
+
+
 //Xem lịch sử giao dịch - bắt đầu
 Router.get("/history", CheckLogin, (req, res) => {
     let user = req.session.account;
