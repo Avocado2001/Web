@@ -315,6 +315,7 @@ Router.get("/transferMoney", CheckLogin, FirstTime, (req, res) => {
                 fee: "",
                 nguoitra: "",
                 OTP_code: "",
+                block: 0,
                 error: '',
             });
         }
@@ -328,10 +329,6 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
     let id = req.session.account._id;
     let OTP_timecheck_curren = new Date().getTime();
     let { phone, money, note, receiver, fee, nguoitra, OTP_code } = req.body;
-
-    money = parseInt(money);
-    fee = (money / 100) * 5;
-    fee = parseInt(fee);
    
     if (phone === '' && money === "" && note === "" && receiver === "" && fee === "" && OTP_code == '') {
         return res.render("transferMoney", {
@@ -339,25 +336,57 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
             phone: '',
             money: '',
             note: '',
+            block: 0,
             receiver: '',
             OTP_code: '',
             fee: fee,
-            error: 'Vui lòng nhập đủ thông tin.',
+            error: 'Vui lòng nhập đủ thông tin gồm: Số điện thoại, số tiền và ghi chú.',
         });
-    } else if (phone === user.phone) {
+    } 
+    else if (phone !== '' && money==='' && note !== "" && receiver === "" && fee === "" && OTP_code == '') {
+        return res.render("transferMoney", {
+            fullname: user.fullname,
+            phone: '',
+            money: '',
+            note: '',
+            block: 0,
+            receiver: '',
+            OTP_code: '',
+            fee: fee,
+            error: 'Vui lòng nhập đủ thông tin gồm: Số điện thoại, số tiền và ghi chú.',
+        });
+    }
+    else if (phone === user.phone) {
         return res.render("transferMoney", {
             fullname: user.fullname,
             phone: '',
             money: '',
             note: '',
             receiver: '',
+            block: 0,
             OTP_code: '',
             fee: fee,
             error: 'Đây là số điện thoại của bạn! Hãy nhập số điện thoại của người nhận.',
         });
     }
+    else if (isNaN(money)) {
+        return res.render("transferMoney", {
+            fullname: user.fullname,
+            phone: '',
+            money: '',
+            note: '',
+            receiver: '',
+            block: 0,
+            OTP_code: '',
+            fee: fee,
+            error: 'Vui lòng nhập số tiền là một số.',
+        });
+    }
     else if (phone !== "" && money !== "" && note !== "" && receiver === "") {
         //check infor receiver
+        money = parseInt(money);
+        fee = (money / 100) * 5;
+        fee = parseInt(fee);
         Account.findById(id,(err,data)=>{
             if(data.account_balance < money)
             {
@@ -366,6 +395,7 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
                     phone: phone,
                     money: money,
                     note: note,
+                    block: 0,
                     receiver: '',
                     OTP_code: '',
                     fee: fee,
@@ -380,6 +410,7 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
                     phone: '',
                     money: '',
                     note: '',
+                    block: 0,
                     receiver: '',
                     OTP_code: '',
                     fee: '',
@@ -396,6 +427,7 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
                     phone: phone,
                     money: money,
                     note: note,
+                    block: 1,
                     receiver: data.fullname,
                     OTP_code: '',
                     fee: fee,
@@ -407,6 +439,9 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
     else if (phone !== "" && money !== "" && note !== "" && receiver !== "" && OTP_code === "") 
     {
         //button get OTP
+        money = parseInt(money);
+        fee = (money / 100) * 5;
+        fee = parseInt(fee);
         Account.findById(id,(err,data)=>{
             if(data.account_balance < money)
             {
@@ -415,6 +450,7 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
                     phone: phone,
                     money: money,
                     note: note,
+                    block: 0,
                     receiver: '',
                     OTP_code: '',
                     fee: fee,
@@ -427,6 +463,7 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
                 return res.render("transferMoney", {
                     fullname: user.fullname,
                     phone: '',
+                    block: 0,
                     money: '',
                     note: '',
                     receiver: '',
@@ -465,16 +502,20 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
             phone: phone,
             money: money,
             note: note,
+            block: 2,
             receiver: receiver,
             error: '',
             fee: fee,
             nguoitra :'',
-            OTP_code: OTP_code_check,
+            OTP_code: '',
         });
     } 
     else if (phone !== "" && money !== "" && note !== "" && receiver !== "" && OTP_code !== "" && fee !== '') 
     {
         //xác nhận giao dịch
+        money = parseInt(money);
+        fee = (money / 100) * 5;
+        fee = parseInt(fee);
         Account.findById(id,(err,data)=>{
             if(data.account_balance < money)
             {
@@ -483,6 +524,7 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
                     phone: phone,
                     money: money,
                     note: note,
+                    block: 0,
                     receiver: '',
                     OTP_code: '',
                     fee: fee,
@@ -497,6 +539,7 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
                     phone: '',
                     money: '',
                     note: '',
+                    block: 0,
                     receiver: '',
                     OTP_code: '',
                     fee: '',
@@ -558,6 +601,7 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
                                 phone: '',
                                 money: '',
                                 note: '',
+                                block: 0,
                                 receiver: '',
                                 error: 'Lỗi cập nhật số dư ví người gửi',
                                 fee: '',
@@ -575,6 +619,7 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
                                 phone: '',
                                 money: '',
                                 note: '',
+                                block: 0,
                                 receiver: '',
                                 error: 'Lỗi cập nhật số dư ví người gửi',
                                 fee: '',
@@ -642,8 +687,9 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
                             money: money,
                             note: note,
                             receiver: receiver,
-                            error: 'Loi cap nhat so du nguoi nhan',
+                            error: 'Lỗi cập nhật số dư người nhận',
                             fee: fee,
+                            block: 0,
                             nguoitra :'',
                             OTP_code: '',
                         });
@@ -686,6 +732,7 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
                 phone: '',
                 money: '',
                 note: '',
+                block: 0,
                 receiver: '',
                 OTP_code: '',
                 fee: '',
@@ -699,6 +746,7 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
             money: "",
             note: "",
             fee: "",
+            block: 0,
             receiver: "",
             OTP_code: "",
             error: 'Vui lòng nhập đủ thông tin gồm: Số điện thoại, số tiền và ghi chú.'
