@@ -19,5 +19,7 @@ const TransactionSchema = new Schema({
     price: { type: Number },
     number_card: String,
     name_card: String,
+    receiver_id: String,  //lưu id người nhận tiền khi chuyển tiền, sau khi xác nhận các giao dịch trên 5 triệu dựa vào id để cập nhật ví
+    nguoitra: String, //xác nhận người trả phí giao dịch chuyển tiền
 });
 module.exports = mongoose.model('Transaction', TransactionSchema);

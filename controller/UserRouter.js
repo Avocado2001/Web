@@ -563,6 +563,8 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
                     price: 0,
                     number_card: '',
                     name_card: '',
+                    receiver_id: receiver_id,
+                    nguoitra: nguoitra,
                 });
                 return transaction.save().then(()=>{
                     var mailOptions = {
@@ -640,6 +642,8 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
                     price: 0,
                     number_card: '',
                     name_card: '',
+                    receiver_id: receiver_id,
+                    nguoitra: nguoitra,
                 });
                 return transaction.save().then(()=>{
                     //gui mail thong bao so du cho nguoi gui
