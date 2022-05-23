@@ -553,6 +553,46 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
         {
             if (money > 5000000) 
             {
+                Account.findById(id,(err,data)=>{
+                    if (nguoitra === 'nguoichuyentra') {
+                        Account.findByIdAndUpdate(id, {
+                            account_balance: data.account_balance - money - fee
+                        })
+                        .catch((err)=>{
+                            return res.render("transferMoney", 
+                            {
+                                fullname: user.fullname,
+                                phone: '',
+                                money: '',
+                                note: '',
+                                block: 0,
+                                receiver: '',
+                                error: 'Lỗi cập nhật số dư ví người gửi',
+                                fee: '',
+                                nguoitra :'',
+                                OTP_code: '',
+                            });
+                        });
+                    } else if (nguoitra === 'nguoinhantra') {
+                        Account.findByIdAndUpdate(id, {
+                            account_balance: data.account_balance - money
+                        }).catch((err)=>{
+                            return res.render("transferMoney", 
+                            {
+                                fullname: user.fullname,
+                                phone: '',
+                                money: '',
+                                note: '',
+                                block: 0,
+                                receiver: '',
+                                error: 'Lỗi cập nhật số dư ví người gửi',
+                                fee: '',
+                                nguoitra :'',
+                                OTP_code: '',
+                            });
+                        });
+                    }
+                });
                 let transaction = new Transaction({
                     username: user.username,
                     money: money,

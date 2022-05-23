@@ -8,6 +8,14 @@ const changePassValidator = require('../routers/validators/changePassValidator')
 const { validationResult } = require('express-validator');
 const { render } = require('ejs');
 const TransactionModel = require('../models/TransactionModel');
+const nodemailer = require("nodemailer");
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+        user: "ewallet.webnc@gmail.com",
+        pass: "webnangcao",
+    },
+});
 let userList = new Map();
 const Router = express.Router();
 Router.get('/', CheckLogin, (req, res) => {
@@ -172,32 +180,90 @@ Router.get('/acceptTransaction/:id', CheckLogin, (req, res) => {
 Router.post('/acceptTransaction/:id', CheckLogin, (req, res) => {
     let { status_transaction} = req.body;
     status_transaction = parseInt(status_transaction);
-    let id = req.params.id
+    let id = req.params.id,time = new Date().toISOString(),nguoigui;
+
     if (status_transaction === 0) {
         Transaction.findOne({_id:id}).then(transaction => {
             Transaction.findByIdAndUpdate(id, { status_transaction },
-
             ).then(() => {
-                username=transaction.username
-                Account.findOne({username}).then(account=>{
-                    Account.findByIdAndUpdate(account._id, { $inc: { account_balance: -transaction.money*1.05 } })
-
-                    .catch(err => {
-                        console.log(err);
+                if(transaction.kind===2)
+                {
+                    username=transaction.username
+                    Account.findOne({username}).then(account=>{
+                        Account.findByIdAndUpdate(account._id, { $inc: { account_balance: -transaction.money*1.05 } })
+                        .catch(err => {
+                            console.log(err);
+                        })
                     })
-                })
+                }
+                else if(transaction.kind===1)
+                {
+                    username=transaction.username
+                    Account.findOne({username}).then(account=>{
+                        nguoigui = account.fullname;
+                    });
+                    //cap nhat so du nguoi nhan
+                    Account.findOne({_id:transaction.receiver_id}).then(account=>{
+                        if (transaction.nguoitra === 'nguoichuyentra') {
+                            Account.findByIdAndUpdate(account._id, { $inc: { account_balance: +transaction.money } }) 
+                            .catch(err => {
+                                console.log(err);
+                            })      
+                        } else if (transaction.nguoitra === 'nguoinhantra') {
+                            Account.findByIdAndUpdate(account._id, { $inc: { account_balance: +transaction.money*0.95 } })
+                            .catch(err => {
+                                console.log(err);
+                            })
+                        }
+                    })
+                    .then(()=>{
+                        //mail thong bao so du nguoi gui
+                        Account.findOne({_id:transaction.receiver_id}).then(account=>{
+                            var mailOptions = {
+                                from: "ewallet.webnc@gmail.com",
+                                to: account.email,
+                                subject: "Giao dịch thành công E-Wallet",
+                                text: "Tài khoản của bạn " +
+                                    account.fullname +
+                                    "\nVừa nhận: " +
+                                    transaction.money + " VND." +
+                                    "\nPhí chuyển: " +
+                                    transaction.fee + " VND." +
+                                    "\nTừ: " +
+                                    nguoigui + " VND." +
+                                    "\nSố dư: " +
+                                    account.account_balance + " VND." +
+                                    "\nNgày giao dich: " + time + ".",
+                            };
+                            transporter.sendMail(mailOptions, function(error, info) {
+                                if (error) {
+                                    if (error) {
+                                        console.log(error);
+                                    }
+                                }
+                            });
+                        })
+                    })
+                }
             }
             ).then(() => {
                 return res.redirect('/admin/acceptTransaction/' + req.params.id);
             }).catch(err=>{
                 console.log(err)
             })
-
-
         })
-
     }
-
+    else if(status_transaction === 2)
+    {
+        Transaction.findOne({_id:id}).then(transaction => {
+            Transaction.findByIdAndUpdate(id, { status_transaction})
+            .then(() => {
+                return res.redirect('/admin/acceptTransaction/');
+            }).catch(err=>{
+                console.log(err)
+            });
+        });
+    }
 });
 
 
