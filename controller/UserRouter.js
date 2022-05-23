@@ -355,31 +355,24 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
             fee: fee,
             error: 'Đây là số điện thoại của bạn! Hãy nhập số điện thoại của người nhận.',
         });
-    } else if (user.account_balance < 0) {
-        return res.render("transferMoney", {
-            fullname: user.fullname,
-            phone: '',
-            money: '',
-            note: '',
-            receiver: '',
-            OTP_code: '',
-            fee: fee,
-            error: 'Bạn không còn tiền trong tài khoản.',
-        });
-    } else if (user.account_balance < money) {
-        return res.render("transferMoney", {
-            fullname: user.fullname,
-            phone: '',
-            money: '',
-            note: '',
-            receiver: '',
-            OTP_code: '',
-            fee: fee,
-            error: 'Số dư của bạn không đủ thực hiện giao dịch.',
-        });
     }
     else if (phone !== "" && money !== "" && note !== "" && receiver === "") {
         //check infor receiver
+        Account.findById(id,(err,data)=>{
+            if(data.account_balance < money)
+            {
+                return res.render("transferMoney", {
+                    fullname: user.fullname,
+                    phone: phone,
+                    money: money,
+                    note: note,
+                    receiver: '',
+                    OTP_code: '',
+                    fee: fee,
+                    error: 'Số dư của bạn không đủ thực hiện giao dịch.',
+                });
+            }
+        });
         Account.findOne({ phone: phone }, (err, data) => {
             if (!data) {
                 return res.render("transferMoney", {
@@ -414,6 +407,35 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
     else if (phone !== "" && money !== "" && note !== "" && receiver !== "" && OTP_code === "") 
     {
         //button get OTP
+        Account.findById(id,(err,data)=>{
+            if(data.account_balance < money)
+            {
+                return res.render("transferMoney", {
+                    fullname: user.fullname,
+                    phone: phone,
+                    money: money,
+                    note: note,
+                    receiver: '',
+                    OTP_code: '',
+                    fee: fee,
+                    error: 'Số dư của bạn không đủ thực hiện giao dịch.',
+                });
+            }
+        });
+        Account.findOne({ phone: phone }, (err, data) => {
+            if (!data) {
+                return res.render("transferMoney", {
+                    fullname: user.fullname,
+                    phone: '',
+                    money: '',
+                    note: '',
+                    receiver: '',
+                    OTP_code: '',
+                    fee: '',
+                    error: 'Không tìm thấy người nhận!',
+                });
+            }
+        });
         OTP_code_check = generator.generate({
             //Tự tạo OTP
             length: 6,
@@ -453,6 +475,35 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
     else if (phone !== "" && money !== "" && note !== "" && receiver !== "" && OTP_code !== "" && fee !== '') 
     {
         //xác nhận giao dịch
+        Account.findById(id,(err,data)=>{
+            if(data.account_balance < money)
+            {
+                return res.render("transferMoney", {
+                    fullname: user.fullname,
+                    phone: phone,
+                    money: money,
+                    note: note,
+                    receiver: '',
+                    OTP_code: '',
+                    fee: fee,
+                    error: 'Số dư của bạn không đủ thực hiện giao dịch.',
+                });
+            }
+        });
+        Account.findOne({ phone: phone }, (err, data) => {
+            if (!data) {
+                return res.render("transferMoney", {
+                    fullname: user.fullname,
+                    phone: '',
+                    money: '',
+                    note: '',
+                    receiver: '',
+                    OTP_code: '',
+                    fee: '',
+                    error: 'Không tìm thấy người nhận!',
+                });
+            }
+        });
         let timecheck = (OTP_timecheck_curren - OTP_timecheck) / 1000;
         let time = new Date().toISOString();
         if (OTP_code === OTP_code_check && timecheck < 61) 
@@ -650,7 +701,7 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
             fee: "",
             receiver: "",
             OTP_code: "",
-            error: 'Vui lòng nhập đủ thông tin.'
+            error: 'Vui lòng nhập đủ thông tin gồm: Số điện thoại, số tiền và ghi chú.'
         });
     }
 });
