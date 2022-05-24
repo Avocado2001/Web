@@ -15,10 +15,11 @@ const AccountSchema = new Schema({
     address: String,
     fullname: String,
     date_register: {
-        type: String, default:today.getDate()+'-'+(today.getMonth()+1)+'-'+today.getFullYear()+' '
-    +today.getHours()+":"+today.getMinutes()+":"+today.getSeconds()
+        type: String,
+        default: today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear() + ' ' +
+            today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds()
     },
-   
+
     birthday: String,
 
     idcard_front: String,
@@ -33,8 +34,8 @@ const AccountSchema = new Schema({
     login_fail: { type: Number, default: 0 },
     wrong_pass: { type: Number, default: 0 },
 
-    
-    
-    
+    waitLogin: Date,
+
+
 });
 module.exports = mongoose.model('Account', AccountSchema);

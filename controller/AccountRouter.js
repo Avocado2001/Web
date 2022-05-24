@@ -67,7 +67,7 @@ Router.get('/', loginValidator, (req, res) => {
 });
 Router.post('/', loginValidator, (req, res) => {
     let result = validationResult(req);
-
+    let now = new Date();
     if (result.errors.length === 0) {
         let { username, password } = req.body;
         Account.findOne({ username }).then(account => {
@@ -75,20 +75,34 @@ Router.post('/', loginValidator, (req, res) => {
                 throw new Error('Username không tồn tại');
             } else if (account.status === 3) {
                 throw new Error('Tài khoản bạn đã bị khóa, vui lòng liên hệ 18001008');
+            } else if (account.waitLogin > now.getSeconds()) {
+                throw new Error('Hãy thử lại sau ' + (account.waitLogin - now.getSeconds()) + ' giây');
             } else if (bcrypt.compareSync(password, account.password)) {
                 return account;
             } else {
                 if (account.wrong_pass < 3) {
-                    // if (account.wrong_pass === 2) {
-
-                    // }
-                    Account.findByIdAndUpdate(account._id, { $inc: { wrong_pass: 1 } })
-                        .then(() => {
-                            return null;
-                        })
-                        .catch(err => {
-                            console.log(err);
-                        })
+                    if (account.wrong_pass === 2) {
+                        Account.findByIdAndUpdate(account._id, {
+                                $inc: { wrong_pass: 1 },
+                                $set: {
+                                    waitLogin: now.getSeconds() + 60
+                                }
+                            })
+                            .then(() => {
+                                return null;
+                            })
+                            .catch(err => {
+                                console.log(err);
+                            })
+                    } else {
+                        Account.findByIdAndUpdate(account._id, { $inc: { wrong_pass: 1 } })
+                            .then(() => {
+                                return null;
+                            })
+                            .catch(err => {
+                                console.log(err);
+                            })
+                    }
                 } else {
                     Account.findByIdAndUpdate(account._id, { $set: { status: 3 } })
                         .then(() => {
@@ -104,7 +118,10 @@ Router.post('/', loginValidator, (req, res) => {
                 throw new Error('Sai mật khẩu', 'password', username);
             } else {
                 req.session.account = account;
-                Account.findByIdAndUpdate(account._id, { $set: { wrong_pass: 0 } }).then(() => {
+                Account.findByIdAndUpdate(account._id, {
+                    $set: { wrong_pass: 0 },
+                    $unset: { waitLogin: '' }
+                }).then(() => {
                     if (account.isAdmin) {
                         return res.redirect('/admin');
                     }
