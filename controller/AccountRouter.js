@@ -68,24 +68,27 @@ Router.get('/', loginValidator, (req, res) => {
 Router.post('/', loginValidator, (req, res) => {
     let result = validationResult(req);
     let now = new Date();
+    console.log(now);
     if (result.errors.length === 0) {
         let { username, password } = req.body;
         Account.findOne({ username }).then(account => {
             if (!account) {
                 throw new Error('Username không tồn tại');
-            } else if (account.status === 3) {
-                throw new Error('Tài khoản bạn đã bị khóa, vui lòng liên hệ 18001008');
-            } else if (account.waitLogin > now.getSeconds()) {
-                throw new Error('Hãy thử lại sau ' + (account.waitLogin - now.getSeconds()) + ' giây');
-            } else if (bcrypt.compareSync(password, account.password)) {
+            } else if (account.status === 4) {
+                throw new Error('Tài khoản đã bị khóa do nhập sai mật khẩu nhiều lần, vui lòng liên hệ quản trị viên để được hỗ trợ ');
+            } else
+            if (account.waitLogin > now) {
+                throw new Error('Hãy thử lại sau ' + (account.waitLogin - now) / 1000 + ' giây');
+            } else
+            if (bcrypt.compareSync(password, account.password)) {
                 return account;
             } else {
-                if (account.wrong_pass < 3) {
+                if (account.wrong_pass < 6) {
                     if (account.wrong_pass === 2) {
                         Account.findByIdAndUpdate(account._id, {
                                 $inc: { wrong_pass: 1 },
                                 $set: {
-                                    waitLogin: now.getSeconds() + 60
+                                    waitLogin: now.setSeconds(now.getSeconds() + 60)
                                 }
                             })
                             .then(() => {
@@ -104,7 +107,7 @@ Router.post('/', loginValidator, (req, res) => {
                             })
                     }
                 } else {
-                    Account.findByIdAndUpdate(account._id, { $set: { status: 3 } })
+                    Account.findByIdAndUpdate(account._id, { $set: { status: 4 } })
                         .then(() => {
                             return null;
                         })

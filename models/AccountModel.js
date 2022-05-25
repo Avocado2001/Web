@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const today = new Date();
+const timenow = new Date(new Date() + 3600 * 1000 * 7).toISOString();
 const AccountSchema = new Schema({
     email: {
         type: String,
@@ -24,7 +25,7 @@ const AccountSchema = new Schema({
 
     idcard_front: String,
     idcard_back: String,
-    //4 trạng thái: 0: chưa xác minh, 1: đã xác minh, 2: chờ cập nhật, 3: bị khóa vô thời hạn
+    //4 trạng thái: 0: chưa xác minh, 1: đã xác minh, 2: chờ cập nhật, 3: vô hiệu hóa 4:bị khóa
     status: { type: Number, default: 0 },
     //kiểm tra xem có phải là đăng nhập lần đầu không true là 1st false đã đổi mk  
     firsttime: { type: Boolean, default: true },
@@ -34,7 +35,7 @@ const AccountSchema = new Schema({
     login_fail: { type: Number, default: 0 },
     wrong_pass: { type: Number, default: 0 },
 
-    waitLogin: Date,
+    waitLogin: { type: Date }
 
 
 });
