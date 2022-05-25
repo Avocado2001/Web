@@ -68,7 +68,6 @@ Router.get('/', loginValidator, (req, res) => {
 Router.post('/', loginValidator, (req, res) => {
     let result = validationResult(req);
     let now = new Date();
-    console.log(now);
     if (result.errors.length === 0) {
         let { username, password } = req.body;
         Account.findOne({ username }).then(account => {
@@ -78,12 +77,13 @@ Router.post('/', loginValidator, (req, res) => {
                 throw new Error('Tài khoản đã bị khóa do nhập sai mật khẩu nhiều lần, vui lòng liên hệ quản trị viên để được hỗ trợ ');
             } else
             if (account.waitLogin > now) {
-                throw new Error('Hãy thử lại sau ' + (account.waitLogin - now) / 1000 + ' giây');
+                throw new Error('Hãy thử lại sau ' + (parseInt((account.waitLogin - now)/1000)) + ' giây');
             } else
             if (bcrypt.compareSync(password, account.password)) {
                 return account;
             } else {
-                if (account.wrong_pass < 6) {
+                if(account.isAdmin == false){
+                if (account.wrong_pass < 5) {
                     if (account.wrong_pass === 2) {
                         Account.findByIdAndUpdate(account._id, {
                                 $inc: { wrong_pass: 1 },
@@ -115,7 +115,10 @@ Router.post('/', loginValidator, (req, res) => {
                             console.log(err);
                         })
                 }
+            }else{
+                return null;
             }
+        }
         }).then(account => {
             if (!account) {
                 throw new Error('Sai mật khẩu', 'password', username);
