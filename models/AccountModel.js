@@ -35,7 +35,9 @@ const AccountSchema = new Schema({
     login_fail: { type: Number, default: 0 },
     wrong_pass: { type: Number, default: 0 },
 
-    waitLogin: { type: Date }
+    waitLogin: { type: Date },
+    //đăng nhập bất thường
+    inconstant_login:{type:Number,default:0}
 
 
 });

@@ -38,7 +38,7 @@ Router.get('/waitActive', CheckLogin, (req, res) => {
 });
 
 
-// Xem thông tin chi tiết
+// Xem thông tin chi tiết chờ kích hoạt
 Router.get('/detailuser/:id', CheckLogin, (req, res) => {
     Account.findById(req.params.id, function (err, user) {
         res.render('detailuser', {
@@ -46,6 +46,22 @@ Router.get('/detailuser/:id', CheckLogin, (req, res) => {
         });
     });
 });
+
+// Xác minh tài khoản khóa do đăng nhập sai
+Router.post('/detailban/:id', CheckLogin, (req, res) => {
+    let {  inconstant_login,wrong_pass } = req.body;
+    inconstant_login = parseInt( inconstant_login);
+    if ( inconstant_login === 0) {
+        Account.findByIdAndUpdate(req.params.id, {
+            inconstant_login,
+            wrong_pass:0
+        }).then(() => {
+            return res.redirect('/admin/detailban/' + req.params.id);
+        });
+    }
+
+});
+
 // Xác minh tài khoản
 Router.post('/detailuser/:id', CheckLogin, (req, res) => {
     let { status } = req.body;
@@ -70,11 +86,15 @@ Router.post('/detailuser/:id', CheckLogin, (req, res) => {
         });
     }
 });
-
-
-
-
-
+// Xem thông tin chi tiết tài khoản khóa do đăng nhập sai
+Router.get('/detailban/:id', CheckLogin, (req, res) => {
+   
+    Account.findById(req.params.id, function (err, user) {
+        res.render('detailban', {
+            user
+        });
+    })
+});
 
 //danh sách đã xác minh - sắp xếp giảm dần theo ngày tạo
 Router.get('/actived', CheckLogin, (req, res) => {
@@ -96,13 +116,14 @@ Router.get('/banning', CheckLogin, (req, res) => {
         });
     }).sort(sort);
 });
-//danh sách bị khóa vô thời hạn
+//danh sách bị khóa vô thời hạn do đăng nhập sai
 Router.get('/bannedForever', CheckLogin, (req, res) => {
-    Account.find({ isAdmin: false, status: 4 }, function (err, users) {
+    var sort = { date_register:-1 };
+    Account.find({ isAdmin: false,  inconstant_login: 1 }, function (err, users) {
         res.render('bannedForever', {
             users
         });
-    });
+    }).sort(sort);
 });
 //đổi mật khẩu
 Router.get('/changePasswordadmin', CheckLogin, (req, res) => {

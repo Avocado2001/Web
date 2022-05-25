@@ -73,7 +73,7 @@ Router.post('/', loginValidator, (req, res) => {
         Account.findOne({ username }).then(account => {
             if (!account) {
                 throw new Error('Username không tồn tại');
-            } else if (account.status === 4) {
+            } else if (account.inconstant_login === 1) {
                 throw new Error('Tài khoản đã bị khóa do nhập sai mật khẩu nhiều lần, vui lòng liên hệ quản trị viên để được hỗ trợ ');
             } else
             if (account.waitLogin > now) {
@@ -107,7 +107,7 @@ Router.post('/', loginValidator, (req, res) => {
                             })
                     }
                 } else {
-                    Account.findByIdAndUpdate(account._id, { $set: { status: 4 } })
+                    Account.findByIdAndUpdate(account._id, { $set: {  inconstant_login: 1 } })
                         .then(() => {
                             return null;
                         })
