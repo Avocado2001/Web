@@ -77,28 +77,37 @@ Router.post('/', loginValidator, (req, res) => {
                 throw new Error('Tài khoản đã bị khóa do nhập sai mật khẩu nhiều lần, vui lòng liên hệ quản trị viên để được hỗ trợ ');
             } else
             if (account.waitLogin > now) {
-                throw new Error('Hãy thử lại sau ' + (parseInt((account.waitLogin - now)/1000)) + ' giây');
+                throw new Error('Hãy thử lại sau ' + (parseInt((account.waitLogin - now) / 1000)) + ' giây');
             } else
             if (bcrypt.compareSync(password, account.password)) {
                 return account;
             } else {
-                if(account.isAdmin == false){
-                if (account.wrong_pass < 5) {
-                    if (account.wrong_pass === 2) {
-                        Account.findByIdAndUpdate(account._id, {
-                                $inc: { wrong_pass: 1 },
-                                $set: {
-                                    waitLogin: now.setSeconds(now.getSeconds() + 60)
-                                }
-                            })
-                            .then(() => {
-                                return null;
-                            })
-                            .catch(err => {
-                                console.log(err);
-                            })
+                if (account.isAdmin == false) {
+                    if (account.wrong_pass < 5) {
+                        if (account.wrong_pass === 2) {
+                            Account.findByIdAndUpdate(account._id, {
+                                    $inc: { wrong_pass: 1 },
+                                    $set: {
+                                        waitLogin: now.setSeconds(now.getSeconds() + 60)
+                                    }
+                                })
+                                .then(() => {
+                                    return null;
+                                })
+                                .catch(err => {
+                                    console.log(err);
+                                })
+                        } else {
+                            Account.findByIdAndUpdate(account._id, { $inc: { wrong_pass: 1 } })
+                                .then(() => {
+                                    return null;
+                                })
+                                .catch(err => {
+                                    console.log(err);
+                                })
+                        }
                     } else {
-                        Account.findByIdAndUpdate(account._id, { $inc: { wrong_pass: 1 } })
+                        Account.findByIdAndUpdate(account._id, { $set: { inconstant_login: 1 } })
                             .then(() => {
                                 return null;
                             })
@@ -107,18 +116,9 @@ Router.post('/', loginValidator, (req, res) => {
                             })
                     }
                 } else {
-                    Account.findByIdAndUpdate(account._id, { $set: {  inconstant_login: 1 } })
-                        .then(() => {
-                            return null;
-                        })
-                        .catch(err => {
-                            console.log(err);
-                        })
+                    return null;
                 }
-            }else{
-                return null;
             }
-        }
         }).then(account => {
             if (!account) {
                 throw new Error('Sai mật khẩu', 'password', username);
@@ -194,9 +194,8 @@ Router.post('/register', multipleUpload, registerValidator, (req, res) => {
         }),
     } = req.body;
     if (result.errors.length === 0) {
-
-        Account.findOne({ email, phone }).then(account => {
-                if (account) {
+        Account.findOne({ $or: [{ email }, { phone }] }).then(account => {
+                if (account.email) {
                     throw new Error('Email hoặc số điện thoại đã tồn tại');
                 }
             })
@@ -230,7 +229,7 @@ Router.post('/register', multipleUpload, registerValidator, (req, res) => {
                     }
                 });
             }).catch(err => {
-                res.render('register', {
+                return res.render('register', {
                     email,
                     phone,
                     address,
