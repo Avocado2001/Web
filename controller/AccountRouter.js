@@ -36,22 +36,26 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 const transporter = nodemailer.createTransport({
-   
-    host: 'mail.phongdaotao.com',
-    port: 25,
-    secure: false, // true for 465, false for other ports
+    service: 'gmail',
     auth: {
-        user: 'sinhvien@phongdaotao.com',
-        pass: 'svtdtu'
-    },
-    tls: {
-        // do not fail on invalid certs
-        rejectUnauthorized: false
-    },
-    ssl: {
-        // do not fail on invalid certs
-        rejectUnauthorized: false
+        user: 'ewallet.webnc@gmail.com',
+        pass: 'webnangcao'
     }
+    // host: 'mail.phongdaotao.com',
+    // port: 25,
+    // secure: false, // true for 465, false for other ports
+    // auth: {
+    //     user: 'sinhvien@phongdaotao.com',
+    //     pass: 'svtdtu'
+    // },
+    // tls: {
+    //     // do not fail on invalid certs
+    //     rejectUnauthorized: false
+    // },
+    // ssl: {
+    //     // do not fail on invalid certs
+    //     rejectUnauthorized: false
+    // }
 });
 //login
 Router.get('/', loginValidator, (req, res) => {
