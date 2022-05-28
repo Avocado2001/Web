@@ -1136,7 +1136,7 @@ Router.post("/updateprofile", multipleUpload, (req, res) => {
     var today = new Date()
     let {
         idcard_front = req.files.idcard_front[0].originalname,
-            idcard_back = req.files.idcard_back[0].originalname,
+        idcard_back = req.files.idcard_back[0].originalname,
     } = req.body;
     if (req.session.account) {
         Account.findByIdAndUpdate(req.session.account._id, {
