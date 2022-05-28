@@ -278,6 +278,22 @@ Router.post('/acceptTransaction/:id', CheckLogin, (req, res) => {
     {
         Transaction.findOne({_id:id}).then(transaction => {
             Transaction.findByIdAndUpdate(id, { status_transaction})
+            .then(()=>{
+                username=transaction.username
+                Account.findOne({username}).then(account=>{
+                    if (transaction.nguoitra === 'nguoichuyentra') {
+                        Account.findByIdAndUpdate(account._id, { $inc: { account_balance: +transaction.money*1.05 } }) 
+                        .catch(err => {
+                            console.log(err);
+                        })      
+                    } else if (transaction.nguoitra === 'nguoinhantra') {
+                        Account.findByIdAndUpdate(account._id, { $inc: { account_balance: +transaction.money } })
+                        .catch(err => {
+                            console.log(err);
+                        })
+                    }
+                })
+            })
             .then(() => {
                 return res.redirect('/admin/acceptTransaction/');
             }).catch(err=>{
