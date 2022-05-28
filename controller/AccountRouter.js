@@ -195,7 +195,7 @@ Router.post('/register', multipleUpload, registerValidator, (req, res) => {
     } = req.body;
     if (result.errors.length === 0) {
         Account.findOne({ $or: [{ email }, { phone }] }).then(account => {
-                if (account.email) {
+                if (account) {
                     throw new Error('Email hoặc số điện thoại đã tồn tại');
                 }
             })
