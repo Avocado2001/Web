@@ -185,7 +185,7 @@ Router.post('/register', multipleUpload, registerValidator, (req, res) => {
             length: 6,
             numbers: true
         }),
-        // //Tạo username tự động(chưa so sánh username đã có hay chưa)
+        // //Tạo username tự động
         username = generator.generate({
             length: 10,
             numbers: true,
