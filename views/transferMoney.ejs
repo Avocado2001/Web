@@ -10,9 +10,9 @@
                                 <h1>Chuyển tiền</h1>
                                 <form action="/user/transferMoney" method="post">
                                     <div class="row">
-                                        <div class="col">
+                                        <div class="col-md-6 col-sm-12">
                                             <div class="row mb-4">
-                                                <div class="col">
+                                                <div class="col-md-6 col-sm-12">
                                                     <div class="form-group">
                                                         <label class="form-label" for="phone">Số điện thoại người nhận</label>
                                                         <input value = "<%= phone %>" type="tel" name="phone" id="phone" class="form-control" 
@@ -20,7 +20,7 @@
                                                         />
                                                     </div>
                                                 </div>
-                                                <div class="col">
+                                                <div class="col-md-6 col-sm-12">
                                                     <div class="form-group">
                                                         <label class="form-label" for="money">Số tiền cần chuyển</label>
                                                         <input value = "<%= money %>" type="number" min="0.0" name="money" id="money" class="form-control" 
@@ -33,12 +33,12 @@
                                             <div class="col mb-3">
                                                 <label for="note" class="form-label">Ghi chú</label>
                                                 <div class="row">
-                                                    <div class="col-9">
+                                                    <div class="col-md-9 col-sm-12">
                                                         <textarea class="form-control" id="note" name ="note" rows="3"
                                                         <% if(block!==0) { %> readonly <% } %>
                                                         ><%= note %></textarea>
                                                     </div>
-                                                    <div class="col-3">
+                                                    <div class="col-md-3 col-sm-3">
                                                         <button type="submit" class="btn btn-primary btn-block" 
                                                         <% if(block!==0) { %> disabled <% } %>
                                                         >Kiểm tra</button>
@@ -47,7 +47,7 @@
                                             </div>
                                         </div>
                                         
-                                        <div class="col">
+                                        <div class="col-md-6 col-sm-12">
                                             <div class="row mb-4">
                                                 <div class="col">
                                                     <div class="form-group">
@@ -61,10 +61,10 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="OTP_code">Mã OTP email:</label>
                                                     <div class="row">
-                                                        <div class="col-9">
+                                                        <div class="col-md-9 col-sm-12">
                                                             <input  type="text" value="<%= OTP_code%>" name="OTP_code" id="OTP_code" class="form-control" />
                                                         </div>
-                                                        <div class="col-3">
+                                                        <div class="col-md-3 col-sm-12">
                                                             <button type="submit" class="btn btn-primary "<% if(block===2 || block === 0) { %> disabled <% } %>>Lấy mã OTP</button>
                                                         </div>
                                                     </div>
