@@ -15,14 +15,14 @@
                                             <div class="form-group">
                                                 <label class="form-label" for="numberCard">Số thẻ</label>
                                                 <input type="text" name="numberCard" id="numberCard" class="form-control" />
-                                               
+
                                             </div>
                                         </div>
                                         <div class="col">
                                             <div class="form-group">
                                                 <label class="form-label" for="dateExp">Ngày hết hạn</label>
                                                 <input type="date" name="dateExp" id="dateExp" class="form-control" />
-                                                
+
                                             </div>
                                         </div>
                                     </div>
@@ -30,19 +30,19 @@
                                     <!-- Mã Cvv và số tiền cần nạp -->
                                     <div class="row mb-4">
                                         <div class="col">
-                                    <div class="form-group">
-                                        <label class="form-label" for="cvv">Mã CVV</label>
-                                        <input type="text" name="cvv" id="cvv" class="form-control" />
-                                        
+                                            <div class="form-group">
+                                                <label class="form-label" for="cvv">Mã CVV</label>
+                                                <input type="text" name="cvv" id="cvv" class="form-control" />
+
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label class="form-label" for="money">Số tiền nạp</label>
+                                                <input type="number" min="0.0" name="money" id="money" class="form-control" />
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label class="form-label" for="money">Số tiền nạp</label>
-                                        <input type="number" min="0.0" name="money" id="money" class="form-control" />
-                                    </div>
-                                </div>
-                            </div>
                                     <% if(error){ %>
                                         <div class="alert alert-danger mb-3">
                                             <strong>Lưu ý!</strong>
@@ -58,6 +58,9 @@
                 </div>
         </div>
         <script src="/Js/main.js"></script>
+        <script>
+            createAutoClosingAlert(".alert-danger", 2000);
+        </script>
 
     </body>
 

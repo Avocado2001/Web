@@ -101,7 +101,7 @@ Router.post("/addMoney", CheckLogin, FirstTime, (req, res) => {
                         });
                     } else {
                         Account.findByIdAndUpdate(id, {
-                                account_balance: data.account_balance + money,
+                                $inc: { account_balance: money }
                             })
                             .then(() => {
                                 let transaction = new Transaction({
@@ -113,7 +113,7 @@ Router.post("/addMoney", CheckLogin, FirstTime, (req, res) => {
                                 return transaction.save()
 
                             }).then(() => {
-                                return res.redirect("/user/addMoney");
+                                return res.redirect("/user/addMoney?message=addmoneysuccess");
                             })
                             .catch((err) => {
                                 return res.render("addMoney", {
