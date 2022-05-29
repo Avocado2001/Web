@@ -28,7 +28,7 @@ Router.get("/", CheckLogin, FirstTime, (req, res) => {
             birthday: data.birthday,
             idcard_front: "",
             idcard_back: "",
-            account_balance:data.account_balance,
+            account_balance: data.account_balance,
             status: data.status,
         });
     });
@@ -37,7 +37,7 @@ Router.get("/", CheckLogin, FirstTime, (req, res) => {
 Router.get("/addMoney", CheckLogin, FirstTime, (req, res) => {
     let user = req.session.account;
     Account.findById(user._id, function(err, data) {
-        if (data.status == 0 || data.status==2) {
+        if (data.status == 0 || data.status == 2) {
             res.render("notactive", {
                 fullname: user.fullname,
                 pagename: "Chức năng nạp tiền"
@@ -101,20 +101,19 @@ Router.post("/addMoney", CheckLogin, FirstTime, (req, res) => {
                         });
                     } else {
                         Account.findByIdAndUpdate(id, {
-                                account_balance: data.account_balance + money,
+                                $inc: { account_balance: money }
                             })
                             .then(() => {
                                 let transaction = new Transaction({
                                     username: data.username,
                                     money,
                                     kind: 0,
-                                    status_transaction: 1, // Nạp tiền mặc định là duyệt
-
+                                    status_transaction: 0,
                                 });
                                 return transaction.save()
 
                             }).then(() => {
-                                return res.redirect("/user/addMoney");
+                                return res.redirect("/user/addMoney?message=addmoneysuccess");
                             })
                             .catch((err) => {
                                 return res.render("addMoney", {
@@ -172,7 +171,7 @@ Router.get("/withdrawMoney", CheckLogin, FirstTime, (req, res) => {
 
     let user = req.session.account;
     Account.findById(user._id, function(err, data) {
-        if (data.status == 0 || data.status==2) {
+        if (data.status == 0 || data.status == 2) {
             res.render("notactive", {
                 fullname: user.fullname,
                 pagename: "Chức năng rút tiền"
@@ -191,106 +190,105 @@ Router.post("/withdrawMoney", CheckLogin, FirstTime, (req, res) => {
     let id = req.session.account._id;
     let { numberCard, dateExp, cvv, money, note } = req.body;
     money = parseInt(money);
-    const today =new Date();
-    let timecurrent=today.getDate()+'-'+(today.getMonth()+1)+'-'+today.getFullYear();
-    timecurrent=String(timecurrent)
- 
-  
+    const today = new Date();
+    let timecurrent = today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear();
+    timecurrent = String(timecurrent)
+
+
     Account.findById(id, (err, data) => {
-        Transaction.find( { $and:[{ kind: 2 }, {time:{$regex:timecurrent}}]}).count().then((limit_withdraw)=>{
-            if(limit_withdraw>1){
+        Transaction.find({ $and: [{ kind: 2 }, { time: { $regex: timecurrent } }] }).count().then((limit_withdraw) => {
+            if (limit_withdraw > 1) {
                 return res.render("withdrawMoney", {
                     error: "Số lần rút tiền đã tối đa trong ngày",
                     fullname: data.fullname,
                 });
             } else if (numberCard === "111111") {
-            if (dateExp === "2022-10-10") {
-                if (cvv === "411") {
-                    if (money > data.account_balance) {
-                        return res.render("withdrawMoney", {
-                            error: "Số dư không đủ",
-                            fullname: data.fullname,
-                        });
-                    } else if (money % 50 != 0) {
-                        return res.render("withdrawMoney", {
-                            error: "Số tiền rút phải là bội số của 50",
-                            fullname: data.fullname,
-                        });
-                    }else if(money >5000000){
-                        let transaction = new Transaction({
-                            username: data.username,
-                            money,
-                            fee: money*0.05,
-                            kind: 2,
-                            status_transaction: 1,
-                            note,
-                        });
-                      
-                        return transaction.save().then(() => {
-                            return res.redirect(
-                                "/user/withdrawMoney?message=withdrawmoneywaiting"
-                            );
-                        })
-                        .catch((err) => {
+                if (dateExp === "2022-10-10") {
+                    if (cvv === "411") {
+                        if (money > data.account_balance) {
                             return res.render("withdrawMoney", {
-                                error: err.message,
+                                error: "Số dư không đủ",
                                 fullname: data.fullname,
                             });
-                        });
-                        
-
-                    }
-                     else {
-                        Account.findByIdAndUpdate(id, {
-                                account_balance: data.account_balance - money - money * 0.05,
-                            })
-                            .then(() => {
-                                let transaction = new Transaction({
-                                    username: data.username,
-                                    money,
-                                    fee: money*0.05,
-                                    kind: 2,
-                                    status_transaction: 0,
-                                    note,
-                                });
-                                return transaction.save()
-
-                            }).then(() => {
-                                return res.redirect(
-                                    "/user/withdrawMoney?message=withdrawmoneysuccess"
-                                );
-                            })
-                            .catch((err) => {
-                                return res.render("withdrawMoney", {
-                                    error: err.message,
-                                    fullname: data.fullname,
-                                });
+                        } else if (money % 50 != 0) {
+                            return res.render("withdrawMoney", {
+                                error: "Số tiền rút phải là bội số của 50",
+                                fullname: data.fullname,
                             });
+                        } else if (money > 5000000) {
+                            let transaction = new Transaction({
+                                username: data.username,
+                                money,
+                                fee: money * 0.05,
+                                kind: 2,
+                                status_transaction: 1,
+                                note,
+                            });
+
+                            return transaction.save().then(() => {
+                                    return res.redirect(
+                                        "/user/withdrawMoney?message=withdrawmoneywaiting"
+                                    );
+                                })
+                                .catch((err) => {
+                                    return res.render("withdrawMoney", {
+                                        error: err.message,
+                                        fullname: data.fullname,
+                                    });
+                                });
+
+
+                        } else {
+                            Account.findByIdAndUpdate(id, {
+                                    account_balance: data.account_balance - money - money * 0.05,
+                                })
+                                .then(() => {
+                                    let transaction = new Transaction({
+                                        username: data.username,
+                                        money,
+                                        fee: money * 0.05,
+                                        kind: 2,
+                                        status_transaction: 0,
+                                        note,
+                                    });
+                                    return transaction.save()
+
+                                }).then(() => {
+                                    return res.redirect(
+                                        "/user/withdrawMoney?message=withdrawmoneysuccess"
+                                    );
+                                })
+                                .catch((err) => {
+                                    return res.render("withdrawMoney", {
+                                        error: err.message,
+                                        fullname: data.fullname,
+                                    });
+                                });
+                        }
+                    } else {
+                        return res.render("withdrawMoney", {
+                            error: "Sai mã cvv",
+                            fullname: data.fullname,
+                        });
                     }
                 } else {
                     return res.render("withdrawMoney", {
-                        error: "Sai mã cvv",
+                        error: "Sai ngày hết hạn",
                         fullname: data.fullname,
                     });
                 }
+            } else if (numberCard.length === 6) {
+                return res.render("withdrawMoney", {
+                    error: "Thẻ này không được hỗ trợ",
+                    fullname: data.fullname,
+                });
             } else {
                 return res.render("withdrawMoney", {
-                    error: "Sai ngày hết hạn",
+                    error: "Sai mã thẻ",
                     fullname: data.fullname,
                 });
             }
-        } else if (numberCard.length === 6) {
-            return res.render("withdrawMoney", {
-                error: "Thẻ này không được hỗ trợ",
-                fullname: data.fullname,
-            });
-        } else {
-            return res.render("withdrawMoney", {
-                error: "Sai mã thẻ",
-                fullname: data.fullname,
-            });
-        }
-    });
+        });
     });
 });
 
@@ -300,7 +298,7 @@ Router.post("/withdrawMoney", CheckLogin, FirstTime, (req, res) => {
 Router.get("/transferMoney", CheckLogin, FirstTime, (req, res) => {
     let user = req.session.account;
     Account.findById(user._id, function(err, data) {
-        if (data.status == 0 || data.status==2) {
+        if (data.status == 0 || data.status == 2) {
             res.render("notactive", {
                 fullname: user.fullname,
                 pagename: "Chức năng chuyển tiền"
@@ -323,13 +321,15 @@ Router.get("/transferMoney", CheckLogin, FirstTime, (req, res) => {
 });
 let OTP_code_check = "";
 let OTP_timecheck = "";
-let receiver_email = '', receiver_id='', receiver_account_balance=0;
+let receiver_email = '',
+    receiver_id = '',
+    receiver_account_balance = 0;
 Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
     let user = req.session.account;
     let id = req.session.account._id;
     let OTP_timecheck_curren = new Date().getTime();
     let { phone, money, note, receiver, fee, nguoitra, OTP_code } = req.body;
-   
+
     if (phone === '' && money === "" && note === "" && receiver === "" && fee === "" && OTP_code == '') {
         return res.render("transferMoney", {
             fullname: user.fullname,
@@ -342,8 +342,7 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
             fee: fee,
             error: 'Vui lòng nhập đủ thông tin gồm: Số điện thoại, số tiền và ghi chú.',
         });
-    } 
-    else if (phone !== '' && money==='' && note !== "" && receiver === "" && fee === "" && OTP_code == '') {
+    } else if (phone !== '' && money === '' && note !== "" && receiver === "" && fee === "" && OTP_code == '') {
         return res.render("transferMoney", {
             fullname: user.fullname,
             phone: '',
@@ -355,8 +354,7 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
             fee: fee,
             error: 'Vui lòng nhập đủ thông tin gồm: Số điện thoại, số tiền và ghi chú.',
         });
-    }
-    else if (phone === user.phone) {
+    } else if (phone === user.phone) {
         return res.render("transferMoney", {
             fullname: user.fullname,
             phone: '',
@@ -368,8 +366,7 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
             fee: fee,
             error: 'Đây là số điện thoại của bạn! Hãy nhập số điện thoại của người nhận.',
         });
-    }
-    else if (isNaN(money)) {
+    } else if (isNaN(money)) {
         return res.render("transferMoney", {
             fullname: user.fullname,
             phone: '',
@@ -381,15 +378,13 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
             fee: fee,
             error: 'Vui lòng nhập số tiền là một số.',
         });
-    }
-    else if (phone !== "" && money !== "" && note !== "" && receiver === "") {
+    } else if (phone !== "" && money !== "" && note !== "" && receiver === "") {
         //check infor receiver
         money = parseInt(money);
         fee = (money / 100) * 5;
         fee = parseInt(fee);
-        Account.findById(id,(err,data)=>{
-            if(data.account_balance < money)
-            {
+        Account.findById(id, (err, data) => {
+            if (data.account_balance < money) {
                 return res.render("transferMoney", {
                     fullname: user.fullname,
                     phone: phone,
@@ -416,9 +411,7 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
                     fee: '',
                     error: 'Không tìm thấy người nhận!',
                 });
-            }
-            else
-            {
+            } else {
                 receiver_id = data._id;
                 receiver_account_balance = data.account_balance;
                 receiver_email = data.email;
@@ -435,16 +428,13 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
                 });
             }
         });
-    } 
-    else if (phone !== "" && money !== "" && note !== "" && receiver !== "" && OTP_code === "") 
-    {
+    } else if (phone !== "" && money !== "" && note !== "" && receiver !== "" && OTP_code === "") {
         //button get OTP
         money = parseInt(money);
         fee = (money / 100) * 5;
         fee = parseInt(fee);
-        Account.findById(id,(err,data)=>{
-            if(data.account_balance < money)
-            {
+        Account.findById(id, (err, data) => {
+            if (data.account_balance < money) {
                 return res.render("transferMoney", {
                     fullname: user.fullname,
                     phone: phone,
@@ -496,8 +486,7 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
                 console.log(error);
             }
         });
-        return res.render("transferMoney", 
-        {
+        return res.render("transferMoney", {
             fullname: user.fullname,
             phone: phone,
             money: money,
@@ -506,19 +495,16 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
             receiver: receiver,
             error: '',
             fee: fee,
-            nguoitra :'',
+            nguoitra: '',
             OTP_code: '',
         });
-    } 
-    else if (phone !== "" && money !== "" && note !== "" && receiver !== "" && OTP_code !== "" && fee !== '') 
-    {
+    } else if (phone !== "" && money !== "" && note !== "" && receiver !== "" && OTP_code !== "" && fee !== '') {
         //xác nhận giao dịch
         money = parseInt(money);
         fee = (money / 100) * 5;
         fee = parseInt(fee);
-        Account.findById(id,(err,data)=>{
-            if(data.account_balance < money)
-            {
+        Account.findById(id, (err, data) => {
+            if (data.account_balance < money) {
                 return res.render("transferMoney", {
                     fullname: user.fullname,
                     phone: phone,
@@ -549,36 +535,32 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
         });
         let timecheck = (OTP_timecheck_curren - OTP_timecheck) / 1000;
         let time = new Date().toISOString();
-        if (OTP_code === OTP_code_check && timecheck < 61) 
-        {
-            if (money > 5000000) 
-            {
-                Account.findById(id,(err,data)=>{
+        if (OTP_code === OTP_code_check && timecheck < 61) {
+            if (money > 5000000) {
+                Account.findById(id, (err, data) => {
                     if (nguoitra === 'nguoichuyentra') {
                         Account.findByIdAndUpdate(id, {
-                            account_balance: data.account_balance - money - fee
-                        })
-                        .catch((err)=>{
-                            return res.render("transferMoney", 
-                            {
-                                fullname: user.fullname,
-                                phone: '',
-                                money: '',
-                                note: '',
-                                block: 0,
-                                receiver: '',
-                                error: 'Lỗi cập nhật số dư ví người gửi',
-                                fee: '',
-                                nguoitra :'',
-                                OTP_code: '',
+                                account_balance: data.account_balance - money - fee
+                            })
+                            .catch((err) => {
+                                return res.render("transferMoney", {
+                                    fullname: user.fullname,
+                                    phone: '',
+                                    money: '',
+                                    note: '',
+                                    block: 0,
+                                    receiver: '',
+                                    error: 'Lỗi cập nhật số dư ví người gửi',
+                                    fee: '',
+                                    nguoitra: '',
+                                    OTP_code: '',
+                                });
                             });
-                        });
                     } else if (nguoitra === 'nguoinhantra') {
                         Account.findByIdAndUpdate(id, {
                             account_balance: data.account_balance - money
-                        }).catch((err)=>{
-                            return res.render("transferMoney", 
-                            {
+                        }).catch((err) => {
+                            return res.render("transferMoney", {
                                 fullname: user.fullname,
                                 phone: '',
                                 money: '',
@@ -587,7 +569,7 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
                                 receiver: '',
                                 error: 'Lỗi cập nhật số dư ví người gửi',
                                 fee: '',
-                                nguoitra :'',
+                                nguoitra: '',
                                 OTP_code: '',
                             });
                         });
@@ -606,57 +588,53 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
                     receiver_id: receiver_id,
                     nguoitra: nguoitra,
                 });
-                return transaction.save().then(()=>{
-                    var mailOptions = {
-                        from: "ewallet.webnc@gmail.com",
-                        to: user.email,
-                        subject: "Chờ duyệt giao dịch E-Wallet",
-                        text: "Tài khoản của bạn: " +
-                            user.fullname +
-                            "\nVừa chuyển: " +
-                            money + " VND." +
-                            "\nTrạng thái: Chờ duyệt" +
-                            "\nNgày giao dich: " + time + ".",
-                    };
-                    transporter.sendMail(mailOptions, function(error, info) {
-                        if (error) {
-                            console.log(error);
-                        }
+                return transaction.save().then(() => {
+                        var mailOptions = {
+                            from: "ewallet.webnc@gmail.com",
+                            to: user.email,
+                            subject: "Chờ duyệt giao dịch E-Wallet",
+                            text: "Tài khoản của bạn: " +
+                                user.fullname +
+                                "\nVừa chuyển: " +
+                                money + " VND." +
+                                "\nTrạng thái: Chờ duyệt" +
+                                "\nNgày giao dich: " + time + ".",
+                        };
+                        transporter.sendMail(mailOptions, function(error, info) {
+                            if (error) {
+                                console.log(error);
+                            }
+                        });
+                    })
+                    .then(() => {
+                        return res.redirect('/user/transferMoney' + '?message=transferMoneychoduyet');
                     });
-                })
-                .then(()=>{
-                    return res.redirect('/user/transferMoney' + '?message=transferMoneychoduyet');
-                });           
-            } 
-            else 
-            {
+            } else {
                 //update balance 
-                Account.findById(id,(err,data)=>{
+                Account.findById(id, (err, data) => {
                     if (nguoitra === 'nguoichuyentra') {
                         Account.findByIdAndUpdate(id, {
-                            account_balance: data.account_balance - money - fee
-                        })
-                        .catch((err)=>{
-                            return res.render("transferMoney", 
-                            {
-                                fullname: user.fullname,
-                                phone: '',
-                                money: '',
-                                note: '',
-                                block: 0,
-                                receiver: '',
-                                error: 'Lỗi cập nhật số dư ví người gửi',
-                                fee: '',
-                                nguoitra :'',
-                                OTP_code: '',
+                                account_balance: data.account_balance - money - fee
+                            })
+                            .catch((err) => {
+                                return res.render("transferMoney", {
+                                    fullname: user.fullname,
+                                    phone: '',
+                                    money: '',
+                                    note: '',
+                                    block: 0,
+                                    receiver: '',
+                                    error: 'Lỗi cập nhật số dư ví người gửi',
+                                    fee: '',
+                                    nguoitra: '',
+                                    OTP_code: '',
+                                });
                             });
-                        });
                     } else if (nguoitra === 'nguoinhantra') {
                         Account.findByIdAndUpdate(id, {
                             account_balance: data.account_balance - money
-                        }).catch((err)=>{
-                            return res.render("transferMoney", 
-                            {
+                        }).catch((err) => {
+                            return res.render("transferMoney", {
                                 fullname: user.fullname,
                                 phone: '',
                                 money: '',
@@ -665,7 +643,7 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
                                 receiver: '',
                                 error: 'Lỗi cập nhật số dư ví người gửi',
                                 fee: '',
-                                nguoitra :'',
+                                nguoitra: '',
                                 OTP_code: '',
                             });
                         });
@@ -685,89 +663,84 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
                     receiver_id: receiver_id,
                     nguoitra: nguoitra,
                 });
-                return transaction.save().then(()=>{
-                    //gui mail thong bao so du cho nguoi gui
-                    Account.findById(id,(err,data)=>{
+                return transaction.save().then(() => {
+                        //gui mail thong bao so du cho nguoi gui
+                        Account.findById(id, (err, data) => {
+                            var mailOptions = {
+                                from: "ewallet.webnc@gmail.com",
+                                to: user.email,
+                                subject: "Giao dịch thành công E-Wallet",
+                                text: "Tài khoản của bạn " +
+                                    user.fullname +
+                                    "\nVừa chuyển: " +
+                                    money + " VND." +
+                                    "\nPhí chuyển: " +
+                                    fee + " VND." +
+                                    "\nSố dư: " +
+                                    data.account_balance + " VND." +
+                                    "\nNgày giao dich: " + time + ".",
+                            };
+                            transporter.sendMail(mailOptions, function(error, info) {
+                                if (error) {
+                                    console.log(error);
+                                }
+                            });
+                        })
+                    })
+                    .then(() => {
+                        if (nguoitra === 'nguoichuyentra') {
+                            receiver_account_balance = receiver_account_balance + money;
+                        } else if (nguoitra === 'nguoinhantra') {
+                            receiver_account_balance = receiver_account_balance + money - fee;
+                        }
+                    })
+                    .then(() => {
+                        Account.findByIdAndUpdate(receiver_id, {
+                            account_balance: receiver_account_balance
+                        }).catch((err) => {
+                            return res.render("transferMoney", {
+                                fullname: user.fullname,
+                                phone: phone,
+                                money: money,
+                                note: note,
+                                receiver: receiver,
+                                error: 'Lỗi cập nhật số dư người nhận',
+                                fee: fee,
+                                block: 0,
+                                nguoitra: '',
+                                OTP_code: '',
+                            });
+                        });
+                    })
+                    .then(() => {
+                        //thong bao so du receiver
                         var mailOptions = {
                             from: "ewallet.webnc@gmail.com",
-                            to: user.email,
+                            to: receiver_email,
                             subject: "Giao dịch thành công E-Wallet",
                             text: "Tài khoản của bạn " +
-                                user.fullname +
-                                "\nVừa chuyển: " +
+                                receiver +
+                                "\nVừa nhận: " +
                                 money + " VND." +
                                 "\nPhí chuyển: " +
                                 fee + " VND." +
+                                "\nTừ: " +
+                                user.fullname + " VND." +
                                 "\nSố dư: " +
-                                data.account_balance + " VND." +
+                                receiver_account_balance + " VND." +
                                 "\nNgày giao dich: " + time + ".",
                         };
                         transporter.sendMail(mailOptions, function(error, info) {
                             if (error) {
-                                console.log(error);
+                                if (error) {
+                                    console.log(error);
+                                }
                             }
                         });
                     })
-                })
-                .then(()=>{
-                    if(nguoitra ==='nguoichuyentra')
-                    {
-                        receiver_account_balance=receiver_account_balance+money;
-                    }
-                    else if(nguoitra ==='nguoinhantra')
-                    {
-                        receiver_account_balance=receiver_account_balance+money-fee;
-                    }
-                })
-                .then(()=>
-                {
-                    Account.findByIdAndUpdate(receiver_id,{
-                        account_balance: receiver_account_balance
-                    }).catch((err)=>{
-                        return res.render("transferMoney", 
-                        {
-                            fullname: user.fullname,
-                            phone: phone,
-                            money: money,
-                            note: note,
-                            receiver: receiver,
-                            error: 'Lỗi cập nhật số dư người nhận',
-                            fee: fee,
-                            block: 0,
-                            nguoitra :'',
-                            OTP_code: '',
-                        });
-                    });
-                })
-                .then(()=>{
-                    //thong bao so du receiver
-                    var mailOptions = {
-                        from: "ewallet.webnc@gmail.com",
-                        to: receiver_email,
-                        subject: "Giao dịch thành công E-Wallet",
-                        text: "Tài khoản của bạn " +
-                            receiver +
-                            "\nVừa nhận: " +
-                            money + " VND." +
-                            "\nPhí chuyển: " +
-                            fee + " VND." +
-                            "\nTừ: " +
-                            user.fullname + " VND." +
-                            "\nSố dư: " +
-                            receiver_account_balance + " VND." +
-                            "\nNgày giao dich: " + time + ".",
-                    };
-                    transporter.sendMail(mailOptions, function(error, info) {
-                        if (error) {
-                            if (error) {
-                                console.log(error);
-                            }
-                        }
-                    });
-                })
-                .then(()=>{
-                    return res.redirect('/user/transferMoney' + '?message=transferMoneySuccess');
-                })
+                    .then(() => {
+                        return res.redirect('/user/transferMoney' + '?message=transferMoneySuccess');
+                    })
             }
         } else {
             return res.render("transferMoney", {
@@ -801,7 +774,7 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
 Router.get("/buyCard", CheckLogin, FirstTime, (req, res) => {
     let user = req.session.account;
     Account.findById(user._id, function(err, data) {
-        if (data.status == 0 || data.status==2) {
+        if (data.status == 0 || data.status == 2) {
             res.render("notactive", {
                 fullname: user.fullname,
                 pagename: "Chức năng mua thẻ cào",
@@ -855,7 +828,7 @@ Router.post("/buyCard", CheckLogin, FirstTime, (req, res) => {
                                 number_card,
                                 status_transaction: 0,
                                 price,
-                                fee:0,
+                                fee: 0,
                                 money: price * quantity,
                                 quantity,
                                 name_card,
@@ -864,12 +837,12 @@ Router.post("/buyCard", CheckLogin, FirstTime, (req, res) => {
 
                         }).then(() => {
                             return res.render("buyCardreceipt", {
-                                username: data.username, 
+                                username: data.username,
                                 kind: 3,
                                 number_card,
                                 status_transaction: 0,
                                 price,
-                                fee:0,
+                                fee: 0,
                                 money: price * quantity,
                                 quantity,
                                 name_card,
@@ -909,7 +882,7 @@ Router.post("/buyCard", CheckLogin, FirstTime, (req, res) => {
                                 number_card,
                                 status_transaction: 0,
                                 price,
-                                fee:0,
+                                fee: 0,
                                 money: price * quantity,
                                 quantity,
                                 name_card,
@@ -918,12 +891,12 @@ Router.post("/buyCard", CheckLogin, FirstTime, (req, res) => {
 
                         }).then(() => {
                             return res.render("buyCardreceipt", {
-                                username: data.username, 
+                                username: data.username,
                                 kind: 3,
                                 number_card,
                                 status_transaction: 0,
                                 price,
-                                fee:0,
+                                fee: 0,
                                 money: price * quantity,
                                 quantity,
                                 name_card,
@@ -963,7 +936,7 @@ Router.post("/buyCard", CheckLogin, FirstTime, (req, res) => {
                                 number_card,
                                 status_transaction: 0,
                                 price,
-                                fee:0,
+                                fee: 0,
                                 money: price * quantity,
                                 quantity,
                                 name_card,
@@ -972,12 +945,12 @@ Router.post("/buyCard", CheckLogin, FirstTime, (req, res) => {
 
                         }).then(() => {
                             return res.render("buyCardreceipt", {
-                                username: data.username, 
+                                username: data.username,
                                 kind: 3,
                                 number_card,
                                 status_transaction: 0,
                                 price,
-                                fee:0,
+                                fee: 0,
                                 money: price * quantity,
                                 quantity,
                                 name_card,
@@ -1028,7 +1001,7 @@ Router.get("/history", CheckLogin, (req, res) => {
     let user = req.session.account;
  
     Account.findById(user._id, function(err, data) {
-        if (data.status == 0 || data.status==2) {
+        if (data.status == 0 || data.status == 2) {
             res.render("notactive", {
                 fullname: user.fullname,
                 pagename: "Chức năng xem lịch sử giao dịch"
@@ -1137,7 +1110,7 @@ Router.post("/updateprofile", multipleUpload, (req, res) => {
     var today = new Date()
     let {
         idcard_front = req.files.idcard_front[0].originalname,
-        idcard_back = req.files.idcard_back[0].originalname,
+            idcard_back = req.files.idcard_back[0].originalname,
     } = req.body;
     if (req.session.account) {
         Account.findByIdAndUpdate(req.session.account._id, {
