@@ -3,11 +3,9 @@ const bcrypt = require('bcrypt');
 const Account = require('../models/AccountModel');
 const Transaction = require('../models/TransactionModel');
 const CheckLogin = require('../auth/CheckForAdmin');
-const currencyFormatter = require('currency-formatter');
 const changePassValidator = require('../routers/validators/changePassValidator');
 const { validationResult } = require('express-validator');
 const { render } = require('ejs');
-const TransactionModel = require('../models/TransactionModel');
 const nodemailer = require("nodemailer");
 const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -56,7 +54,7 @@ Router.post('/detailban/:id', CheckLogin, (req, res) => {
             inconstant_login,
             wrong_pass: 0
         }).then(() => {
-            return res.redirect('/admin/detailban/' + req.params.id);
+            return res.redirect('/admin/bannedForever');
         });
     }
 
