@@ -75,7 +75,9 @@ Router.post('/', loginValidator, (req, res) => {
                 throw new Error('Username không tồn tại');
             } else if (account.inconstant_login === 1) {
                 throw new Error('Tài khoản đã bị khóa do nhập sai mật khẩu nhiều lần, vui lòng liên hệ quản trị viên để được hỗ trợ ');
-            } else
+            } else if (account.status === 3) {
+                throw new Error('Tài khoản đã bị khóa, vui lòng liên hệ 18001008');
+            }else
             if (account.waitLogin > now) {
                 throw new Error('Hãy thử lại sau ' + (parseInt((account.waitLogin - now) / 1000)) + ' giây');
             } else
