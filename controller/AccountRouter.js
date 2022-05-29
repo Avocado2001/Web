@@ -331,7 +331,7 @@ Router.post('/resetPassword', resetPassValidator, (req, res) => {
         }),
     } = req.body;
     if (result.errors.length === 0) {
-          Account.findOne({ $or: [{ email }, { phone }] }).then(account => {
+        Account.findOne({ $or: [{ email }, { phone }] }).then(account => {
             if (!account) {
                 throw new Error('Email hoặc số điện thoại không tồn tại');
             } else {
