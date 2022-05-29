@@ -47,17 +47,13 @@ Router.get('/detailuser/:id', CheckLogin, (req, res) => {
 
 // Xác minh tài khoản khóa do đăng nhập sai
 Router.post('/detailban/:id', CheckLogin, (req, res) => {
-    let { inconstant_login } = req.body;
-    inconstant_login = parseInt(inconstant_login);
-    if (inconstant_login === 0) {
-        Account.findByIdAndUpdate(req.params.id, {
-            inconstant_login,
-            wrong_pass: 0
-        }).then(() => {
-            return res.redirect('/admin/bannedForever');
-        });
-    }
 
+    Account.findByIdAndUpdate(req.params.id, {
+        inconstant_login: 0,
+        wrong_pass: 0
+    }).then(() => {
+        return res.redirect('/admin/bannedForever');
+    });
 });
 
 // Xác minh tài khoản
