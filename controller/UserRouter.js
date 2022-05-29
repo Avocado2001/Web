@@ -1026,6 +1026,7 @@ Router.get("/buyCard_done", CheckLogin, FirstTime, (req, res) => {
 //Xem lịch sử giao dịch - bắt đầu
 Router.get("/history", CheckLogin, (req, res) => {
     let user = req.session.account;
+ 
     Account.findById(user._id, function(err, data) {
         if (data.status == 0 || data.status==2) {
             res.render("notactive", {
@@ -1033,17 +1034,17 @@ Router.get("/history", CheckLogin, (req, res) => {
                 pagename: "Chức năng xem lịch sử giao dịch"
             })
         } else {
-            Transaction.find({}).then((his) => {
+            Transaction.find({username:data.username}).then((his) => {
                 res.render("history", {
+                    username:data.username,
                     his: his,
                     fullname: user.fullname
                 });
             });
         }
     })
-
-
 });
+
 //Xem chi tiết giao dịch
 Router.get('/detailhistory/:id', CheckLogin, (req, res) => {
     Transaction.findById(req.params.id, function(err, transaction) {
