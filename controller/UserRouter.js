@@ -37,7 +37,7 @@ Router.get("/", CheckLogin, FirstTime, (req, res) => {
 Router.get("/addMoney", CheckLogin, FirstTime, (req, res) => {
     let user = req.session.account;
     Account.findById(user._id, function(err, data) {
-        if (data.status == 0) {
+        if (data.status == 0 || data.status==2) {
             res.render("notactive", {
                 fullname: user.fullname,
                 pagename: "Chức năng nạp tiền"
@@ -172,7 +172,7 @@ Router.get("/withdrawMoney", CheckLogin, FirstTime, (req, res) => {
 
     let user = req.session.account;
     Account.findById(user._id, function(err, data) {
-        if (data.status == 0) {
+        if (data.status == 0 || data.status==2) {
             res.render("notactive", {
                 fullname: user.fullname,
                 pagename: "Chức năng rút tiền"
@@ -300,7 +300,7 @@ Router.post("/withdrawMoney", CheckLogin, FirstTime, (req, res) => {
 Router.get("/transferMoney", CheckLogin, FirstTime, (req, res) => {
     let user = req.session.account;
     Account.findById(user._id, function(err, data) {
-        if (data.status == 0) {
+        if (data.status == 0 || data.status==2) {
             res.render("notactive", {
                 fullname: user.fullname,
                 pagename: "Chức năng chuyển tiền"
@@ -801,7 +801,7 @@ Router.post("/transferMoney", CheckLogin, FirstTime, (req, res) => {
 Router.get("/buyCard", CheckLogin, FirstTime, (req, res) => {
     let user = req.session.account;
     Account.findById(user._id, function(err, data) {
-        if (data.status == 0) {
+        if (data.status == 0 || data.status==2) {
             res.render("notactive", {
                 fullname: user.fullname,
                 pagename: "Chức năng mua thẻ cào",
@@ -1027,7 +1027,7 @@ Router.get("/buyCard_done", CheckLogin, FirstTime, (req, res) => {
 Router.get("/history", CheckLogin, (req, res) => {
     let user = req.session.account;
     Account.findById(user._id, function(err, data) {
-        if (data.status == 0) {
+        if (data.status == 0 || data.status==2) {
             res.render("notactive", {
                 fullname: user.fullname,
                 pagename: "Chức năng xem lịch sử giao dịch"
