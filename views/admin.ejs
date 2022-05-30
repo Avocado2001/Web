@@ -14,7 +14,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <% users.forEach((e, index) =>{ %>
+                            <% users.forEach((e, index)=>{ %>
                                 <tr>
                                     <td>
                                         <p class="fw-normal mb-1">
@@ -39,18 +39,25 @@
                                         </p>
                                     </td>
                                     <td>
-                                        <% if(e.status === 0) { %>
-                                            <span class="badge badge-primary rounded-pill d-inline">Chưa xác minh</span>
-                                            <% }else if(e.status === 1){ %>
-                                                <span class="badge badge-success rounded-pill d-inline">Đã xác minh</span>
-                                                    <% }else if(e.status === 2){ %>
-                                                        <span class="badge badge-warning rounded-pill d-inline">Đang cập nhật</span>
-                                                        <% }else if(e.status === 3){ %>
-                                                            <span class="badge badge-warning rounded-pill d-inline">Đang khóa</span>
-                                                        <%} else{ %>
-                                                        <span class="badge badge-danger rounded-pill d-inline">Khóa vô thời hạn</span>
-                                                        <% } %>
-
+                                        <% if(e.inconstant_login===0) { %>
+                                            <% if(e.status===0) { %>
+                                                <span class="badge badge-primary rounded-pill d-inline">Chưa xác
+                                                    minh</span>
+                                                <% }else if(e.status===1){ %>
+                                                    <span class="badge badge-success rounded-pill d-inline">Đã xác
+                                                        minh</span>
+                                                    <% }else if(e.status===2){ %>
+                                                        <span class="badge badge-warning rounded-pill d-inline">Đang cập
+                                                            nhật</span>
+                                                        <% }else if(e.status===3){ %>
+                                                            <span class="badge badge-warning rounded-pill d-inline">Đang
+                                                                khóa</span>
+                                                            <% } %>
+                                                                <%} else{ %>
+                                                                    <span
+                                                                        class="badge badge-danger rounded-pill d-inline">Khóa
+                                                                        vô thời hạn</span>
+                                                                    <% } %>
                                     </td>
                                 </tr>
                                 <% })%>

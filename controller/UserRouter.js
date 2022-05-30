@@ -1001,13 +1001,13 @@ Router.get("/history", CheckLogin, (req, res) => {
     let user = req.session.account;
  
     Account.findById(user._id, function(err, data) {
-        if (data.status == 0 || data.status == 2) {
+        if (data.status == 0 || data.status == 2) { // Khóa các tài khoản chưa được xác minh
             res.render("notactive", {
                 fullname: user.fullname,
                 pagename: "Chức năng xem lịch sử giao dịch"
             })
         } else {
-            Transaction.find({username:data.username}).then((his) => {
+            Transaction.find({username:data.username}).then((his) => { // Lấy danh sách các giao dịch theo tên tài khoản
                 res.render("history", {
                     username:data.username,
                     his: his,

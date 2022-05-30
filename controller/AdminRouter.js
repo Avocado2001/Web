@@ -24,10 +24,10 @@ Router.get('/', CheckLogin, (req, res) => {
     });
 });
 
-//danh sách chờ xác minh
+//danh sách chờ xác minh -sắp xếp giảm dần theo ngày tạo
 Router.get('/waitActive', CheckLogin, (req, res) => {
     var sort = { date_register: -1 };
-    Account.find({ isAdmin: false, $or: [{ status: 0 }, { status: 2 }] }, function(err, users) {
+    Account.find({inconstant_login: 0 ,isAdmin: false, $or: [{ status: 0 }, { status: 2 }] }, function(err, users) {
         res.render('waitActive', {
             users
         });
@@ -35,8 +35,7 @@ Router.get('/waitActive', CheckLogin, (req, res) => {
 
 });
 
-
-// Xem thông tin chi tiết chờ kích hoạt
+// Xem thông tin chi tiết chờ xác minh
 Router.get('/detailuser/:id', CheckLogin, (req, res) => {
     Account.findById(req.params.id, function(err, user) {
         res.render('detailuser', {
@@ -45,18 +44,17 @@ Router.get('/detailuser/:id', CheckLogin, (req, res) => {
     });
 });
 
-// Xác minh tài khoản khóa do đăng nhập sai
-Router.post('/detailban/:id', CheckLogin, (req, res) => {
-
-    Account.findByIdAndUpdate(req.params.id, {
-        inconstant_login: 0,
-        wrong_pass: 0
-    }).then(() => {
-        return res.redirect('/admin/bannedForever');
-    });
+//danh sách đã xác minh - sắp xếp giảm dần theo ngày tạo
+Router.get('/actived', CheckLogin, (req, res) => {
+    var sort = { date_register: -1 };
+    Account.find({ isAdmin: false, status: 1,inconstant_login:0}, function(err, users) {
+        res.render('actived', {
+            users
+        });
+    }).sort(sort);
 });
 
-// Xác minh tài khoản
+// Xác minh(btn đầu) - yêu cầu bổ sung thông tin( btn - giữa) - khóa tài khoản (btn cuối)
 Router.post('/detailuser/:id', CheckLogin, (req, res) => {
     let { status } = req.body;
     status = parseInt(status);
@@ -80,9 +78,21 @@ Router.post('/detailuser/:id', CheckLogin, (req, res) => {
         });
     }
 });
+
+
+// Xác minh tài khoản khóa do đăng nhập sai
+Router.post('/detailban/:id', CheckLogin, (req, res) => {
+    Account.findByIdAndUpdate(req.params.id, {
+        inconstant_login: 0,
+        wrong_pass: 0
+    }).then(() => {
+        return res.redirect('/admin/bannedForever');
+    });
+});
+
+
 // Xem thông tin chi tiết tài khoản khóa do đăng nhập sai
 Router.get('/detailban/:id', CheckLogin, (req, res) => {
-
     Account.findById(req.params.id, function(err, user) {
         res.render('detailban', {
             user
@@ -90,26 +100,16 @@ Router.get('/detailban/:id', CheckLogin, (req, res) => {
     })
 });
 
-//danh sách đã xác minh - sắp xếp giảm dần theo ngày tạo
-Router.get('/actived', CheckLogin, (req, res) => {
-    var sort = { date_register: -1 };
-    Account.find({ isAdmin: false, status: 1 }, function(err, users) {
-        res.render('actived', {
-            users
-        });
-    }).sort(sort);
-});
-
-
 //danh sách bị vô hiệu hóa
 Router.get('/banning', CheckLogin, (req, res) => {
     var sort = { date_register: -1 };
-    Account.find({ isAdmin: false, status: 3 }, function(err, users) {
+    Account.find({ isAdmin: false, status: 3 , inconstant_login: 0 }, function(err, users) {
         res.render('banning', {
             users
         });
     }).sort(sort);
 });
+
 //danh sách bị khóa vô thời hạn do đăng nhập sai
 Router.get('/bannedForever', CheckLogin, (req, res) => {
     var sort = { date_register: -1 };
@@ -119,6 +119,7 @@ Router.get('/bannedForever', CheckLogin, (req, res) => {
         });
     }).sort(sort);
 });
+
 //đổi mật khẩu
 Router.get('/changePasswordadmin', CheckLogin, (req, res) => {
     let user = req.session.account;
@@ -126,13 +127,13 @@ Router.get('/changePasswordadmin', CheckLogin, (req, res) => {
 });
 Router.post("/changePasswordadmin", changePassValidator, (req, res) => {
     let user = req.session.account;
-    let { oldpass, confirm1, confirm2 } = req.body;
+    let { oldpass, confirm1, confirm2 } = req.body; 
     let result = validationResult(req);
     if (result.errors.length === 0) {
         if (req.session.account) {
-            if (bcrypt.compareSync(oldpass, user.password)) {
-                if (confirm1 === confirm2) {
-                    bcrypt
+            if (bcrypt.compareSync(oldpass, user.password)) { // confirm với mật khẩu cũ đã được mã hóa
+                if (confirm1 === confirm2) { // so sánh mật khẩu mới với mật khẩu xác nhận
+                    bcrypt // mã hóa mật khẩu
                         .hash(confirm2, 10)
                         .then((hashed) => {
                             Account.findByIdAndUpdate(req.session.account._id, {
@@ -146,7 +147,7 @@ Router.post("/changePasswordadmin", changePassValidator, (req, res) => {
                                 error: err.message,
                             });
                         });
-                } else {
+                } else { // thông báo không khớp
                     return res.render("changePassworduser", {
                         error: "Mật khẩu không khớp",
                         fullname: user.fullname,
@@ -176,7 +177,7 @@ Router.post("/changePasswordadmin", changePassValidator, (req, res) => {
 });
 //Quản lý giao dịch - bắt đầu
 Router.get('/acceptTransaction', CheckLogin, (req, res) => {
-    Transaction.find({ status_transaction: 1 }, function(err, transaction) {
+    Transaction.find({ status_transaction: 1 }, function(err, transaction) { // tìm tất cả giao dịch có trạng thái là 1
         res.render('acceptTransaction', {
             transaction
         });
@@ -185,7 +186,7 @@ Router.get('/acceptTransaction', CheckLogin, (req, res) => {
 });
 // Xem thông tin chi tiết giao dịch
 Router.get('/acceptTransaction/:id', CheckLogin, (req, res) => {
-    Transaction.findById(req.params.id, function(err, transaction) {
+    Transaction.findById(req.params.id, function(err, transaction) { // tìm giao dịch theo id của giao dịch
         res.render('detailTransaction', {
             transaction
         });
@@ -193,50 +194,50 @@ Router.get('/acceptTransaction/:id', CheckLogin, (req, res) => {
 });
 // Đồng ý giao dịch và Hủy giao dịch
 Router.post('/acceptTransaction/:id', CheckLogin, (req, res) => {
-    let { status_transaction } = req.body;
-    status_transaction = parseInt(status_transaction);
-    let id = req.params.id,
+    let { status_transaction } = req.body; // lấy trạng thái từ giao dịch
+    status_transaction = parseInt(status_transaction); // convert sang int
+    let id = req.params.id, // id của giao dịch
         time = new Date().toISOString(),
         nguoigui;
 
-    if (status_transaction === 0) {
+    if (status_transaction === 0) { // Trạng thái giao dịch được đồng ý
         Transaction.findOne({ _id: id }).then(transaction => {
             Transaction.findByIdAndUpdate(id, { status_transaction }, ).then(() => {
-                if (transaction.kind === 2) {
+                if (transaction.kind === 2) { // Giao dịch rút tiền
                     username = transaction.username
                     Account.findOne({ username }).then(account => {
-                        Account.findByIdAndUpdate(account._id, { $inc: { account_balance: -transaction.money * 1.05 } })
+                        Account.findByIdAndUpdate(account._id, { $inc: { account_balance: -transaction.money * 1.05 } }) // Trừ 100% + 5% phí rút
                             .catch(err => {
                                 console.log(err);
                             })
                     })
-                } else if (transaction.kind === 1) {
+                } else if (transaction.kind === 1) { // Giao dịch chuyển tiền
                     username = transaction.username
                     Account.findOne({ username }).then(account => {
                         nguoigui = account.fullname;
                     });
-                    //cap nhat so du nguoi nhan
+                    //cập nhật lại số dư tài khoản
                     Account.findOne({ _id: transaction.receiver_id }).then(account => {
                             if (transaction.nguoitra === 'nguoichuyentra') {
                                 Account.findByIdAndUpdate(account._id, { $inc: { account_balance: +transaction.money } })
                                     .catch(err => {
                                         console.log(err);
                                     })
-                            } else if (transaction.nguoitra === 'nguoinhantra') {
-                                Account.findByIdAndUpdate(account._id, { $inc: { account_balance: +transaction.money * 0.95 } })
+                            } else if (transaction.nguoitra === 'nguoinhantra') {// người nhận trả thì chỉ nhận được 95% số tiền
+                                Account.findByIdAndUpdate(account._id, { $inc: { account_balance: +transaction.money * 0.95 } }) 
                                     .catch(err => {
                                         console.log(err);
                                     })
                             }
                         })
                         .then(() => {
-                            //mail thong bao so du nguoi gui
+                            //mail thông báo số nhận được tiền
                             Account.findOne({ _id: transaction.receiver_id }).then(account => {
                                 var mailOptions = {
                                     from: "ewallet.webnc@gmail.com",
                                     to: account.email,
                                     subject: "Giao dịch thành công E-Wallet",
-                                    text: "Tài khoản của bạn " +
+                                    text: "Tài khoản của bạn: " +
                                         account.fullname +
                                         "\nVừa nhận: " +
                                         transaction.money + " VND." +
@@ -264,19 +265,19 @@ Router.post('/acceptTransaction/:id', CheckLogin, (req, res) => {
                 console.log(err)
             })
         })
-    } else if (status_transaction === 2) {
+    } else if (status_transaction === 2) { // Trạng thái giao dịch bị hủy
         Transaction.findOne({ _id: id }).then(transaction => {
             Transaction.findByIdAndUpdate(id, { status_transaction })
                 .then(() => {
                     username = transaction.username
                     Account.findOne({ username }).then(account => {
                         if (transaction.nguoitra === 'nguoichuyentra') {
-                            Account.findByIdAndUpdate(account._id, { $inc: { account_balance: +transaction.money * 1.05 } })
+                            Account.findByIdAndUpdate(account._id, { $inc: { account_balance: +transaction.money * 1.05 } }) // Hoàn lại 105% phí nếu người chuyển trả
                                 .catch(err => {
                                     console.log(err);
                                 })
                         } else if (transaction.nguoitra === 'nguoinhantra') {
-                            Account.findByIdAndUpdate(account._id, { $inc: { account_balance: +transaction.money } })
+                            Account.findByIdAndUpdate(account._id, { $inc: { account_balance: +transaction.money } }) 
                                 .catch(err => {
                                     console.log(err);
                                 })
@@ -291,8 +292,6 @@ Router.post('/acceptTransaction/:id', CheckLogin, (req, res) => {
         });
     }
 });
-
-
 
 //Quản lý giao dịch - kết thúc
 
